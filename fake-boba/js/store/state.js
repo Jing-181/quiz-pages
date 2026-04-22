@@ -1,7 +1,6 @@
-import { reactive, computed } from 'vue';
 import { ICE_COUNT_MAP } from '../data/constants.js';
 
-export const state = reactive({
+export const state = Vue.reactive({
   currentScene: 'home',
   cup: '',
   tea: '',
@@ -25,7 +24,7 @@ export const state = reactive({
 });
 
 /* ===== COMPUTED ===== */
-export const iceCount = computed(() => ICE_COUNT_MAP[state.ice] || 0);
-export const liquidPercent = computed(() => 80 - (state.sipCount * 16));
-export const isMakingDone = computed(() => state.shakeProgress >= 100);
-export const isAllDrunk = computed(() => state.sipCount >= state.maxSips);
+export const iceCount = Vue.computed(() => ICE_COUNT_MAP[state.ice] || 0);
+export const liquidPercent = Vue.computed(() => 80 - (state.sipCount * 16));
+export const isMakingDone = Vue.computed(() => state.shakeProgress >= 100);
+export const isAllDrunk = Vue.computed(() => state.sipCount >= state.maxSips);

@@ -6,6 +6,7 @@ export default {
   name: 'RecipeScene',
   data: function () {
     return {
+      state: state,
       recipeStep: 0,
       stepLabels: ['\u9009\u676F\u578B', '\u9009\u8336\u5E95', '\u9009\u5C0F\u6599', '\u751C\u5EA6 & \u51B0\u5EA6'],
       cupTypes: [
@@ -36,45 +37,45 @@ export default {
       return this.recipeStep === 3 ? '\u5F00\u59CB\u5236\u4F5C\uFF01' : '\u4E0B\u4E00\u6B65';
     },
     toppingCountText: function () {
-      return '\u5DF2\u9009 ' + state.toppings.length + '/3 \u4E2A\u5C0F\u6599';
+      return '\u5DF2\u9009 ' + this.state.toppings.length + '/3 \u4E2A\u5C0F\u6599';
     },
   },
   methods: {
     isStepValid: function (step) {
-      if (step === 0) return state.cup !== '';
-      if (step === 1) return state.tea !== '';
-      if (step === 2) return state.toppings.length > 0;
-      if (step === 3) return state.sweet !== '' && state.ice !== '';
+      if (step === 0) return this.state.cup !== '';
+      if (step === 1) return this.state.tea !== '';
+      if (step === 2) return this.state.toppings.length > 0;
+      if (step === 3) return this.state.sweet !== '' && this.state.ice !== '';
       return false;
     },
 
     selectCup: function (type) {
-      state.cup = type;
+      this.state.cup = type;
     },
 
     selectTea: function (tea) {
-      state.tea = tea.name;
-      state.teaColor = tea.color;
+      this.state.tea = tea.name;
+      this.state.teaColor = tea.color;
     },
 
     toggleTopping: function (name) {
-      var idx = state.toppings.indexOf(name);
+      var idx = this.state.toppings.indexOf(name);
       if (idx >= 0) {
-        state.toppings.splice(idx, 1);
+        this.state.toppings.splice(idx, 1);
       } else {
-        if (state.toppings.length >= 3) return;
-        state.toppings.push(name);
+        if (this.state.toppings.length >= 3) return;
+        this.state.toppings.push(name);
       }
     },
 
     selectSweet: function (val) {
-      state.sweet = val;
+      this.state.sweet = val;
     },
 
     selectIce: function (val) {
-      state.ice = val;
-      state.iceLevel = val;
-      state.iceCount = ICE_COUNT_MAP[val] || 0;
+      this.state.ice = val;
+      this.state.iceLevel = val;
+      this.state.iceCount = ICE_COUNT_MAP[val] || 0;
     },
 
     nextStep: function () {
@@ -100,18 +101,18 @@ export default {
     },
 
     buildCustomRecipe: function () {
-      var teaName = state.tea;
-      var toppingStr = state.toppings.length > 0 ? state.toppings[0] : '';
-      state.recipeName = teaName + (toppingStr ? toppingStr : '\u5976\u8336');
-      state.liquidColor = state.teaColor;
-      state.iceLevel = state.ice;
-      state.iceCount = ICE_COUNT_MAP[state.ice] || 0;
-      state.recipeCal = 300 + state.toppings.length * 60;
-      if (state.sweet === '\u5168\u7CD6') state.recipeCal += 80;
-      if (state.sweet === '\u4E03\u5206\u751C') state.recipeCal += 50;
-      if (state.sweet === '\u4E94\u5206\u751C') state.recipeCal += 30;
-      state.sipCount = 0;
-      state.shakeProgress = 0;
+      var teaName = this.state.tea;
+      var toppingStr = this.state.toppings.length > 0 ? this.state.toppings[0] : '';
+      this.state.recipeName = teaName + (toppingStr ? toppingStr : '\u5976\u8336');
+      this.state.liquidColor = this.state.teaColor;
+      this.state.iceLevel = this.state.ice;
+      this.state.iceCount = ICE_COUNT_MAP[this.state.ice] || 0;
+      this.state.recipeCal = 300 + this.state.toppings.length * 60;
+      if (this.state.sweet === '\u5168\u7CD6') this.state.recipeCal += 80;
+      if (this.state.sweet === '\u4E03\u5206\u751C') this.state.recipeCal += 50;
+      if (this.state.sweet === '\u4E94\u5206\u751C') this.state.recipeCal += 30;
+      this.state.sipCount = 0;
+      this.state.shakeProgress = 0;
     },
   },
   template: '\

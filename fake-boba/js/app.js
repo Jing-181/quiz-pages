@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+const { createApp, reactive, computed, provide, ref } = Vue;
 import { state } from './store/state.js';
 
 // Components
@@ -41,6 +41,7 @@ const app = createApp({
     <result-scene v-if="state.currentScene === 'result'" />
   `,
   setup() {
+    provide('state', state);
     return { state };
   }
 });

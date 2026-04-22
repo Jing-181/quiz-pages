@@ -6,6 +6,7 @@ export default {
   name: 'ResultScene',
   data: function () {
     return {
+      state: state,
       recipeName: '',
       liquidColor: '',
       tags: [],
@@ -22,7 +23,7 @@ export default {
     },
   },
   mounted: function () {
-    if (state.currentScene === 'result') {
+    if (this.state.currentScene === 'result') {
       this.$nextTick(this.renderResult);
     }
   },
@@ -30,16 +31,16 @@ export default {
     renderResult: function () {
       var tasting = useTasting();
 
-      this.recipeName = state.recipeName;
-      this.liquidColor = state.liquidColor;
-      this.calories = state.recipeCal;
+      this.recipeName = this.state.recipeName;
+      this.liquidColor = this.state.liquidColor;
+      this.calories = this.state.recipeCal;
       this.moodTag = tasting.getMoodTag();
       this.personalMessage = tasting.getPersonalMessage();
 
       // Build tags
-      var tags = [state.sweet, state.ice];
-      for (var i = 0; i < state.toppings.length; i++) {
-        tags.push(state.toppings[i]);
+      var tags = [this.state.sweet, this.state.ice];
+      for (var i = 0; i < this.state.toppings.length; i++) {
+        tags.push(this.state.toppings[i]);
       }
       this.tags = tags;
     },
@@ -58,6 +59,7 @@ export default {
     },
 
     doSaveCard: function () {
+      var self = this;
       var card = this.$refs.resultCard;
       html2canvas(card, {
         backgroundColor: '#FFFFFF',
@@ -65,7 +67,7 @@ export default {
         useCORS: true,
       }).then(function (canvas) {
         var link = document.createElement('a');
-        link.download = '\u5047\u88C5\u559D\u5976\u8336-' + state.recipeName + '.png';
+        link.download = '\u5047\u88C5\u559D\u5976\u8336-' + self.state.recipeName + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
       }).catch(function () {
@@ -74,25 +76,25 @@ export default {
     },
 
     resetAll: function () {
-      state.cup = '';
-      state.tea = '';
-      state.teaColor = '#C4956A';
-      state.toppings = [];
-      state.sweet = '';
-      state.ice = '';
-      state.iceLevel = '';
-      state.iceCount = 0;
-      state.recipeName = '';
-      state.recipeCal = 0;
-      state.liquidColor = '#C4956A';
-      state.sipCount = 0;
-      state.shakeProgress = 0;
-      state.isShaking = false;
-      if (state.shakeInterval) {
-        clearInterval(state.shakeInterval);
-        state.shakeInterval = null;
+      this.state.cup = '';
+      this.state.tea = '';
+      this.state.teaColor = '#C4956A';
+      this.state.toppings = [];
+      this.state.sweet = '';
+      this.state.ice = '';
+      this.state.iceLevel = '';
+      this.state.iceCount = 0;
+      this.state.recipeName = '';
+      this.state.recipeCal = 0;
+      this.state.liquidColor = '#C4956A';
+      this.state.sipCount = 0;
+      this.state.shakeProgress = 0;
+      this.state.isShaking = false;
+      if (this.state.shakeInterval) {
+        clearInterval(this.state.shakeInterval);
+        this.state.shakeInterval = null;
       }
-      state.recipeStep = 0;
+      this.state.recipeStep = 0;
       var scene = useScene();
       scene.goToScene('home');
     },

@@ -6,6 +6,7 @@ export default {
   name: 'TastingScene',
   data: function () {
     return {
+      state: state,
       sipProgressText: '\u7B2C 0 / 5 \u53E3',
       btnSipHidden: false,
       btnSipWrapHidden: false,
@@ -14,7 +15,7 @@ export default {
   },
   computed: {
     sipCount: function () {
-      return state.sipCount;
+      return this.state.sipCount;
     },
   },
   watch: {
@@ -25,7 +26,7 @@ export default {
     },
   },
   mounted: function () {
-    if (state.currentScene === 'tasting') {
+    if (this.state.currentScene === 'tasting') {
       this.$nextTick(this.initTasting);
     }
   },
@@ -77,9 +78,9 @@ export default {
       tasting.takeSip(els);
 
       // Update reactive data
-      self.sipProgressText = '\u7B2C ' + state.sipCount + ' / 5 \u53E3';
+      self.sipProgressText = '\u7B2C ' + self.state.sipCount + ' / 5 \u53E3';
 
-      if (state.sipCount >= 5) {
+      if (self.state.sipCount >= 5) {
         // Delay hiding sip button and showing result button
         setTimeout(function () {
           self.btnSipHidden = true;

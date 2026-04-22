@@ -6,6 +6,7 @@ export default {
   name: 'HomeScene',
   data: function () {
     return {
+      state: state,
       drinkCount: 0,
     };
   },
@@ -35,19 +36,19 @@ export default {
 
     randomRecipe: function () {
       var preset = PRESETS[Math.floor(Math.random() * PRESETS.length)];
-      state.cup = 'classic';
-      state.tea = preset.tea;
-      state.teaColor = preset.color;
-      state.toppings = preset.toppings.slice();
-      state.sweet = preset.sweet;
-      state.ice = preset.ice;
-      state.iceLevel = preset.ice;
-      state.iceCount = ICE_COUNT_MAP[preset.ice] || 0;
-      state.recipeName = preset.name;
-      state.recipeCal = preset.cal;
-      state.liquidColor = preset.color;
-      state.sipCount = 0;
-      state.shakeProgress = 0;
+      this.state.cup = 'classic';
+      this.state.tea = preset.tea;
+      this.state.teaColor = preset.color;
+      this.state.toppings = preset.toppings.slice();
+      this.state.sweet = preset.sweet;
+      this.state.ice = preset.ice;
+      this.state.iceLevel = preset.ice;
+      this.state.iceCount = ICE_COUNT_MAP[preset.ice] || 0;
+      this.state.recipeName = preset.name;
+      this.state.recipeCal = preset.cal;
+      this.state.liquidColor = preset.color;
+      this.state.sipCount = 0;
+      this.state.shakeProgress = 0;
       var scene = useScene();
       scene.goToScene('making');
     },
@@ -58,7 +59,7 @@ export default {
     },
   },
   template: '\
-    <div id="scene-home" class="scene active">\
+    <div id="scene-home" class="scene">\
       <div class="home-content">\
         <div class="home-cup">\
           <cup-component size="home" :show-steam="true" :show-ice="true" :ice-count="2"\

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recipe Test</title>
+<style>
+body { font-family: sans-serif; padding: 20px; }
+.cup-options { display: flex; gap: 16px; }
+.cup-card { padding: 20px; background: #fff; border: 2.5px solid #F0E8E0; border-radius: 16px; cursor: pointer; text-align: center; }
+.cup-card.selected { border-color: #FF6B8A; box-shadow: 0 2px 12px rgba(255,107,138,0.2); }
+.cup-card-icon { width: 50px; height: 70px; background: rgba(255,255,255,0.9); border: 2px solid #DDD0C4; border-radius: 6px 6px 14px 14px; margin: 0 auto 10px; }
+.debug { margin-top: 20px; padding: 10px; background: #f0f0f0; }
+</style>
+</head>
+<body>
+<div id="app">
+  <h2>选杯型 (state.cup = "{{ state.cup }}")</h2>
+  <div class="cup-options">
+    <div v-for="cup in cupTypes" :key="cup.value"
+         class="cup-card"
+         :class="{ selected: state.cup === cup.value }"
+         @click="selectCup(cup.value)">
+      <div class="cup-card-icon" :class="cup.iconClass"></div>
+      <span>{{ cup.label }}</span>
+    </div>
+  </div>
+  <p>isStepValid: {{ isStepValid(0) ? 'YES' : 'NO' }}</p>
+  <button :disabled="!isStepValid(0)" @click="nextStep">下一步</button>
+  <div class="debug">
+    <p>state.cup = "{{ state.cup }}"</p>
+    <p>this.state.cup = "{{ this.state.cup }}"</p>
+    <p>typeof state = {{ typeof state }}</p>
+  </div>
+</div>
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+var state = Vue.reactive({ cup: '' });
+var app = Vue.createApp({
+  data: function() {
+    return {
+      state: state,
+      cupTypes: [
+        { value: 'classic', label: '经典杯', iconClass: '' },
+        { value: 'fat', label: '胖胖杯', iconClass: 'fat' },
+        { value: 'tall', label: '高瘦杯', iconClass: 'tall' },
+      ],
+    };
+  },
+  methods: {
+    selectCup: function(type) {
+      this.state.cup = type;
+      console.log('selectCup called:', type, 'state.cup =', this.state.cup);
+    },
+    isStepValid: function(step) {
+      if (step === 0) return this.state.cup !== '';
+      return false;
+    },
+    nextStep: function() {
+      alert('Next! cup=' + this.state.cup);
+    },
+  },
+});
+app.mount('#app');
+</script>
+</body>
+</html>

@@ -6,13 +6,14 @@ export default {
   name: 'MakingScene',
   data: function () {
     return {
+      state: state,
       makingTitle: '\u6B63\u5728\u5236\u4F5C\u4E2D...',
       shakeAreaHidden: true,
     };
   },
   computed: {
     shakeProgress: function () {
-      return state.shakeProgress;
+      return this.state.shakeProgress;
     },
   },
   watch: {
@@ -25,7 +26,7 @@ export default {
   },
   mounted: function () {
     // If scene is already active when mounted
-    if (state.currentScene === 'making') {
+    if (this.state.currentScene === 'making') {
       this.$nextTick(this.startMaking);
     }
   },
