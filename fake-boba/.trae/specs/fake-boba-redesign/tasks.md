@@ -55,17 +55,45 @@
   - `human-judgment` TR-4.2: 项目结构清晰，代码组织合理
 - **Notes**: 检查 dist 目录、测试文件和其他可能的冗余文件
 
-## [ ] Task 5: 测试和验证所有功能
+## [ ] Task 5: 调整代码结构，删除没用用到的HTML文件
 - **Priority**: P1
-- **Depends On**: Task 1, Task 2, Task 3, Task 4
+- **Depends On**: None
+- **Description**:
+  - 检查项目中的HTML文件，识别并删除没用用到的文件
+  - 只保留index.html作为主入口文件
+  - 确保项目结构简洁明了
+- **Acceptance Criteria Addressed**: AC-6
+- **Test Requirements**:
+  - `human-judgment` TR-5.1: 项目只保留index.html，其他HTML文件已删除
+  - `human-judgment` TR-5.2: 项目结构清晰，无冗余HTML文件
+- **Notes**: 检查dist目录和其他可能的HTML文件
+
+## [ ] Task 6: 将HTML拆分为组件形式加载
+- **Priority**: P1
+- **Depends On**: Task 5
+- **Description**:
+  - 将index.html中的HTML代码拆分为组件形式
+  - 确保组件结构清晰，易于维护
+  - 优化组件加载方式，提高代码可维护性
+- **Acceptance Criteria Addressed**: AC-7
+- **Test Requirements**:
+  - `human-judgment` TR-6.1: HTML代码已拆分为组件形式加载
+  - `human-judgment` TR-6.2: 组件结构清晰，易于维护
+- **Notes**: 参考现有的Vue组件结构，确保一致性
+
+## [ ] Task 7: 测试和验证所有功能
+- **Priority**: P1
+- **Depends On**: Task 1, Task 2, Task 3, Task 4, Task 5, Task 6
 - **Description**:
   - 测试首页奶茶图标显示
   - 测试拖拽摇晃交互
   - 测试长按喝奶茶交互
-  - 验证所有功能正常工作
-- **Acceptance Criteria Addressed**: AC-1, AC-2, AC-3, AC-4, AC-5
+  - 验证代码结构调整和HTML组件拆分
+  - 确保所有功能正常工作
+- **Acceptance Criteria Addressed**: AC-1, AC-2, AC-3, AC-4, AC-5, AC-6, AC-7
 - **Test Requirements**:
-  - `human-judgment` TR-5.1: 所有功能正常工作，交互流畅
-  - `human-judgment` TR-5.2: 视觉效果符合预期
-  - `human-judgment` TR-5.3: 项目结构清晰，无冗余文件
+  - `human-judgment` TR-7.1: 所有功能正常工作，交互流畅
+  - `human-judgment` TR-7.2: 视觉效果符合预期
+  - `human-judgment` TR-7.3: 项目结构清晰，无冗余文件
+  - `human-judgment` TR-7.4: HTML代码已拆分为组件形式
 - **Notes**: 在不同设备和浏览器上测试，确保兼容性
