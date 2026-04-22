@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>假装喝奶茶 | Fake Boba</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- Noise texture overlay -->
+<svg class="noise-overlay" xmlns="http://www.w3.org/2000/svg">
+  <filter id="noise">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#noise)"/>
+</svg>
+
+<div class="app-container" id="app-container">
+
+  <!-- ========== Scene 1: Home ========== -->
+  <div id="scene-home" class="scene active">
+    <div class="dot-pattern"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="bubble-container" id="bubbles"></div>
+
+    <!-- Floating toppings -->
+    <div class="floating-toppings" id="floating-toppings"></div>
+
+    <!-- Sparkles -->
+    <div class="sparkle" style="top:18%;left:15%;animation-delay:0s;"></div>
+    <div class="sparkle" style="top:25%;right:12%;animation-delay:0.7s;"></div>
+    <div class="sparkle" style="top:60%;left:10%;animation-delay:1.4s;"></div>
+    <div class="sparkle" style="bottom:25%;right:18%;animation-delay:0.3s;"></div>
+
+    <!-- Hand-drawn decorations -->
+    <div class="deco-star" style="top:12%;left:20%;">*</div>
+    <div class="deco-star" style="top:30%;right:15%;animation-delay:1s;">*</div>
+    <div class="deco-heart" style="bottom:20%;left:12%;animation-delay:0.5s;">~</div>
+    <div class="deco-heart" style="top:45%;right:10%;animation-delay:1.5s;">~</div>
+
+    <div class="home-content">
+      <!-- Home cup illustration (external SVG) -->
+      <div class="home-cup-illustration" id="home-cup">
+        <img src="assets/hero-cup.svg" alt="奶茶杯">
+      </div>
+
+      <h1 class="home-title brand-title">假装喝奶茶</h1>
+      <p class="home-subtitle">Fake Boba</p>
+      <p class="emotion-text">很想喝但暂时不喝？<br>来假装喝一杯吧！</p>
+      <div class="cta-group">
+        <button class="btn-primary" onclick="randomRecipe()">随机来一杯</button>
+        <button class="btn-outline" onclick="goToScene('recipe')">自己选配方</button>
+      </div>
+      <p class="social-proof">已有 <span id="drink-count">12,345</span> 人假装喝过</p>
+    </div>
+  </div>
+
+  <!-- ========== Scene 2: Recipe Selection ========== -->
+  <div id="scene-recipe" class="scene">
+    <div class="dot-pattern"></div>
+    <div class="blob blob-1" style="opacity:0.2;"></div>
+    <div class="recipe-header">
+      <button class="btn-back" onclick="goToScene('home')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <h2 class="brand-title">选配方</h2>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="recipe-progress" style="width:25%"></div></div>
+    <p class="step-label" id="step-label">第 1 步 / 共 4 步 · 选杯型</p>
+    <div class="steps-container">
+      <!-- Step 1: Cup -->
+      <div class="step-panel active" id="step-0">
+        <div class="cup-options">
+          <div class="cup-card" onclick="selectCup(this, 'classic')">
+            <div class="cup-icon">
+              <svg viewBox="0 0 50 70" width="50" height="70">
+                <path d="M10,10 L10,58 Q10,66 18,66 L32,66 Q40,66 40,58 L40,10 Z" fill="rgba(255,255,255,0.85)" stroke="#DDD0C4" stroke-width="1.2"/>
+                <path d="M14,14 L15,54 Q15,60 20,60 L22,60 Q18,60 17.5,54 L16.5,14 Z" fill="rgba(255,255,255,0.5)"/>
+                <rect x="8" y="8" width="34" height="8" rx="4" fill="#E8DDD4"/>
+                <rect x="8" y="8" width="34" height="4" rx="2" fill="#F0E8E0"/>
+              </svg>
+            </div>
+            <span>经典杯</span>
+          </div>
+          <div class="cup-card" onclick="selectCup(this, 'fat')">
+            <div class="cup-icon">
+              <svg viewBox="0 0 55 65" width="55" height="65">
+                <path d="M8,8 L8,53 Q8,61 16,61 L39,61 Q47,61 47,53 L47,8 Z" fill="rgba(255,255,255,0.85)" stroke="#DDD0C4" stroke-width="1.2"/>
+                <path d="M12,12 L13,49 Q13,55 18,55 L20,55 Q16,55 15.5,49 L14.5,12 Z" fill="rgba(255,255,255,0.5)"/>
+                <rect x="6" y="6" width="43" height="8" rx="4" fill="#E8DDD4"/>
+                <rect x="6" y="6" width="43" height="4" rx="2" fill="#F0E8E0"/>
+              </svg>
+            </div>
+            <span>胖胖杯</span>
+          </div>
+          <div class="cup-card" onclick="selectCup(this, 'tall')">
+            <div class="cup-icon">
+              <svg viewBox="0 0 40 80" width="40" height="80">
+                <path d="M8,8 L8,70 Q8,76 14,76 L26,76 Q32,76 32,70 L32,8 Z" fill="rgba(255,255,255,0.85)" stroke="#DDD0C4" stroke-width="1.2"/>
+                <path d="M11,12 L12,66 Q12,72 15,72 L16,72 Q14,72 13.5,66 L12.5,12 Z" fill="rgba(255,255,255,0.5)"/>
+                <rect x="6" y="6" width="28" height="6" rx="3" fill="#E8DDD4"/>
+                <rect x="6" y="6" width="28" height="3" rx="2" fill="#F0E8E0"/>
+              </svg>
+            </div>
+            <span>高瘦杯</span>
+          </div>
+        </div>
+      </div>
+      <!-- Step 2: Tea -->
+      <div class="step-panel right" id="step-1">
+        <div class="tea-grid" id="tea-grid"></div>
+      </div>
+      <!-- Step 3: Toppings -->
+      <div class="step-panel right" id="step-2">
+        <div class="topping-pills" id="topping-pills"></div>
+        <p class="topping-count" id="topping-count"></p>
+      </div>
+      <!-- Step 4: Sweetness & Ice -->
+      <div class="step-panel right" id="step-3">
+        <div class="slider-group">
+          <p class="slider-label">甜度</p>
+          <div class="segment-control" id="sweetness-control"></div>
+          <p class="slider-label">冰度</p>
+          <div class="segment-control" id="ice-control"></div>
+        </div>
+      </div>
+    </div>
+    <div class="recipe-nav">
+      <button class="btn-prev hidden" id="btn-prev" onclick="prevStep()">上一步</button>
+      <button class="btn-next" id="btn-next" onclick="nextStep()" disabled>下一步</button>
+    </div>
+  </div>
+
+  <!-- ========== Scene 3: Making ========== -->
+  <div id="scene-making" class="scene">
+    <div class="dot-pattern" style="opacity:0.03;"></div>
+    <div class="blob blob-2" style="opacity:0.15;"></div>
+
+    <!-- SVG gradient for shake progress -->
+    <svg width="0" height="0" style="position:absolute;">
+      <defs>
+        <linearGradient id="shake-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#FF6B8A"/>
+          <stop offset="100%" style="stop-color:#FFB74D"/>
+        </linearGradient>
+      </defs>
+    </svg>
+
+    <h2 class="making-title brand-title" id="making-title">正在制作中...</h2>
+    <div class="making-area" id="making-area">
+      <!-- Tea pot -->
+      <div class="tea-pot" id="tea-pot">
+        <svg viewBox="0 0 80 80">
+          <ellipse cx="40" cy="65" rx="22" ry="8" fill="#D4A574"/>
+          <path d="M18,35 Q18,65 40,65 Q62,65 62,35 Z" fill="#E8C9A0"/>
+          <path d="M62,40 Q75,40 75,48 Q75,55 62,52" fill="none" stroke="#D4A574" stroke-width="4" stroke-linecap="round"/>
+          <ellipse cx="40" cy="35" rx="22" ry="6" fill="#D4A574"/>
+          <rect x="36" y="20" width="8" height="15" rx="4" fill="#D4A574"/>
+          <!-- Highlight -->
+          <path d="M24,40 Q24,60 38,62" stroke="rgba(255,255,255,0.3)" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <!-- Tea stream container (enhanced) -->
+      <div class="tea-stream-container" id="tea-stream"></div>
+      <!-- Cup -->
+      <div class="cup-wrapper" id="making-cup">
+        <svg class="cup-svg" viewBox="0 0 200 280" id="making-cup-svg">
+          <defs>
+            <clipPath id="cup-clip">
+              <path d="M30,30 L30,250 Q30,270 50,270 L150,270 Q170,270 170,250 L170,30 Z"/>
+            </clipPath>
+            <linearGradient id="cup-shine" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" style="stop-color:rgba(255,255,255,0.5)"/>
+              <stop offset="30%" style="stop-color:rgba(255,255,255,0)"/>
+            </linearGradient>
+          </defs>
+          <!-- Cup body -->
+          <path class="cup-body" d="M30,30 L30,250 Q30,270 50,270 L150,270 Q170,270 170,250 L170,30 Z"/>
+          <!-- Glass highlight -->
+          <path d="M38,40 L40,240 Q40,255 50,258 L55,258 Q45,255 44,240 L42,40 Z" fill="url(#cup-shine)"/>
+          <path d="M44,45 L45,235" stroke="rgba(255,255,255,0.6)" stroke-width="1" fill="none"/>
+          <!-- Liquid -->
+          <g clip-path="url(#cup-clip)">
+            <rect class="liquid-fill" id="making-liquid" x="30" y="270" width="140" height="0" fill="#D4A574"/>
+            <ellipse class="liquid-wave-top" id="making-wave" cx="100" cy="270" rx="70" ry="10" fill="#D4A574" opacity="0.8"/>
+          </g>
+          <!-- Cup rim -->
+          <rect x="28" y="26" width="144" height="10" rx="5" fill="#E8DDD4"/>
+          <rect x="28" y="26" width="144" height="5" rx="3" fill="#F0E8E0"/>
+          <!-- Toppings layer -->
+          <g id="making-toppings" clip-path="url(#cup-clip)"></g>
+        </svg>
+      </div>
+      <!-- Topping description -->
+      <div class="topping-desc" id="topping-desc"></div>
+    </div>
+    <!-- Shake UI -->
+    <div class="shake-progress hidden" id="shake-ui">
+      <svg viewBox="0 0 100 100">
+        <circle class="shake-bg" cx="50" cy="50" r="45"/>
+        <circle class="shake-fill" id="shake-circle" cx="50" cy="50" r="45"/>
+      </svg>
+      <div class="shake-text" id="shake-count">0/8</div>
+    </div>
+    <button class="btn-shake hidden" id="btn-shake" onclick="manualShake()">摇一摇手机！</button>
+    <p class="shake-hint hidden" id="shake-hint">或点击按钮代替</p>
+  </div>
+
+  <!-- ========== Scene 4: Tasting ========== -->
+  <div id="scene-tasting" class="scene">
+    <div class="dot-pattern" style="opacity:0.03;"></div>
+    <div class="blob blob-1" style="opacity:0.15;top:auto;bottom:-40px;right:-40px;"></div>
+    <div class="blob blob-3" style="opacity:0.12;top:10%;left:-30px;"></div>
+
+    <div class="tasting-header">
+      <h2 class="brand-title">你的奶茶好了！</h2>
+      <p class="sip-progress" id="sip-progress">第 0 / 5 口</p>
+    </div>
+    <div class="tasting-cup-area" id="tasting-cup-area">
+      <div class="steam-container" id="steam-container">
+        <div class="steam"></div>
+        <div class="steam"></div>
+        <div class="steam"></div>
+      </div>
+      <div class="straw" id="tasting-straw"></div>
+      <svg viewBox="0 0 200 280" width="100%" height="100%" id="tasting-cup-svg">
+        <defs>
+          <clipPath id="tasting-cup-clip">
+            <path d="M30,30 L30,250 Q30,270 50,270 L150,270 Q170,270 170,250 L170,30 Z"/>
+          </clipPath>
+          <linearGradient id="tasting-shine" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,0.5)"/>
+            <stop offset="30%" style="stop-color:rgba(255,255,255,0)"/>
+          </linearGradient>
+        </defs>
+        <path class="cup-body" d="M30,30 L30,250 Q30,270 50,270 L150,270 Q170,270 170,250 L170,30 Z"/>
+        <path d="M38,40 L40,240 Q40,255 50,258 L55,258 Q45,255 44,240 L42,40 Z" fill="url(#tasting-shine)"/>
+        <g clip-path="url(#tasting-cup-clip)">
+          <rect id="tasting-liquid" x="30" y="50" width="140" height="220" fill="#D4A574"/>
+          <ellipse id="tasting-wave" cx="100" cy="50" rx="70" ry="10" fill="#D4A574" opacity="0.8" style="animation: liquid-wave 2s ease-in-out infinite;"/>
+          <!-- Toppings visible -->
+          <g id="tasting-toppings"></g>
+        </g>
+        <rect x="28" y="26" width="144" height="10" rx="5" fill="#E8DDD4"/>
+        <rect x="28" y="26" width="144" height="5" rx="3" fill="#F0E8E0"/>
+      </svg>
+    </div>
+
+    <!-- Sip button - circular -->
+    <div class="btn-sip-container" id="btn-sip-container">
+      <div class="sip-pulse"></div>
+      <div class="sip-pulse"></div>
+      <div class="sip-pulse"></div>
+      <button class="btn-sip" id="btn-sip" onclick="takeSip()">
+        <div class="straw-icon"></div>
+      </button>
+    </div>
+
+    <button class="btn-primary hidden" id="btn-result" onclick="goToScene('result')" style="margin-top:10px;position:relative;z-index:2;">查看结果卡</button>
+
+    <!-- Satisfaction bar -->
+    <div class="satisfaction-bar" id="satisfaction-bar">
+      <span class="satisfaction-label">满足度</span>
+      <div class="satisfaction-track">
+        <div class="satisfaction-fill" id="satisfaction-fill"></div>
+      </div>
+      <span class="satisfaction-pct" id="satisfaction-pct">0%</span>
+    </div>
+  </div>
+
+  <!-- ========== Scene 5: Result ========== -->
+  <div id="scene-result" class="scene">
+    <div class="dot-pattern"></div>
+    <div class="blob blob-1" style="opacity:0.2;"></div>
+    <div class="blob blob-2" style="opacity:0.2;bottom:auto;top:30%;"></div>
+
+    <div class="result-card" id="result-card">
+      <div class="result-card-header">
+        <h3 class="brand-title">假装喝奶茶</h3>
+        <p>Fake Boba</p>
+      </div>
+      <div class="result-card-body">
+        <p style="text-align:center;font-size:0.85rem;color:#999;margin-bottom:10px;font-weight:300;">今天我假装喝了</p>
+        <div class="result-cup-thumb" id="result-cup-thumb"></div>
+        <p class="result-recipe-name" id="result-recipe-name">经典珍珠奶茶</p>
+        <div class="result-details" id="result-details"></div>
+        <!-- Mood tag container -->
+        <div style="text-align:center;" id="result-mood-container"></div>
+        <p class="result-message" id="result-message"></p>
+        <div class="result-calories">
+          <span class="num" id="result-calories">0</span>
+          <span class="unit"> kcal 热量已节省</span>
+        </div>
+        <div class="result-qr">二维码</div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-result btn-save" onclick="saveCard()">保存图片</button>
+        <button class="btn-result btn-retry" onclick="goToScene('home');resetState();">再来一杯</button>
+        <button class="btn-result btn-share" onclick="shareCard()">分享给朋友</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emotion bubble -->
+  <div class="emotion-bubble" id="emotion-bubble"></div>
+  <!-- Confetti container -->
+  <div class="confetti-container" id="confetti-container"></div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
