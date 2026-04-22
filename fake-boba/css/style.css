@@ -1363,3 +1363,271 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== Shaker Cup Styles ===== */
+.shaker-area {
+  position: relative;
+  width: 180px;
+  height: 260px;
+  margin: 0 auto 30px;
+}
+
+.shaker-cup {
+  position: relative;
+  width: 120px;
+  height: 180px;
+  margin: 0 auto;
+}
+
+.shaker-lid {
+  width: 130px;
+  height: 30px;
+  background: linear-gradient(180deg, #E8E0D8, #D5CCC4);
+  border-radius: 65px 65px 0 0;
+  margin: 0 auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.shaker-body {
+  width: 120px;
+  height: 160px;
+  background: linear-gradient(135deg, 
+    rgba(255,255,255,0.9), 
+    rgba(240,235,230,0.85), 
+    rgba(255,255,255,0.8));
+  border: 2px solid rgba(200,190,180,0.4);
+  clip-path: polygon(5% 0%, 95% 0%, 85% 100%, 15% 100%);
+  border-radius: 0 0 20px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  z-index: 1;
+}
+
+.shaker-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  transition: height 2s ease;
+  border-radius: 0 0 18px 18px;
+}
+
+.shaker-liquid::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5%;
+  width: 110%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2s ease-in-out infinite;
+}
+
+.shaker-liquid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.shaker-ice-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shaker-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ===== Pour Area Styles ===== */
+.pour-area {
+  position: relative;
+  width: 240px;
+  height: 260px;
+  margin: 0 auto 30px;
+}
+
+.pour-shaker {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 100px;
+  height: 150px;
+  z-index: 2;
+}
+
+.pour-shaker .shaker-body {
+  width: 100px;
+  height: 130px;
+}
+
+.pour-shaker .shaker-lid {
+  width: 110px;
+  height: 25px;
+}
+
+.pour-stream {
+  position: absolute;
+  top: 80px;
+  left: 110px;
+  width: 12px;
+  height: 60px;
+  background: linear-gradient(180deg, rgba(196,149,106,0.8), rgba(196,149,106,0.6));
+  border-radius: 6px;
+  z-index: 1;
+  animation: pourStream 1.5s ease-in-out forwards;
+}
+
+@keyframes pourStream {
+  0% { height: 0; opacity: 0; }
+  20% { height: 60px; opacity: 1; }
+  80% { height: 60px; opacity: 1; }
+  100% { height: 0; opacity: 0; }
+}
+
+.serving-cup {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 160px;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 3;
+}
+
+.serving-cup.show {
+  opacity: 1;
+  animation: servingCupShow 0.5s ease-out forwards;
+}
+
+@keyframes servingCupShow {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.serving-cup-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 140px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,240,235,0.9) 50%, rgba(255,255,255,0.85) 100%);
+  border: 2px solid rgba(200,190,180,0.5);
+  border-radius: 10px 10px 24px 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.serving-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  transition: height 1s ease;
+  border-radius: 0 0 22px 22px;
+}
+
+.serving-liquid::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5%;
+  width: 110%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2.5s ease-in-out infinite;
+}
+
+.serving-cup-rim {
+  position: absolute;
+  top: 20px;
+  left: -5px;
+  width: 110px;
+  height: 10px;
+  background: linear-gradient(180deg, #F5EDE5, #E8DDD4);
+  border-radius: 5px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.serving-cup-rim::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+
+.serving-straw {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  width: 8px;
+  height: 100px;
+  background: linear-gradient(90deg, #FF8FA3, #FFB74D, #FF8FA3);
+  border-radius: 4px 4px 2px 2px;
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+  z-index: 3;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ===== Pour Animation ===== */
+.shaker-cup.pouring {
+  animation: shakerPour 1.5s ease-in-out forwards;
+}
+
+@keyframes shakerPour {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-45deg) translateX(-20px); }
+  100% { transform: rotate(-60deg) translateX(-30px); opacity: 0; }
+}
+
+/* ===== Serving Cup Fill Animation ===== */
+.serving-cup.filling .serving-liquid {
+  animation: servingFill 1s ease-out forwards;
+}
+
+@keyframes servingFill {
+  0% { height: 0%; }
+  100% { height: 70%; }
+}
+
+/* ===== Serving Cup Scale Animation ===== */
+.serving-cup.scaling {
+  animation: servingScale 0.5s ease-out forwards;
+}
+
+@keyframes servingScale {
+  0% { transform: scale(1) translateX(0); }
+  100% { transform: scale(1.2) translateX(-30px); }
+}

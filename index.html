@@ -489,23 +489,37 @@
     {
       name: '健身人格测试',
       desc: '通过健身习惯分析你的运动人格类型',
-      path: 'fitness_personality_test.html',
+      path: 'tests/fitness/personality-test.html',
       icon: '\u{1F4AA}',
       color: '#4CAF50'
     },
     {
       name: '跑步人格测试',
       desc: '发现你的跑步风格和潜在人格特质',
-      path: 'running_personality_test.html',
+      path: 'tests/running/personality-test.html',
       icon: '\u{1F3C3}',
       color: '#2196F3'
     },
     {
       name: '饮酒人格测试',
       desc: '发现你的隐藏饮酒人格，微醺水彩风',
-      path: 'drinking/',
+      path: 'tests/drinking/personality-test.html',
       icon: '\u{1F377}',
       color: '#8B2252'
+    },
+    {
+      name: '中国动漫排行榜',
+      desc: '中国动漫Top10排行榜，展示热门动漫作品',
+      path: 'chinese-anime-top10/',
+      icon: '\u{1F4FD}',
+      color: '#FF9800'
+    },
+    {
+      name: '健身指南',
+      desc: '健身相关的指南和资源',
+      path: 'fitness-guide/',
+      icon: '\u{1F3CB}',
+      color: '#9C27B0'
     }
   ];
 
@@ -770,32 +784,8 @@
 
   // ===== Main init =====
   function init() {
-    // First render manual projects immediately
+    // 只显示手动配置的项目，避免添加不能访问的自动检测项目
     renderProjects(MANUAL_PROJECTS);
-
-    // Then scan API and merge
-    scanGitHubAPI()
-      .then(function (autoProjects) {
-        // Merge: manual projects first, then auto-detected
-        var manualPaths = {};
-        MANUAL_PROJECTS.forEach(function (p) {
-          manualPaths[p.path.replace(/\/?$/, '/')] = true;
-        });
-
-        var merged = MANUAL_PROJECTS.slice();
-        autoProjects.forEach(function (p) {
-          var key = p.path.replace(/\/?$/, '/');
-          if (!manualPaths[key]) {
-            merged.push(p);
-          }
-        });
-
-        renderProjects(merged);
-      })
-      .catch(function (err) {
-        console.warn('GitHub API scan failed, showing manual projects only:', err.message);
-        // Manual projects are already shown, nothing more to do
-      });
   }
 
   // Start

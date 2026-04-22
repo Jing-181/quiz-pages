@@ -1373,6 +1373,274 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== Shaker Cup Styles ===== */
+.shaker-area {
+  position: relative;
+  width: 180px;
+  height: 260px;
+  margin: 0 auto 30px;
+}
+
+.shaker-cup {
+  position: relative;
+  width: 120px;
+  height: 180px;
+  margin: 0 auto;
+}
+
+.shaker-lid {
+  width: 130px;
+  height: 30px;
+  background: linear-gradient(180deg, #E8E0D8, #D5CCC4);
+  border-radius: 65px 65px 0 0;
+  margin: 0 auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 2;
+}
+
+.shaker-body {
+  width: 120px;
+  height: 160px;
+  background: linear-gradient(135deg, 
+    rgba(255,255,255,0.9), 
+    rgba(240,235,230,0.85), 
+    rgba(255,255,255,0.8));
+  border: 2px solid rgba(200,190,180,0.4);
+  clip-path: polygon(5% 0%, 95% 0%, 85% 100%, 15% 100%);
+  border-radius: 0 0 20px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  z-index: 1;
+}
+
+.shaker-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  transition: height 2s ease;
+  border-radius: 0 0 18px 18px;
+}
+
+.shaker-liquid::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5%;
+  width: 110%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2s ease-in-out infinite;
+}
+
+.shaker-liquid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.shaker-ice-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shaker-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ===== Pour Area Styles ===== */
+.pour-area {
+  position: relative;
+  width: 240px;
+  height: 260px;
+  margin: 0 auto 30px;
+}
+
+.pour-shaker {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 100px;
+  height: 150px;
+  z-index: 2;
+}
+
+.pour-shaker .shaker-body {
+  width: 100px;
+  height: 130px;
+}
+
+.pour-shaker .shaker-lid {
+  width: 110px;
+  height: 25px;
+}
+
+.pour-stream {
+  position: absolute;
+  top: 80px;
+  left: 110px;
+  width: 12px;
+  height: 60px;
+  background: linear-gradient(180deg, rgba(196,149,106,0.8), rgba(196,149,106,0.6));
+  border-radius: 6px;
+  z-index: 1;
+  animation: pourStream 1.5s ease-in-out forwards;
+}
+
+@keyframes pourStream {
+  0% { height: 0; opacity: 0; }
+  20% { height: 60px; opacity: 1; }
+  80% { height: 60px; opacity: 1; }
+  100% { height: 0; opacity: 0; }
+}
+
+.serving-cup {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 160px;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 3;
+}
+
+.serving-cup.show {
+  opacity: 1;
+  animation: servingCupShow 0.5s ease-out forwards;
+}
+
+@keyframes servingCupShow {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.serving-cup-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 140px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,240,235,0.9) 50%, rgba(255,255,255,0.85) 100%);
+  border: 2px solid rgba(200,190,180,0.5);
+  border-radius: 10px 10px 24px 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.serving-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  transition: height 1s ease;
+  border-radius: 0 0 22px 22px;
+}
+
+.serving-liquid::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5%;
+  width: 110%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2.5s ease-in-out infinite;
+}
+
+.serving-cup-rim {
+  position: absolute;
+  top: 20px;
+  left: -5px;
+  width: 110px;
+  height: 10px;
+  background: linear-gradient(180deg, #F5EDE5, #E8DDD4);
+  border-radius: 5px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.serving-cup-rim::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+
+.serving-straw {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  width: 8px;
+  height: 100px;
+  background: linear-gradient(90deg, #FF8FA3, #FFB74D, #FF8FA3);
+  border-radius: 4px 4px 2px 2px;
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+  z-index: 3;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ===== Pour Animation ===== */
+.shaker-cup.pouring {
+  animation: shakerPour 1.5s ease-in-out forwards;
+}
+
+@keyframes shakerPour {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-45deg) translateX(-20px); }
+  100% { transform: rotate(-60deg) translateX(-30px); opacity: 0; }
+}
+
+/* ===== Serving Cup Fill Animation ===== */
+.serving-cup.filling .serving-liquid {
+  animation: servingFill 1s ease-out forwards;
+}
+
+@keyframes servingFill {
+  0% { height: 0%; }
+  100% { height: 70%; }
+}
+
+/* ===== Serving Cup Scale Animation ===== */
+.serving-cup.scaling {
+  animation: servingScale 0.5s ease-out forwards;
+}
+
+@keyframes servingScale {
+  0% { transform: scale(1) translateX(0); }
+  100% { transform: scale(1.2) translateX(-30px); }
+}
   </style>
 </head>
 <body>
@@ -1540,12 +1808,17 @@ var useMaking = function() {
    *  @param {Object} els - 组件提供的 DOM 元素引用
    *    els.title           - 标题元素
    *    els.shakeArea       - 摇晃区域
-   *    els.teaStream       - 茶流元素
-   *    els.makingArea      - 制作区外层
-   *    els.cupBody         - 杯身元素
-   *    els.liquid          - 液体元素
-   *    els.toppingsContainer - 小料容器
-   *    els.iceContainer    - 冰块容器
+   *    els.shakerArea      - 雪克杯区域
+   *    els.shakerCup       - 雪克杯元素
+   *    els.shakerBody      - 雪克杯身元素
+   *    els.shakerLiquid    - 雪克杯液体元素
+   *    els.shakerIceContainer - 雪克杯冰块容器
+   *    els.shakerToppingsContainer - 雪克杯小料容器
+   *    els.pourArea        - 倒入区域
+   *    els.pourShaker      - 倒入时的雪克杯
+   *    els.pourStream      - 倒茶流
+   *    els.servingCup      - 饮用杯
+   *    els.servingLiquid   - 饮用杯液体
    *    els.shakeRingFill   - 摇晃进度环
    *    els.shakeCountText  - 摇晃百分比文字
    *    els.btnShake        - 摇晃按钮
@@ -1555,17 +1828,16 @@ var useMaking = function() {
     // Reset making UI
     els.title.textContent = '正在制作中...';
     els.shakeArea.classList.add('hidden');
-    els.teaStream.classList.remove('show');
-    els.teaStream.style.height = '0px';
-    els.makingArea.classList.remove('shaking');
+    els.shakerArea.style.display = 'block';
+    els.pourArea.style.display = 'none';
 
-    els.liquid.style.height = '0%';
-    els.liquid.style.background = state.liquidColor;
-    els.liquid.classList.remove('wobbling');
+    els.shakerLiquid.style.height = '0%';
+    els.shakerLiquid.style.background = state.liquidColor;
+    els.shakerLiquid.classList.remove('wobbling');
 
     // Clear toppings & ice
-    els.toppingsContainer.innerHTML = '';
-    els.iceContainer.innerHTML = '';
+    els.shakerToppingsContainer.innerHTML = '';
+    els.shakerIceContainer.innerHTML = '';
 
     // Reset shake
     state.shakeProgress = 0;
@@ -1574,22 +1846,22 @@ var useMaking = function() {
 
     // ---- Phase 1: Pour tea with droplets (2s) ----
     els.title.textContent = '倒茶中...';
-    els.cupBody.classList.add('pouring');
+    els.shakerBody.classList.add('pouring');
 
     setTimeout(function() {
-      createTeaDroplets(els.makingArea);
+      createTeaDroplets(els.shakerArea);
     }, 300);
 
     setTimeout(function() {
-      els.liquid.style.height = '70%';
+      els.shakerLiquid.style.height = '70%';
     }, 500);
 
     setTimeout(function() {
-      createSplashDroplets(els.makingArea, els.liquid);
+      createSplashDroplets(els.shakerArea, els.shakerLiquid);
     }, 800);
 
     setTimeout(function() {
-      els.cupBody.classList.remove('pouring');
+      els.shakerBody.classList.remove('pouring');
     }, 2200);
 
     // ---- Phase 2: Add ice cubes ----
@@ -1597,7 +1869,7 @@ var useMaking = function() {
     if (state.iceCount > 0) {
       setTimeout(function() {
         els.title.textContent = '加冰块...';
-        addIce(els.iceContainer, state.iceCount);
+        addIce(els.shakerIceContainer, state.iceCount);
       }, iceDelay);
       iceDelay += 800;
     }
@@ -1607,7 +1879,7 @@ var useMaking = function() {
       (function(index) {
         setTimeout(function() {
           els.title.textContent = '加' + state.toppings[index] + '...';
-          addTopping(els.toppingsContainer, els.makingArea, state.toppings[index]);
+          addTopping(els.shakerToppingsContainer, els.shakerArea, state.toppings[index]);
         }, iceDelay + index * 1200);
       })(i);
     }
@@ -1839,8 +2111,8 @@ var useMaking = function() {
   function startShaking(els, onComplete) {
     if (state.shakeProgress >= 100) return;
     state.isShaking = true;
-    els.liquid.classList.add('wobbling');
-    els.makingArea.classList.add('shaking');
+    els.shakerLiquid.classList.add('wobbling');
+    els.shakerArea.classList.add('shaking');
 
     // Progress increment: ~3% per 100ms = 30% per second = ~3.3s to fill
     state.shakeInterval = setInterval(function() {
@@ -1851,7 +2123,7 @@ var useMaking = function() {
 
       // Create shake bubbles
       if (Math.random() > 0.5) {
-        createShakeBubble(els.liquid);
+        createShakeBubble(els.shakerLiquid);
       }
 
       if (state.shakeProgress >= 100) {
@@ -1870,8 +2142,8 @@ var useMaking = function() {
       clearInterval(state.shakeInterval);
       state.shakeInterval = null;
     }
-    els.liquid.classList.remove('wobbling');
-    els.makingArea.classList.remove('shaking');
+    els.shakerLiquid.classList.remove('wobbling');
+    els.shakerArea.classList.remove('shaking');
   }
 
   /* ============================================================
@@ -1884,15 +2156,40 @@ var useMaking = function() {
     var ding = document.createElement('div');
     ding.className = 'ding-text';
     ding.textContent = '叮～摇好了！';
-    els.makingArea.appendChild(ding);
+    els.shakerArea.appendChild(ding);
 
     setTimeout(function() {
       if (ding.parentNode) ding.parentNode.removeChild(ding);
       els.shakeArea.classList.add('hidden');
-      els.title.textContent = '完成！';
+      els.title.textContent = '倒入杯中...';
+      
+      // 切换到倒入场景
+      els.shakerArea.style.display = 'none';
+      els.pourArea.style.display = 'block';
+      
+      // 开始倒入动画
       setTimeout(function() {
-        if (onComplete) onComplete();
-      }, 600);
+        els.pourShaker.classList.add('pouring');
+        els.servingCup.classList.add('show');
+        
+        // 饮用杯填充动画
+        setTimeout(function() {
+          els.servingCup.classList.add('filling');
+          els.servingLiquid.style.height = '70%';
+          els.servingLiquid.style.background = state.liquidColor;
+          
+          // 饮用杯放大动画
+          setTimeout(function() {
+            els.servingCup.classList.add('scaling');
+            els.title.textContent = '完成！';
+            
+            // 完成回调
+            setTimeout(function() {
+              if (onComplete) onComplete();
+            }, 600);
+          }, 1500);
+        }, 500);
+      }, 500);
     }, 1300);
   }
 
@@ -1936,11 +2233,11 @@ var useMaking = function() {
     updateShakeRing(els.shakeRingFill, els.shakeCountText);
 
     // Brief visual feedback
-    els.liquid.classList.add('wobbling');
-    els.makingArea.classList.add('shaking');
+    els.shakerLiquid.classList.add('wobbling');
+    els.shakerArea.classList.add('shaking');
     setTimeout(function() {
-      els.liquid.classList.remove('wobbling');
-      els.makingArea.classList.remove('shaking');
+      els.shakerLiquid.classList.remove('wobbling');
+      els.shakerArea.classList.remove('shaking');
     }, 200);
 
     if (state.shakeProgress >= 100) {
@@ -2458,7 +2755,6 @@ var RecipeScene = {
   name: 'RecipeScene',
   data: function () {
     return {
-      state: state,
       recipeStep: 0,
       stepLabels: ['\u9009\u676F\u578B', '\u9009\u8336\u5E95', '\u9009\u5C0F\u6599', '\u751C\u5EA6 & \u51B0\u5EA6'],
       cupTypes: [
@@ -2473,6 +2769,16 @@ var RecipeScene = {
     };
   },
   computed: {
+    // 直接在 computed 中访问全局 state
+    selectedCup: function() { return state.cup; },
+    selectedTea: function() { return state.tea; },
+    teaColor: function() { return state.teaColor; },
+    toppings: function() { return state.toppings; },
+    selectedSweet: function() { return state.sweet; },
+    selectedIce: function() { return state.ice; },
+    iceLevel: function() { return state.iceLevel; },
+    iceCount: function() { return state.iceCount; },
+    
     progressPct: function () {
       return ((this.recipeStep + 1) / 4) * 100;
     },
@@ -2489,45 +2795,45 @@ var RecipeScene = {
       return this.recipeStep === 3 ? '\u5F00\u59CB\u5236\u4F5C\uFF01' : '\u4E0B\u4E00\u6B65';
     },
     toppingCountText: function () {
-      return '\u5DF2\u9009 ' + this.state.toppings.length + '/3 \u4E2A\u5C0F\u6599';
+      return '\u5DF2\u9009 ' + this.toppings.length + '/3 \u4E2A\u5C0F\u6599';
     },
   },
   methods: {
     isStepValid: function (step) {
-      if (step === 0) return this.state.cup !== '';
-      if (step === 1) return this.state.tea !== '';
-      if (step === 2) return this.state.toppings.length > 0;
-      if (step === 3) return this.state.sweet !== '' && this.state.ice !== '';
+      if (step === 0) return this.selectedCup !== '';
+      if (step === 1) return this.selectedTea !== '';
+      if (step === 2) return this.toppings.length > 0;
+      if (step === 3) return this.selectedSweet !== '' && this.selectedIce !== '';
       return false;
     },
 
     selectCup: function (type) {
-      this.state.cup = type;
+      state.cup = type;
     },
 
     selectTea: function (tea) {
-      this.state.tea = tea.name;
-      this.state.teaColor = tea.color;
+      state.tea = tea.name;
+      state.teaColor = tea.color;
     },
 
     toggleTopping: function (name) {
-      var idx = this.state.toppings.indexOf(name);
+      var idx = this.toppings.indexOf(name);
       if (idx >= 0) {
-        this.state.toppings.splice(idx, 1);
+        this.toppings.splice(idx, 1);
       } else {
-        if (this.state.toppings.length >= 3) return;
-        this.state.toppings.push(name);
+        if (this.toppings.length >= 3) return;
+        this.toppings.push(name);
       }
     },
 
     selectSweet: function (val) {
-      this.state.sweet = val;
+      state.sweet = val;
     },
 
     selectIce: function (val) {
-      this.state.ice = val;
-      this.state.iceLevel = val;
-      this.state.iceCount = ICE_COUNT_MAP[val] || 0;
+      state.ice = val;
+      state.iceLevel = val;
+      state.iceCount = ICE_COUNT_MAP[val] || 0;
     },
 
     nextStep: function () {
@@ -2553,18 +2859,18 @@ var RecipeScene = {
     },
 
     buildCustomRecipe: function () {
-      var teaName = this.state.tea;
-      var toppingStr = this.state.toppings.length > 0 ? this.state.toppings[0] : '';
-      this.state.recipeName = teaName + (toppingStr ? toppingStr : '\u5976\u8336');
-      this.state.liquidColor = this.state.teaColor;
-      this.state.iceLevel = this.state.ice;
-      this.state.iceCount = ICE_COUNT_MAP[this.state.ice] || 0;
-      this.state.recipeCal = 300 + this.state.toppings.length * 60;
-      if (this.state.sweet === '\u5168\u7CD6') this.state.recipeCal += 80;
-      if (this.state.sweet === '\u4E03\u5206\u751C') this.state.recipeCal += 50;
-      if (this.state.sweet === '\u4E94\u5206\u751C') this.state.recipeCal += 30;
-      this.state.sipCount = 0;
-      this.state.shakeProgress = 0;
+      var teaName = this.selectedTea;
+      var toppingStr = this.toppings.length > 0 ? this.toppings[0] : '';
+      state.recipeName = teaName + (toppingStr ? toppingStr : '\u5976\u8336');
+      state.liquidColor = this.teaColor;
+      state.iceLevel = this.selectedIce;
+      state.iceCount = ICE_COUNT_MAP[this.selectedIce] || 0;
+      state.recipeCal = 300 + this.toppings.length * 60;
+      if (this.selectedSweet === '\u5168\u7CD6') state.recipeCal += 80;
+      if (this.selectedSweet === '\u4E03\u5206\u751C') state.recipeCal += 50;
+      if (this.selectedSweet === '\u4E94\u5206\u751C') state.recipeCal += 30;
+      state.sipCount = 0;
+      state.shakeProgress = 0;
     },
   },
   template: '\
@@ -2581,7 +2887,7 @@ var RecipeScene = {
         <div class="cup-options">\
           <div v-for="cup in cupTypes" :key="cup.value"\
                class="cup-card"\
-               :class="{ selected: state.cup === cup.value }"\
+               :class="{ selected: selectedCup === cup.value }"\
                @click="selectCup(cup.value)">\
             <div class="cup-card-icon" :class="cup.iconClass"></div>\
             <span>{{ cup.label }}</span>\
@@ -2594,7 +2900,7 @@ var RecipeScene = {
         <div class="tea-grid">\
           <div v-for="tea in teaOptions" :key="tea.name"\
                class="tea-item"\
-               :class="{ selected: state.tea === tea.name }"\
+               :class="{ selected: selectedTea === tea.name }"\
                @click="selectTea(tea)">\
             <div class="tea-color" :style="{ background: tea.color }"></div>\
             <span>{{ tea.name }}</span>\
@@ -2607,7 +2913,7 @@ var RecipeScene = {
         <div class="topping-pills">\
           <div v-for="name in toppingOptions" :key="name"\
                class="topping-pill"\
-               :class="{ selected: state.toppings.indexOf(name) >= 0 }"\
+               :class="{ selected: toppings.indexOf(name) >= 0 }"\
                @click="toggleTopping(name)">\
             {{ name }}\
           </div>\
@@ -2622,7 +2928,7 @@ var RecipeScene = {
           <div class="segment-control">\
             <button v-for="s in sweetOptions" :key="s"\
                     class="segment-btn"\
-                    :class="{ active: state.sweet === s }"\
+                    :class="{ active: selectedSweet === s }"\
                     @click="selectSweet(s)">\
               {{ s }}\
             </button>\
@@ -2631,7 +2937,7 @@ var RecipeScene = {
           <div class="segment-control">\
             <button v-for="ic in iceOptions" :key="ic"\
                     class="segment-btn"\
-                    :class="{ active: state.ice === ic }"\
+                    :class="{ active: selectedIce === ic }"\
                     @click="selectIce(ic)">\
               {{ ic }}\
             </button>\
@@ -2653,7 +2959,7 @@ var MakingScene = {
   data: function () {
     return {
       state: state,
-      makingTitle: '\u6B63\u5728\u5236\u4F5C\u4E2D...',
+      makingTitle: '正在制作中...',
       shakeAreaHidden: true,
     };
   },
@@ -2685,18 +2991,23 @@ var MakingScene = {
       var els = {
         title: self.$refs.makingTitle,
         shakeArea: self.$refs.shakeArea,
-        teaStream: self.$refs.teaStream,
-        makingArea: self.$refs.makingArea,
-        cupBody: self.$refs.makingCupBody,
-        liquid: self.$refs.makingLiquid,
-        toppingsContainer: self.$refs.makingToppingsContainer,
-        iceContainer: self.$refs.makingIceContainer,
+        shakerArea: self.$refs.shakerArea,
+        shakerCup: self.$refs.shakerCup,
+        shakerBody: self.$refs.shakerBody,
+        shakerLiquid: self.$refs.shakerLiquid,
+        shakerIceContainer: self.$refs.shakerIceContainer,
+        shakerToppingsContainer: self.$refs.shakerToppingsContainer,
+        pourArea: self.$refs.pourArea,
+        pourShaker: self.$refs.pourShaker,
+        pourStream: self.$refs.pourStream,
+        servingCup: self.$refs.servingCup,
+        servingLiquid: self.$refs.servingLiquid,
         shakeRingFill: self.$refs.shakeRingFill,
         shakeCountText: self.$refs.shakeCountText,
         btnShake: self.$refs.btnShake,
       };
 
-      self.makingTitle = '\u6B63\u5728\u5236\u4F5C\u4E2D...';
+      self.makingTitle = '正在制作中...';
       self.shakeAreaHidden = true;
 
       making.startMaking(els, function () {
@@ -2706,34 +3017,56 @@ var MakingScene = {
       });
     },
   },
-  template: '\
-    <div id="scene-making" class="scene">\
-      <h2 class="making-title brand-title" ref="makingTitle">{{ makingTitle }}</h2>\
-      <div class="making-area" ref="makingArea">\
-        <div class="tea-stream" ref="teaStream"></div>\
-        <div class="making-straw"></div>\
-        <div class="making-cup-rim"></div>\
-        <div class="making-cup-body" ref="makingCupBody">\
-          <div class="making-liquid" ref="makingLiquid"></div>\
-          <div class="making-ice-container" ref="makingIceContainer"></div>\
-          <div ref="makingToppingsContainer"></div>\
-        </div>\
-      </div>\
-      <div class="shake-area" ref="shakeArea" :class="{ hidden: shakeAreaHidden }">\
-        <!-- SVG circular progress ring -->\
-        <svg class="shake-progress-ring" width="90" height="90" viewBox="0 0 90 90">\
-          <defs>\
-            <linearGradient id="shakeGradient" x1="0%" y1="0%" x2="100%" y2="0%">\
-              <stop offset="0%" stop-color="#FF6B8A"/>\
-              <stop offset="100%" stop-color="#FFB74D"/>\
-            </linearGradient>\
-          </defs>\
-          <circle class="shake-progress-ring-bg" cx="45" cy="45" r="40"/>\
-          <circle class="shake-progress-ring-fill" ref="shakeRingFill" cx="45" cy="45" r="40"/>\
-        </svg>\
-        <button class="btn-shake" ref="btnShake">\uD83D\uDCAA \u6309\u4F4F\u6447\u4E00\u6447\uFF01</button>\
-        <p class="shake-count-text" ref="shakeCountText">0%</p>\
-      </div>\
+  template: '
+    <div id="scene-making" class="scene">
+      <h2 class="making-title brand-title" ref="makingTitle">{{ makingTitle }}</h2>
+      
+      <!-- 阶段1：雪克杯 -->
+      <div class="shaker-area" ref="shakerArea">
+        <div class="shaker-cup" ref="shakerCup">
+          <div class="shaker-lid"></div>
+          <div class="shaker-body" ref="shakerBody">
+            <div class="shaker-liquid" ref="shakerLiquid"></div>
+            <div class="shaker-ice-container" ref="shakerIceContainer"></div>
+            <div ref="shakerToppingsContainer"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 阶段2：倒入 -->
+      <div class="pour-area" ref="pourArea" style="display:none">
+        <div class="pour-shaker" ref="pourShaker">
+          <div class="shaker-lid"></div>
+          <div class="shaker-body">
+            <div class="shaker-liquid" style="height:70%"></div>
+          </div>
+        </div>
+        <div class="pour-stream" ref="pourStream"></div>
+        <div class="serving-cup" ref="servingCup">
+          <div class="serving-cup-body">
+            <div class="serving-liquid" ref="servingLiquid"></div>
+          </div>
+          <div class="serving-cup-rim"></div>
+          <div class="serving-straw"></div>
+        </div>
+      </div>
+      
+      <!-- 摇晃UI -->
+      <div class="shake-area" ref="shakeArea" :class="{ hidden: shakeAreaHidden }">
+        <!-- SVG circular progress ring -->
+        <svg class="shake-progress-ring" width="90" height="90" viewBox="0 0 90 90">
+          <defs>
+            <linearGradient id="shakeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FF6B8A"/>
+              <stop offset="100%" stop-color="#FFB74D"/>
+            </linearGradient>
+          </defs>
+          <circle class="shake-progress-ring-bg" cx="45" cy="45" r="40"/>
+          <circle class="shake-progress-ring-fill" ref="shakeRingFill" cx="45" cy="45" r="40"/>
+        </svg>
+        <button class="btn-shake" ref="btnShake">💪 按住摇一摇！</button>
+        <p class="shake-count-text" ref="shakeCountText">0%</p>
+      </div>
     </div>',
 };
 

@@ -7,7 +7,7 @@ export default {
   data: function () {
     return {
       state: state,
-      makingTitle: '\u6B63\u5728\u5236\u4F5C\u4E2D...',
+      makingTitle: '正在制作中...',
       shakeAreaHidden: true,
     };
   },
@@ -39,18 +39,23 @@ export default {
       var els = {
         title: self.$refs.makingTitle,
         shakeArea: self.$refs.shakeArea,
-        teaStream: self.$refs.teaStream,
-        makingArea: self.$refs.makingArea,
-        cupBody: self.$refs.makingCupBody,
-        liquid: self.$refs.makingLiquid,
-        toppingsContainer: self.$refs.makingToppingsContainer,
-        iceContainer: self.$refs.makingIceContainer,
+        shakerArea: self.$refs.shakerArea,
+        shakerCup: self.$refs.shakerCup,
+        shakerBody: self.$refs.shakerBody,
+        shakerLiquid: self.$refs.shakerLiquid,
+        shakerIceContainer: self.$refs.shakerIceContainer,
+        shakerToppingsContainer: self.$refs.shakerToppingsContainer,
+        pourArea: self.$refs.pourArea,
+        pourShaker: self.$refs.pourShaker,
+        pourStream: self.$refs.pourStream,
+        servingCup: self.$refs.servingCup,
+        servingLiquid: self.$refs.servingLiquid,
         shakeRingFill: self.$refs.shakeRingFill,
         shakeCountText: self.$refs.shakeCountText,
         btnShake: self.$refs.btnShake,
       };
 
-      self.makingTitle = '\u6B63\u5728\u5236\u4F5C\u4E2D...';
+      self.makingTitle = '正在制作中...';
       self.shakeAreaHidden = true;
 
       making.startMaking(els, function () {
@@ -60,33 +65,55 @@ export default {
       });
     },
   },
-  template: '\
-    <div id="scene-making" class="scene">\
-      <h2 class="making-title brand-title" ref="makingTitle">{{ makingTitle }}</h2>\
-      <div class="making-area" ref="makingArea">\
-        <div class="tea-stream" ref="teaStream"></div>\
-        <div class="making-straw"></div>\
-        <div class="making-cup-rim"></div>\
-        <div class="making-cup-body" ref="makingCupBody">\
-          <div class="making-liquid" ref="makingLiquid"></div>\
-          <div class="making-ice-container" ref="makingIceContainer"></div>\
-          <div ref="makingToppingsContainer"></div>\
-        </div>\
-      </div>\
-      <div class="shake-area" ref="shakeArea" :class="{ hidden: shakeAreaHidden }">\
-        <!-- SVG circular progress ring -->\
-        <svg class="shake-progress-ring" width="90" height="90" viewBox="0 0 90 90">\
-          <defs>\
-            <linearGradient id="shakeGradient" x1="0%" y1="0%" x2="100%" y2="0%">\
-              <stop offset="0%" stop-color="#FF6B8A"/>\
-              <stop offset="100%" stop-color="#FFB74D"/>\
-            </linearGradient>\
-          </defs>\
-          <circle class="shake-progress-ring-bg" cx="45" cy="45" r="40"/>\
-          <circle class="shake-progress-ring-fill" ref="shakeRingFill" cx="45" cy="45" r="40"/>\
-        </svg>\
-        <button class="btn-shake" ref="btnShake">\uD83D\uDCAA \u6309\u4F4F\u6447\u4E00\u6447\uFF01</button>\
-        <p class="shake-count-text" ref="shakeCountText">0%</p>\
-      </div>\
+  template: '
+    <div id="scene-making" class="scene">
+      <h2 class="making-title brand-title" ref="makingTitle">{{ makingTitle }}</h2>
+      
+      <!-- 阶段1：雪克杯 -->
+      <div class="shaker-area" ref="shakerArea">
+        <div class="shaker-cup" ref="shakerCup">
+          <div class="shaker-lid"></div>
+          <div class="shaker-body" ref="shakerBody">
+            <div class="shaker-liquid" ref="shakerLiquid"></div>
+            <div class="shaker-ice-container" ref="shakerIceContainer"></div>
+            <div ref="shakerToppingsContainer"></div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 阶段2：倒入 -->
+      <div class="pour-area" ref="pourArea" style="display:none">
+        <div class="pour-shaker" ref="pourShaker">
+          <div class="shaker-lid"></div>
+          <div class="shaker-body">
+            <div class="shaker-liquid" style="height:70%"></div>
+          </div>
+        </div>
+        <div class="pour-stream" ref="pourStream"></div>
+        <div class="serving-cup" ref="servingCup">
+          <div class="serving-cup-body">
+            <div class="serving-liquid" ref="servingLiquid"></div>
+          </div>
+          <div class="serving-cup-rim"></div>
+          <div class="serving-straw"></div>
+        </div>
+      </div>
+      
+      <!-- 摇晃UI -->
+      <div class="shake-area" ref="shakeArea" :class="{ hidden: shakeAreaHidden }">
+        <!-- SVG circular progress ring -->
+        <svg class="shake-progress-ring" width="90" height="90" viewBox="0 0 90 90">
+          <defs>
+            <linearGradient id="shakeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#FF6B8A"/>
+              <stop offset="100%" stop-color="#FFB74D"/>
+            </linearGradient>
+          </defs>
+          <circle class="shake-progress-ring-bg" cx="45" cy="45" r="40"/>
+          <circle class="shake-progress-ring-fill" ref="shakeRingFill" cx="45" cy="45" r="40"/>
+        </svg>
+        <button class="btn-shake" ref="btnShake">💪 按住摇一摇！</button>
+        <p class="shake-count-text" ref="shakeCountText">0%</p>
+      </div>
     </div>',
 };

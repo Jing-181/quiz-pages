@@ -6,7 +6,6 @@ export default {
   name: 'RecipeScene',
   data: function () {
     return {
-      state: state,
       recipeStep: 0,
       stepLabels: ['\u9009\u676F\u578B', '\u9009\u8336\u5E95', '\u9009\u5C0F\u6599', '\u751C\u5EA6 & \u51B0\u5EA6'],
       cupTypes: [
@@ -21,6 +20,16 @@ export default {
     };
   },
   computed: {
+    // 直接在 computed 中访问全局 state
+    selectedCup: function() { return state.cup; },
+    selectedTea: function() { return state.tea; },
+    teaColor: function() { return state.teaColor; },
+    toppings: function() { return state.toppings; },
+    selectedSweet: function() { return state.sweet; },
+    selectedIce: function() { return state.ice; },
+    iceLevel: function() { return state.iceLevel; },
+    iceCount: function() { return state.iceCount; },
+    
     progressPct: function () {
       return ((this.recipeStep + 1) / 4) * 100;
     },
@@ -37,45 +46,45 @@ export default {
       return this.recipeStep === 3 ? '\u5F00\u59CB\u5236\u4F5C\uFF01' : '\u4E0B\u4E00\u6B65';
     },
     toppingCountText: function () {
-      return '\u5DF2\u9009 ' + this.state.toppings.length + '/3 \u4E2A\u5C0F\u6599';
+      return '\u5DF2\u9009 ' + this.toppings.length + '/3 \u4E2A\u5C0F\u6599';
     },
   },
   methods: {
     isStepValid: function (step) {
-      if (step === 0) return this.state.cup !== '';
-      if (step === 1) return this.state.tea !== '';
-      if (step === 2) return this.state.toppings.length > 0;
-      if (step === 3) return this.state.sweet !== '' && this.state.ice !== '';
+      if (step === 0) return this.selectedCup !== '';
+      if (step === 1) return this.selectedTea !== '';
+      if (step === 2) return this.toppings.length > 0;
+      if (step === 3) return this.selectedSweet !== '' && this.selectedIce !== '';
       return false;
     },
 
     selectCup: function (type) {
-      this.state.cup = type;
+      state.cup = type;
     },
 
     selectTea: function (tea) {
-      this.state.tea = tea.name;
-      this.state.teaColor = tea.color;
+      state.tea = tea.name;
+      state.teaColor = tea.color;
     },
 
     toggleTopping: function (name) {
-      var idx = this.state.toppings.indexOf(name);
+      var idx = this.toppings.indexOf(name);
       if (idx >= 0) {
-        this.state.toppings.splice(idx, 1);
+        this.toppings.splice(idx, 1);
       } else {
-        if (this.state.toppings.length >= 3) return;
-        this.state.toppings.push(name);
+        if (this.toppings.length >= 3) return;
+        this.toppings.push(name);
       }
     },
 
     selectSweet: function (val) {
-      this.state.sweet = val;
+      state.sweet = val;
     },
 
     selectIce: function (val) {
-      this.state.ice = val;
-      this.state.iceLevel = val;
-      this.state.iceCount = ICE_COUNT_MAP[val] || 0;
+      state.ice = val;
+      state.iceLevel = val;
+      state.iceCount = ICE_COUNT_MAP[val] || 0;
     },
 
     nextStep: function () {
@@ -101,18 +110,18 @@ export default {
     },
 
     buildCustomRecipe: function () {
-      var teaName = this.state.tea;
-      var toppingStr = this.state.toppings.length > 0 ? this.state.toppings[0] : '';
-      this.state.recipeName = teaName + (toppingStr ? toppingStr : '\u5976\u8336');
-      this.state.liquidColor = this.state.teaColor;
-      this.state.iceLevel = this.state.ice;
-      this.state.iceCount = ICE_COUNT_MAP[this.state.ice] || 0;
-      this.state.recipeCal = 300 + this.state.toppings.length * 60;
-      if (this.state.sweet === '\u5168\u7CD6') this.state.recipeCal += 80;
-      if (this.state.sweet === '\u4E03\u5206\u751C') this.state.recipeCal += 50;
-      if (this.state.sweet === '\u4E94\u5206\u751C') this.state.recipeCal += 30;
-      this.state.sipCount = 0;
-      this.state.shakeProgress = 0;
+      var teaName = this.selectedTea;
+      var toppingStr = this.toppings.length > 0 ? this.toppings[0] : '';
+      state.recipeName = teaName + (toppingStr ? toppingStr : '\u5976\u8336');
+      state.liquidColor = this.teaColor;
+      state.iceLevel = this.selectedIce;
+      state.iceCount = ICE_COUNT_MAP[this.selectedIce] || 0;
+      state.recipeCal = 300 + this.toppings.length * 60;
+      if (this.selectedSweet === '\u5168\u7CD6') state.recipeCal += 80;
+      if (this.selectedSweet === '\u4E03\u5206\u751C') state.recipeCal += 50;
+      if (this.selectedSweet === '\u4E94\u5206\u751C') state.recipeCal += 30;
+      state.sipCount = 0;
+      state.shakeProgress = 0;
     },
   },
   template: '\
@@ -129,7 +138,7 @@ export default {
         <div class="cup-options">\
           <div v-for="cup in cupTypes" :key="cup.value"\
                class="cup-card"\
-               :class="{ selected: state.cup === cup.value }"\
+               :class="{ selected: selectedCup === cup.value }"\
                @click="selectCup(cup.value)">\
             <div class="cup-card-icon" :class="cup.iconClass"></div>\
             <span>{{ cup.label }}</span>\
@@ -142,7 +151,7 @@ export default {
         <div class="tea-grid">\
           <div v-for="tea in teaOptions" :key="tea.name"\
                class="tea-item"\
-               :class="{ selected: state.tea === tea.name }"\
+               :class="{ selected: selectedTea === tea.name }"\
                @click="selectTea(tea)">\
             <div class="tea-color" :style="{ background: tea.color }"></div>\
             <span>{{ tea.name }}</span>\
@@ -155,7 +164,7 @@ export default {
         <div class="topping-pills">\
           <div v-for="name in toppingOptions" :key="name"\
                class="topping-pill"\
-               :class="{ selected: state.toppings.indexOf(name) >= 0 }"\
+               :class="{ selected: toppings.indexOf(name) >= 0 }"\
                @click="toggleTopping(name)">\
             {{ name }}\
           </div>\
@@ -170,7 +179,7 @@ export default {
           <div class="segment-control">\
             <button v-for="s in sweetOptions" :key="s"\
                     class="segment-btn"\
-                    :class="{ active: state.sweet === s }"\
+                    :class="{ active: selectedSweet === s }"\
                     @click="selectSweet(s)">\
               {{ s }}\
             </button>\
@@ -179,7 +188,7 @@ export default {
           <div class="segment-control">\
             <button v-for="ic in iceOptions" :key="ic"\
                     class="segment-btn"\
-                    :class="{ active: state.ice === ic }"\
+                    :class="{ active: selectedIce === ic }"\
                     @click="selectIce(ic)">\
               {{ ic }}\
             </button>\

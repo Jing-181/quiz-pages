@@ -14,12 +14,17 @@ export function useMaking() {
    *  @param {Object} els - 组件提供的 DOM 元素引用
    *    els.title           - 标题元素
    *    els.shakeArea       - 摇晃区域
-   *    els.teaStream       - 茶流元素
-   *    els.makingArea      - 制作区外层
-   *    els.cupBody         - 杯身元素
-   *    els.liquid          - 液体元素
-   *    els.toppingsContainer - 小料容器
-   *    els.iceContainer    - 冰块容器
+   *    els.shakerArea      - 雪克杯区域
+   *    els.shakerCup       - 雪克杯元素
+   *    els.shakerBody      - 雪克杯身元素
+   *    els.shakerLiquid    - 雪克杯液体元素
+   *    els.shakerIceContainer - 雪克杯冰块容器
+   *    els.shakerToppingsContainer - 雪克杯小料容器
+   *    els.pourArea        - 倒入区域
+   *    els.pourShaker      - 倒入时的雪克杯
+   *    els.pourStream      - 倒茶流
+   *    els.servingCup      - 饮用杯
+   *    els.servingLiquid   - 饮用杯液体
    *    els.shakeRingFill   - 摇晃进度环
    *    els.shakeCountText  - 摇晃百分比文字
    *    els.btnShake        - 摇晃按钮
@@ -29,17 +34,16 @@ export function useMaking() {
     // Reset making UI
     els.title.textContent = '正在制作中...';
     els.shakeArea.classList.add('hidden');
-    els.teaStream.classList.remove('show');
-    els.teaStream.style.height = '0px';
-    els.makingArea.classList.remove('shaking');
+    els.shakerArea.style.display = 'block';
+    els.pourArea.style.display = 'none';
 
-    els.liquid.style.height = '0%';
-    els.liquid.style.background = state.liquidColor;
-    els.liquid.classList.remove('wobbling');
+    els.shakerLiquid.style.height = '0%';
+    els.shakerLiquid.style.background = state.liquidColor;
+    els.shakerLiquid.classList.remove('wobbling');
 
     // Clear toppings & ice
-    els.toppingsContainer.innerHTML = '';
-    els.iceContainer.innerHTML = '';
+    els.shakerToppingsContainer.innerHTML = '';
+    els.shakerIceContainer.innerHTML = '';
 
     // Reset shake
     state.shakeProgress = 0;
@@ -48,22 +52,22 @@ export function useMaking() {
 
     // ---- Phase 1: Pour tea with droplets (2s) ----
     els.title.textContent = '倒茶中...';
-    els.cupBody.classList.add('pouring');
+    els.shakerBody.classList.add('pouring');
 
     setTimeout(function() {
-      createTeaDroplets(els.makingArea);
+      createTeaDroplets(els.shakerArea);
     }, 300);
 
     setTimeout(function() {
-      els.liquid.style.height = '70%';
+      els.shakerLiquid.style.height = '70%';
     }, 500);
 
     setTimeout(function() {
-      createSplashDroplets(els.makingArea, els.liquid);
+      createSplashDroplets(els.shakerArea, els.shakerLiquid);
     }, 800);
 
     setTimeout(function() {
-      els.cupBody.classList.remove('pouring');
+      els.shakerBody.classList.remove('pouring');
     }, 2200);
 
     // ---- Phase 2: Add ice cubes ----
@@ -71,7 +75,7 @@ export function useMaking() {
     if (state.iceCount > 0) {
       setTimeout(function() {
         els.title.textContent = '加冰块...';
-        addIce(els.iceContainer, state.iceCount);
+        addIce(els.shakerIceContainer, state.iceCount);
       }, iceDelay);
       iceDelay += 800;
     }
@@ -81,7 +85,7 @@ export function useMaking() {
       (function(index) {
         setTimeout(function() {
           els.title.textContent = '加' + state.toppings[index] + '...';
-          addTopping(els.toppingsContainer, els.makingArea, state.toppings[index]);
+          addTopping(els.shakerToppingsContainer, els.shakerArea, state.toppings[index]);
         }, iceDelay + index * 1200);
       })(i);
     }
@@ -313,8 +317,8 @@ export function useMaking() {
   function startShaking(els, onComplete) {
     if (state.shakeProgress >= 100) return;
     state.isShaking = true;
-    els.liquid.classList.add('wobbling');
-    els.makingArea.classList.add('shaking');
+    els.shakerLiquid.classList.add('wobbling');
+    els.shakerArea.classList.add('shaking');
 
     // Progress increment: ~3% per 100ms = 30% per second = ~3.3s to fill
     state.shakeInterval = setInterval(function() {
@@ -325,7 +329,7 @@ export function useMaking() {
 
       // Create shake bubbles
       if (Math.random() > 0.5) {
-        createShakeBubble(els.liquid);
+        createShakeBubble(els.shakerLiquid);
       }
 
       if (state.shakeProgress >= 100) {
@@ -344,8 +348,8 @@ export function useMaking() {
       clearInterval(state.shakeInterval);
       state.shakeInterval = null;
     }
-    els.liquid.classList.remove('wobbling');
-    els.makingArea.classList.remove('shaking');
+    els.shakerLiquid.classList.remove('wobbling');
+    els.shakerArea.classList.remove('shaking');
   }
 
   /* ============================================================
@@ -358,15 +362,40 @@ export function useMaking() {
     var ding = document.createElement('div');
     ding.className = 'ding-text';
     ding.textContent = '叮～摇好了！';
-    els.makingArea.appendChild(ding);
+    els.shakerArea.appendChild(ding);
 
     setTimeout(function() {
       if (ding.parentNode) ding.parentNode.removeChild(ding);
       els.shakeArea.classList.add('hidden');
-      els.title.textContent = '完成！';
+      els.title.textContent = '倒入杯中...';
+      
+      // 切换到倒入场景
+      els.shakerArea.style.display = 'none';
+      els.pourArea.style.display = 'block';
+      
+      // 开始倒入动画
       setTimeout(function() {
-        if (onComplete) onComplete();
-      }, 600);
+        els.pourShaker.classList.add('pouring');
+        els.servingCup.classList.add('show');
+        
+        // 饮用杯填充动画
+        setTimeout(function() {
+          els.servingCup.classList.add('filling');
+          els.servingLiquid.style.height = '70%';
+          els.servingLiquid.style.background = state.liquidColor;
+          
+          // 饮用杯放大动画
+          setTimeout(function() {
+            els.servingCup.classList.add('scaling');
+            els.title.textContent = '完成！';
+            
+            // 完成回调
+            setTimeout(function() {
+              if (onComplete) onComplete();
+            }, 600);
+          }, 1500);
+        }, 500);
+      }, 500);
     }, 1300);
   }
 
@@ -410,11 +439,11 @@ export function useMaking() {
     updateShakeRing(els.shakeRingFill, els.shakeCountText);
 
     // Brief visual feedback
-    els.liquid.classList.add('wobbling');
-    els.makingArea.classList.add('shaking');
+    els.shakerLiquid.classList.add('wobbling');
+    els.shakerArea.classList.add('shaking');
     setTimeout(function() {
-      els.liquid.classList.remove('wobbling');
-      els.makingArea.classList.remove('shaking');
+      els.shakerLiquid.classList.remove('wobbling');
+      els.shakerArea.classList.remove('shaking');
     }, 200);
 
     if (state.shakeProgress >= 100) {
