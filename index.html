@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>趣味小站 - Quiz & Fun Pages</title>
+<meta name="description" content="一个趣味测试和情绪产品合集，包含假装喝奶茶、健身人格测试、跑步人格测试等有趣项目。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<style>
+  /* ===== Reset & Base ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FFF8F0;
+    --bg-warm: #FFF0E0;
+    --text: #3D2C2C;
+    --text-light: #8A7575;
+    --card-bg: #FFFFFF;
+    --card-shadow: 0 2px 12px rgba(100, 60, 40, 0.08);
+    --card-shadow-hover: 0 8px 28px rgba(100, 60, 40, 0.15);
+    --radius: 16px;
+    --max-width: 1080px;
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+                 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue',
+                 Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ===== Background Decorations ===== */
+  .bg-layer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    background: linear-gradient(160deg, #FFF8F0 0%, #FFE8D6 40%, #FFF0E8 70%, #FFF8F0 100%);
+  }
+
+  .bg-layer .dot {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.25;
+    animation: floatDot 12s ease-in-out infinite;
+  }
+
+  .bg-layer .dot:nth-child(1) {
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, #FFB3BA 0%, transparent 70%);
+    top: 5%; left: -5%;
+    animation-duration: 14s;
+  }
+  .bg-layer .dot:nth-child(2) {
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, #BAE1FF 0%, transparent 70%);
+    top: 15%; right: -3%;
+    animation-duration: 18s;
+    animation-delay: -3s;
+  }
+  .bg-layer .dot:nth-child(3) {
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #BAFFC9 0%, transparent 70%);
+    bottom: 10%; left: 10%;
+    animation-duration: 16s;
+    animation-delay: -6s;
+  }
+  .bg-layer .dot:nth-child(4) {
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, #FFFFBA 0%, transparent 70%);
+    top: 50%; right: 15%;
+    animation-duration: 20s;
+    animation-delay: -2s;
+  }
+  .bg-layer .dot:nth-child(5) {
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, #E8BAFF 0%, transparent 70%);
+    bottom: 25%; right: -5%;
+    animation-duration: 15s;
+    animation-delay: -8s;
+  }
+
+  /* Small floating stars */
+  .bg-layer .star {
+    position: absolute;
+    font-size: 14px;
+    opacity: 0.18;
+    animation: twinkle 4s ease-in-out infinite;
+  }
+  .bg-layer .star:nth-child(6)  { top: 8%;  left: 20%;  animation-delay: 0s; }
+  .bg-layer .star:nth-child(7)  { top: 22%; left: 65%;  animation-delay: -1s; font-size: 10px; }
+  .bg-layer .star:nth-child(8)  { top: 45%; left: 80%;  animation-delay: -2s; }
+  .bg-layer .star:nth-child(9)  { top: 65%; left: 30%;  animation-delay: -3s; font-size: 12px; }
+  .bg-layer .star:nth-child(10) { top: 80%; left: 55%;  animation-delay: -1.5s; font-size: 16px; }
+  .bg-layer .star:nth-child(11) { top: 35%; left: 10%;  animation-delay: -2.5s; font-size: 11px; }
+  .bg-layer .star:nth-child(12) { top: 55%; left: 50%;  animation-delay: -0.5s; font-size: 13px; }
+
+  @keyframes floatDot {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.12; transform: scale(1) rotate(0deg); }
+    50% { opacity: 0.3; transform: scale(1.2) rotate(15deg); }
+  }
+
+  /* ===== Container ===== */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* ===== Header ===== */
+  .header {
+    text-align: center;
+    padding: 60px 0 20px;
+  }
+
+  .header-icon {
+    font-size: 40px;
+    display: inline-block;
+    animation: headerPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes headerPop {
+    0% { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  .header h1 {
+    font-family: 'ZCOOL KuaiLe', cursive;
+    font-size: 2.2rem;
+    color: var(--text);
+    margin-top: 8px;
+    letter-spacing: 2px;
+    animation: fadeUp 0.5s ease both 0.15s;
+  }
+
+  .header .subtitle {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    margin-top: 4px;
+    animation: fadeUp 0.5s ease both 0.25s;
+  }
+
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(16px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Grid ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 30px 0 60px;
+  }
+
+  @media (min-width: 600px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 900px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ===== Card ===== */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    /* initial state for animation */
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .card.visible {
+    animation: cardIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+  }
+
+  @keyframes cardIn {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Card top bar */
+  .card-top {
+    height: 6px;
+    width: 100%;
+  }
+
+  /* Card body */
+  .card-body {
+    padding: 24px 20px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .card-icon {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 14px;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+  }
+
+  .card-name {
+    font-family: 'ZCOOL KuaiLe', cursive;
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 18px;
+    flex: 1;
+  }
+
+  .card-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 22px;
+    border: none;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    letter-spacing: 1px;
+    text-decoration: none;
+  }
+
+  .card-btn:hover {
+    filter: brightness(1.08);
+    transform: scale(1.03);
+  }
+
+  .card-btn:active {
+    transform: scale(0.97);
+  }
+
+  .card-btn .arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover .card-btn .arrow {
+    transform: translateX(3px);
+  }
+
+  /* ===== Skeleton ===== */
+  .skeleton-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+  }
+
+  .skeleton-card .skeleton-top {
+    height: 6px;
+    background: linear-gradient(90deg, #f0e6dc 25%, #f8f0e8 50%, #f0e6dc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  .skeleton-card .skeleton-body {
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .skeleton-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f0e6dc 25%, #f8f0e8 50%, #f0e6dc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    margin-bottom: 14px;
+  }
+
+  .skeleton-line {
+    height: 14px;
+    border-radius: 7px;
+    background: linear-gradient(90deg, #f0e6dc 25%, #f8f0e8 50%, #f0e6dc 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    margin-bottom: 10px;
+  }
+
+  .skeleton-line.short { width: 60%; }
+  .skeleton-line.medium { width: 85%; }
+  .skeleton-line.long { width: 100%; }
+  .skeleton-line.btn {
+    width: 90px;
+    height: 36px;
+    border-radius: 18px;
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ===== Footer ===== */
+  .footer {
+    text-align: center;
+    padding: 20px 0 40px;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    animation: fadeUp 0.5s ease both 0.4s;
+  }
+
+  .footer a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer a:hover {
+    color: var(--text);
+  }
+
+  /* ===== Empty State ===== */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-light);
+  }
+
+  .empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .empty-state p {
+    font-size: 1rem;
+  }
+
+  /* ===== Reduced Motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .card { opacity: 1; transform: none; }
+    .card.visible { animation: none; opacity: 1; transform: none; }
+    .bg-layer .dot, .bg-layer .star { animation: none; }
+  }
+
+  /* ===== Small screen tweaks ===== */
+  @media (max-width: 380px) {
+    .header h1 { font-size: 1.8rem; }
+    .card-body { padding: 20px 16px 16px; }
+    .card-icon { font-size: 40px; }
+    .card-name { font-size: 1.05rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background decorations -->
+<div class="bg-layer" aria-hidden="true">
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="dot"></div>
+  <div class="star">&#10022;</div>
+  <div class="star">&#10022;</div>
+  <div class="star">&#10022;</div>
+  <div class="star">&#10022;</div>
+  <div class="star">&#10022;</div>
+  <div class="star">&#10022;</div>
+  <div class="star">&#10022;</div>
+</div>
+
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-icon" aria-hidden="true">&#10024;</div>
+    <h1>趣味小站</h1>
+    <p class="subtitle">Quiz & Fun Pages</p>
+  </header>
+
+  <!-- Project Grid -->
+  <main>
+    <div class="grid" id="projectGrid">
+      <!-- Skeleton placeholders -->
+      <div class="skeleton-card" aria-hidden="true">
+        <div class="skeleton-top"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-circle"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line btn"></div>
+        </div>
+      </div>
+      <div class="skeleton-card" aria-hidden="true">
+        <div class="skeleton-top"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-circle"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line btn"></div>
+        </div>
+      </div>
+      <div class="skeleton-card" aria-hidden="true">
+        <div class="skeleton-top"></div>
+        <div class="skeleton-body">
+          <div class="skeleton-circle"></div>
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line btn"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    Made with <span aria-label="love">&#10084;&#65039;</span> by <a href="https://github.com/Jing-181" target="_blank" rel="noopener">Jing-181</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ===== Manual project configuration =====
+  const MANUAL_PROJECTS = [
+    {
+      name: '假装喝奶茶',
+      desc: '一个纯虚拟的情绪产品，选配方→模拟制作→假装喝几口→生成结果卡→分享',
+      path: 'fake-boba/',
+      icon: '\u{1F9CB}',
+      color: '#FF6B8A'
+    },
+    {
+      name: '健身人格测试',
+      desc: '通过健身习惯分析你的运动人格类型',
+      path: 'fitness_personality_test.html',
+      icon: '\u{1F4AA}',
+      color: '#4CAF50'
+    },
+    {
+      name: '跑步人格测试',
+      desc: '发现你的跑步风格和潜在人格特质',
+      path: 'running_personality_test.html',
+      icon: '\u{1F3C3}',
+      color: '#2196F3'
+    }
+  ];
+
+  // ===== Default color palette for auto-detected projects =====
+  const PALETTE = [
+    '#FF6B6B', '#FF9F43', '#FECA57', '#48DBFB', '#FF6B8A',
+    '#A29BFE', '#55E6C1', '#FD79A8', '#E17055', '#00B894',
+    '#6C5CE7', '#FDCB6E', '#E84393', '#00CEC9', '#D63031'
+  ];
+
+  // ===== Default icon pool =====
+  const ICONS = [
+    '\u{1F3AF}', '\u{1F31F}', '\u{1F308}', '\u{1F389}', '\u{1F680}',
+    '\u{1F4DA}', '\u{1F3A8}', '\u{1F3B5}', '\u{1F52D}', '\u{2728}'
+  ];
+
+  const API_URL = 'https://api.github.com/repos/Jing-181/quiz-pages/contents/';
+  const grid = document.getElementById('projectGrid');
+
+  // ===== Utility: build a manual project lookup by path =====
+  function buildManualMap() {
+    const map = {};
+    MANUAL_PROJECTS.forEach(function (p) {
+      // Normalize path: ensure trailing slash for directories
+      var key = p.path.replace(/\/?$/, '/');
+      map[key] = p;
+      // Also store without trailing slash
+      map[p.path] = p;
+    });
+    return map;
+  }
+
+  // ===== Utility: generate a readable name from filename =====
+  function nameFromFile(filename) {
+    // Remove .html extension
+    var name = filename.replace(/\.html?$/i, '');
+    // Remove trailing slash (directory)
+    name = name.replace(/\/$/, '');
+    // Replace underscores and hyphens with spaces
+    name = name.replace(/[_\-]+/g, ' ');
+    return name;
+  }
+
+  // ===== Utility: pick a color based on index =====
+  function pickColor(index) {
+    return PALETTE[index % PALETTE.length];
+  }
+
+  // ===== Utility: pick an icon based on index =====
+  function pickIcon(index) {
+    return ICONS[index % ICONS.length];
+  }
+
+  // ===== Render a single card =====
+  function createCard(project, index) {
+    var card = document.createElement('a');
+    card.className = 'card';
+    card.href = project.path;
+    card.setAttribute('aria-label', project.name);
+
+    var color = project.color || pickColor(index);
+    var icon = project.icon || pickIcon(index);
+
+    // Gradient bar using project color
+    var topBar = document.createElement('div');
+    topBar.className = 'card-top';
+    topBar.style.background = 'linear-gradient(90deg, ' + color + ', ' + lighten(color, 30) + ')';
+
+    // Body
+    var body = document.createElement('div');
+    body.className = 'card-body';
+
+    var iconEl = document.createElement('span');
+    iconEl.className = 'card-icon';
+    iconEl.setAttribute('aria-hidden', 'true');
+    iconEl.textContent = icon;
+
+    var nameEl = document.createElement('div');
+    nameEl.className = 'card-name';
+    nameEl.textContent = project.name;
+
+    var descEl = document.createElement('div');
+    descEl.className = 'card-desc';
+    descEl.textContent = project.desc || '';
+
+    var btn = document.createElement('span');
+    btn.className = 'card-btn';
+    btn.style.background = color;
+    btn.innerHTML = '\u8FDB\u5165 <span class="arrow">\u2192</span>';
+
+    body.appendChild(iconEl);
+    body.appendChild(nameEl);
+    body.appendChild(descEl);
+    body.appendChild(btn);
+
+    card.appendChild(topBar);
+    card.appendChild(body);
+
+    // Staggered animation delay
+    card.style.animationDelay = (index * 100) + 'ms';
+
+    return card;
+  }
+
+  // ===== Lighten a hex color =====
+  function lighten(hex, percent) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) {
+      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+    r = Math.min(255, Math.floor(r + (255 - r) * (percent / 100)));
+    g = Math.min(255, Math.floor(g + (255 - g) * (percent / 100)));
+    b = Math.min(255, Math.floor(b + (255 - b) * (percent / 100)));
+    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  // ===== Render project list =====
+  function renderProjects(projects) {
+    // Clear grid
+    grid.innerHTML = '';
+
+    if (projects.length === 0) {
+      grid.innerHTML =
+        '<div class="empty-state">' +
+        '<div class="empty-icon" aria-hidden="true">\u{1F50D}</div>' +
+        '<p>\u6682\u65F6\u8FD8\u6CA1\u6709\u9879\u76EE\uFF0C\u6574\u7406\u4E2D...</p>' +
+        '</div>';
+      return;
+    }
+
+    projects.forEach(function (project, i) {
+      var card = createCard(project, i);
+      grid.appendChild(card);
+      // Trigger animation on next frame
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          card.classList.add('visible');
+        });
+      });
+    });
+  }
+
+  // ===== Fetch metadata from an HTML file =====
+  function fetchHTMLMeta(path) {
+    var url = 'https://raw.githubusercontent.com/Jing-181/quiz-pages/main/' + path;
+    return fetch(url, { cache: 'no-cache' })
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.text();
+      })
+      .then(function (html) {
+        if (!html) return {};
+        var meta = {};
+        // Extract <title>
+        var titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+        if (titleMatch) meta.title = titleMatch[1].trim();
+        // Extract <meta name="description">
+        var descMatch = html.match(/<meta[^>]+name\s*=\s*["']description["'][^>]+content\s*=\s*["']([\s\S]*?)["'][^>]*>/i);
+        if (!descMatch) {
+          descMatch = html.match(/<meta[^>]+content\s*=\s*["']([\s\S]*?)["'][^>]+name\s*=\s*["']description["'][^>]*>/i);
+        }
+        if (descMatch) meta.description = descMatch[1].trim();
+        return meta;
+      })
+      .catch(function () {
+        return {};
+      });
+  }
+
+  // ===== Scan GitHub API =====
+  function scanGitHubAPI() {
+    return fetch(API_URL)
+      .then(function (res) {
+        if (!res.ok) throw new Error('API error: ' + res.status);
+        return res.json();
+      })
+      .then(function (items) {
+        if (!Array.isArray(items)) throw new Error('Invalid response');
+
+        var manualMap = buildManualMap();
+        var autoProjects = [];
+        var metaPromises = [];
+
+        items.forEach(function (item) {
+          var name = item.name;
+          var path = item.path;
+
+          // Skip README.md and non-html/directory items
+          if (name.toLowerCase() === 'readme.md') return;
+          if (name.toLowerCase() === 'index.html') return; // This file itself
+
+          if (item.type === 'file' && /\.html?$/i.test(name)) {
+            // HTML file - check if already in manual config
+            var normalizedPath = path.replace(/\/?$/, '/');
+            if (manualMap[path] || manualMap[normalizedPath]) return;
+
+            var project = {
+              name: nameFromFile(name),
+              desc: '',
+              path: path
+            };
+            autoProjects.push(project);
+            metaPromises.push(
+              fetchHTMLMeta(path).then(function (meta) {
+                if (meta.title) project.desc = meta.title;
+                else if (meta.description) project.desc = meta.description;
+              })
+            );
+
+          } else if (item.type === 'dir') {
+            // Directory - check if already in manual config
+            var dirPath = path + '/';
+            if (manualMap[path] || manualMap[dirPath]) return;
+
+            // Check if directory has index.html
+            autoProjects.push({
+              name: nameFromFile(name),
+              desc: '',
+              path: dirPath,
+              _checkDir: true,
+              _dirPath: path
+            });
+          }
+        });
+
+        // For directories, check if they have index.html
+        var dirChecks = autoProjects
+          .filter(function (p) { return p._checkDir; })
+          .map(function (p) {
+            return fetch(API_URL + p._dirPath + '/')
+              .then(function (res) {
+                if (!res.ok) throw new Error('Dir check failed');
+                return res.json();
+              })
+              .then(function (files) {
+                var hasIndex = files.some(function (f) {
+                  return f.name.toLowerCase() === 'index.html';
+                });
+                if (!hasIndex) p._skip = true;
+                else {
+                  // Try to fetch meta from index.html
+                  return fetchHTMLMeta(p._dirPath + '/index.html').then(function (meta) {
+                    if (meta.title) p.desc = meta.title;
+                    else if (meta.description) p.desc = meta.description;
+                  });
+                }
+              })
+              .catch(function () {
+                p._skip = true;
+              });
+          });
+
+        return Promise.all(metaPromises.concat(dirChecks)).then(function () {
+          // Filter out skipped items and clean up
+          return autoProjects.filter(function (p) { return !p._skip; });
+        });
+      });
+  }
+
+  // ===== Main init =====
+  function init() {
+    // First render manual projects immediately
+    renderProjects(MANUAL_PROJECTS);
+
+    // Then scan API and merge
+    scanGitHubAPI()
+      .then(function (autoProjects) {
+        // Merge: manual projects first, then auto-detected
+        var manualPaths = {};
+        MANUAL_PROJECTS.forEach(function (p) {
+          manualPaths[p.path.replace(/\/?$/, '/')] = true;
+        });
+
+        var merged = MANUAL_PROJECTS.slice();
+        autoProjects.forEach(function (p) {
+          var key = p.path.replace(/\/?$/, '/');
+          if (!manualPaths[key]) {
+            merged.push(p);
+          }
+        });
+
+        renderProjects(merged);
+      })
+      .catch(function (err) {
+        console.warn('GitHub API scan failed, showing manual projects only:', err.message);
+        // Manual projects are already shown, nothing more to do
+      });
+  }
+
+  // Start
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
