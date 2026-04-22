@@ -68,6 +68,9 @@ button:active { transform: scale(0.95); }
   overflow-y: auto; overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   padding-bottom: calc(20px + var(--safe-bottom));
+  background: var(--bg-cream);
+  display: flex; flex-direction: column; align-items: center;
+  padding-left: 20px; padding-right: 20px;
 }
 .scene.active { transform: translateX(0); }
 .scene.left { transform: translateX(-100%); }
