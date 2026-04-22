@@ -21,6 +21,12 @@ export const state = Vue.reactive({
   recipeStep: 0,
   shakeInterval: null,
   makingTimer: null,
+  // 保存的成分信息
+  savedIcePositions: [],
+  savedToppingPositions: [],
+  // 饮用进度相关
+  sipProgress: 0, // 0-100
+  isSipping: false,
 });
 
 /* ===== COMPUTED ===== */

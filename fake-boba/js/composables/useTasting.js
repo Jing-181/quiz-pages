@@ -1,6 +1,8 @@
 import { state } from '../store/state.js';
 import { SIP_MESSAGES, RESULT_MESSAGES, TOPPING_STYLES } from '../data/constants.js';
 
+let sipInterval = null;
+
 /**
  * 品尝流程 composable
  *
@@ -11,21 +13,11 @@ export function useTasting() {
 
   /* ============================================================
    *  initTasting — 初始化品尝页
-   *  @param {Object} els - 组件提供的 DOM 元素引用
-   *    els.liquid           - 品尝页液体元素
-   *    els.cupBody          - 品尝页杯身元素
-   *    els.warmOverlay      - 暖色遮罩
-   *    els.iceContainer     - 冰块容器
-   *    els.sipDots          - 喝水进度点容器
-   *    els.sipProgress      - 进度文字
-   *    els.btnSip           - 喝一口按钮
-   *    els.btnSipWrap       - 按钮包裹层
-   *    els.btnResult        - 查看结果按钮
-   *    els.cupArea          - 杯子区域（粒子容器）
-   *    els.emotionBubble    - 情绪气泡
    * ============================================================ */
-  function initTasting(els) {
+  function initTasting(els, updateProgress) {
     state.sipCount = 0;
+    state.sipProgress = 0;
+    state.isSipping = false;
     els.liquid.style.height = '80%';
     els.liquid.style.background = state.liquidColor;
 
@@ -35,10 +27,13 @@ export function useTasting() {
     // Remove warm overlay
     els.warmOverlay.classList.remove('active');
 
-    // Add ice cubes
+    // Add ice cubes from saved positions
     addTastingIce(els.iceContainer);
 
-    // Build sip dots
+    // Add toppings from saved positions
+    addTastingToppings(els.toppingsContainer);
+
+    // Build sip dots (now for visual only)
     els.sipDots.innerHTML = '';
     for (var i = 0; i < 5; i++) {
       var dot = document.createElement('div');
@@ -47,7 +42,7 @@ export function useTasting() {
       els.sipDots.appendChild(dot);
     }
 
-    els.sipProgress.textContent = '第 0 / 5 口';
+    els.sipProgress.textContent = '饮用进度: 0%';
     els.btnSip.classList.remove('hidden');
     els.btnSipWrap.classList.remove('hidden');
     els.btnResult.classList.add('hidden');
@@ -60,76 +55,139 @@ export function useTasting() {
   }
 
   /* ============================================================
-   *  takeSip — 喝一口
+   *  addTastingIce — 品尝页添加冰块
    * ============================================================ */
-  function takeSip(els) {
-    if (state.sipCount >= 5) return;
-    state.sipCount++;
-
-    // Lower liquid
-    var newHeight = 80 - (state.sipCount * 16);
-    if (newHeight < 0) newHeight = 0;
-    els.liquid.style.height = newHeight + '%';
-
-    // Update progress
-    els.sipProgress.textContent = '第 ' + state.sipCount + ' / 5 口';
-
-    // Fill dot
-    var dot = document.getElementById('sip-dot-' + (state.sipCount - 1));
-    if (dot) dot.classList.add('filled');
-
-    // Create vortex at straw bottom
-    createVortex(els.cupArea);
-
-    // Fly out star or heart
-    createStarFly(els.cupArea);
-
-    // Show emotion bubble
-    showEmotion(els.emotionBubble);
-
-    // 3rd sip: warm overlay
-    if (state.sipCount === 3) {
-      els.warmOverlay.classList.add('active');
+  function addTastingIce(container) {
+    container.innerHTML = '';
+    var positions = state.savedIcePositions || [];
+    for (var i = 0; i < positions.length; i++) {
+      var pos = positions[i];
+      var ice = document.createElement('div');
+      ice.className = 'ice-cube ' + (pos.class || 'ice-cube-1');
+      ice.style.left = pos.left + '%';
+      ice.style.top = pos.top + '%';
+      ice.style.animationDelay = (i * 0.3) + 's';
+      container.appendChild(ice);
     }
+  }
 
-    if (state.sipCount >= 5) {
-      // Done drinking - special effects
-      setTimeout(function() {
+  /* ============================================================
+   *  addTastingToppings — 品尝页添加小料
+   * ============================================================ */
+  function addTastingToppings(container) {
+    container.innerHTML = '';
+    var toppings = state.savedToppingPositions || [];
+    for (var i = 0; i < toppings.length; i++) {
+      var item = toppings[i];
+      if (!item || !item.pos) continue;
+      
+      var dot = document.createElement('div');
+      dot.className = 'making-topping-dot show';
+      dot.style.left = item.pos.left + '%';
+      dot.style.bottom = item.pos.bottom + '%';
+      
+      var size = item.pos.style.size;
+      dot.style.width = size + 'px';
+      dot.style.height = size + 'px';
+
+      if (item.pos.style.shape === 'circle' || item.pos.style.shape === 'ellipse') {
+        dot.style.borderRadius = '50%';
+      } else if (item.pos.style.shape === 'square') {
+        dot.style.borderRadius = '2px';
+      } else if (item.pos.style.shape === 'rect') {
+        dot.style.borderRadius = '2px';
+      }
+
+      if (item.pos.style.extra && item.pos.style.extra.indexOf('background:') === 0) {
+        dot.style.cssText += ';' + item.pos.style.extra;
+      } else if (item.pos.style.extra && item.pos.style.extra.indexOf('box-shadow') === 0) {
+        dot.style.background = item.pos.style.color;
+        dot.style.cssText += ';' + item.pos.style.extra;
+      } else if (item.pos.style.extra && item.pos.style.extra.indexOf('transform:') === 0) {
+        dot.style.background = item.pos.style.color;
+        dot.style.cssText += ';' + item.pos.style.extra;
+      } else {
+        dot.style.background = item.pos.style.color;
+        if (item.pos.style.extra) dot.style.cssText += ';' + item.pos.style.extra;
+      }
+      
+      container.appendChild(dot);
+    }
+  }
+
+  /* ============================================================
+   *  startSipping — 开始持续饮用
+   * ============================================================ */
+  function startSipping(els, updateProgress, onComplete) {
+    if (state.isSipping || state.sipProgress >= 100) return;
+    
+    state.isSipping = true;
+    els.cupBody.classList.add('tilted');
+    
+    sipInterval = setInterval(function() {
+      if (!state.isSipping || state.sipProgress >= 100) {
+        stopSipping();
+        return;
+      }
+      
+      // Increase progress
+      state.sipProgress += 2;
+      if (state.sipProgress > 100) state.sipProgress = 100;
+      
+      // Update liquid height
+      var newHeight = 80 - (state.sipProgress * 0.8);
+      if (newHeight < 0) newHeight = 0;
+      els.liquid.style.height = newHeight + '%';
+      
+      // Update sip count for milestones
+      var newSipCount = Math.floor(state.sipProgress / 20);
+      if (newSipCount > state.sipCount) {
+        state.sipCount = newSipCount;
+        
+        // Update visual dots
+        var dot = document.getElementById('sip-dot-' + (state.sipCount - 1));
+        if (dot) dot.classList.add('filled');
+        
+        // Effects
+        createVortex(els.cupArea);
+        createStarFly(els.cupArea);
+        showEmotion(els.emotionBubble);
+        
+        // 3rd sip: warm overlay
+        if (state.sipCount === 3) {
+          els.warmOverlay.classList.add('active');
+        }
+      }
+      
+      updateProgress();
+      
+      if (state.sipProgress >= 100) {
+        stopSipping();
+        
+        // Done drinking - special effects
         els.btnSip.classList.add('hidden');
         els.btnSipWrap.classList.add('hidden');
         els.btnResult.classList.remove('hidden');
-
-        // Cup tilt
-        els.cupBody.classList.add('tilted');
 
         // Happy face
         showHappyFace(els.cupArea);
 
         // Confetti
         createConfetti(els.cupArea);
-      }, 1600);
-    }
+        
+        onComplete();
+      }
+    }, 50);
   }
 
   /* ============================================================
-   *  addTastingIce — 品尝页添加冰块
+   *  stopSipping — 停止饮用
    * ============================================================ */
-  function addTastingIce(container) {
-    container.innerHTML = '';
-    var count = state.iceCount;
-    if (count === 0) return;
-    var iceClasses = ['ice-cube-1', 'ice-cube-2', 'ice-cube-3'];
-
-    for (var i = 0; i < count; i++) {
-      var ice = document.createElement('div');
-      var cls = iceClasses[i % iceClasses.length];
-      ice.className = 'ice-cube ' + cls;
-      var left = 10 + Math.random() * 75;
-      var top = 10 + Math.random() * 50;
-      ice.style.left = left + '%';
-      ice.style.top = top + '%';
-      ice.style.animationDelay = (i * 0.5) + 's';
-      container.appendChild(ice);
+  function stopSipping() {
+    state.isSipping = false;
+    if (sipInterval) {
+      clearInterval(sipInterval);
+      sipInterval = null;
     }
   }
 
@@ -158,7 +216,7 @@ export function useTasting() {
     if (state.sipCount % 2 === 0) {
       star.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#FF6B8A"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
     } else {
-      star.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#FF6B8A"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+      star.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#FF6B8A"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
     }
     // Position at straw top
     star.style.right = '28px';
@@ -254,7 +312,8 @@ export function useTasting() {
 
   return {
     initTasting,
-    takeSip,
+    startSipping,
+    stopSipping,
     addTastingIce,
     createVortex,
     createStarFly,

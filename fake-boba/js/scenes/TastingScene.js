@@ -7,7 +7,7 @@ export default {
   data: function () {
     return {
       state: state,
-      sipProgressText: '\u7B2C 0 / 5 \u53E3',
+      sipProgressText: '饮用进度: 0%',
       btnSipHidden: false,
       btnSipWrapHidden: false,
       btnResultHidden: true,
@@ -40,6 +40,7 @@ export default {
         cupBody: self.$refs.tastingCupBody,
         warmOverlay: self.$refs.warmOverlay,
         iceContainer: self.$refs.tastingIceContainer,
+        toppingsContainer: self.$refs.tastingToppingsContainer,
         sipDots: self.$refs.sipDots,
         sipProgress: self.$refs.sipProgress,
         btnSip: self.$refs.btnSip,
@@ -49,18 +50,22 @@ export default {
         emotionBubble: self.$refs.emotionBubble,
       };
 
-      tasting.initTasting(els);
+      tasting.initTasting(els, self.updateProgress.bind(self));
 
-      self.sipProgressText = '\u7B2C 0 / 5 \u53E3';
+      self.sipProgressText = '饮用进度: 0%';
       self.btnSipHidden = false;
       self.btnSipWrapHidden = false;
       self.btnResultHidden = true;
     },
 
-    takeSip: function () {
+    updateProgress: function () {
+      this.sipProgressText = '饮用进度: ' + Math.round(this.state.sipProgress) + '%';
+    },
+
+    onStartSip: function () {
       var self = this;
       var tasting = useTasting();
-
+      
       var els = {
         liquid: self.$refs.tastingLiquid,
         cupBody: self.$refs.tastingCupBody,
@@ -75,19 +80,21 @@ export default {
         emotionBubble: self.$refs.emotionBubble,
       };
 
-      tasting.takeSip(els);
+      tasting.startSipping(els, self.updateProgress.bind(self), self.onComplete.bind(self));
+    },
 
-      // Update reactive data
-      self.sipProgressText = '\u7B2C ' + self.state.sipCount + ' / 5 \u53E3';
+    onStopSip: function () {
+      var tasting = useTasting();
+      tasting.stopSipping();
+    },
 
-      if (self.state.sipCount >= 5) {
-        // Delay hiding sip button and showing result button
-        setTimeout(function () {
-          self.btnSipHidden = true;
-          self.btnSipWrapHidden = true;
-          self.btnResultHidden = false;
-        }, 1600);
-      }
+    onComplete: function () {
+      var self = this;
+      setTimeout(function () {
+        self.btnSipHidden = true;
+        self.btnSipWrapHidden = true;
+        self.btnResultHidden = false;
+      }, 1600);
     },
 
     goToResult: function () {
@@ -99,7 +106,7 @@ export default {
     <div id="scene-tasting" class="scene">\
       <div class="warm-overlay" ref="warmOverlay"></div>\
       <div class="tasting-header">\
-        <h2 class="brand-title">\u4F60\u7684\u5976\u8336\u597D\u4E86\uFF01</h2>\
+        <h2 class="brand-title">你的奶茶好了！</h2>\
         <p class="sip-progress" ref="sipProgress">{{ sipProgressText }}</p>\
       </div>\
       <div class="tasting-cup-area" ref="tastingCupArea">\
@@ -113,6 +120,7 @@ export default {
         <div class="tasting-cup-body" ref="tastingCupBody">\
           <div class="tasting-liquid" ref="tastingLiquid"></div>\
           <div class="tasting-ice-container" ref="tastingIceContainer"></div>\
+          <div class="tasting-toppings-container" ref="tastingToppingsContainer"></div>\
         </div>\
       </div>\
       <div class="sip-dots" ref="sipDots"></div>\
@@ -120,9 +128,11 @@ export default {
         <div class="sip-pulse-ring"></div>\
         <div class="sip-pulse-ring"></div>\
         <div class="sip-pulse-ring"></div>\
-        <button class="btn-sip" ref="btnSip" :class="{ hidden: btnSipHidden }" @click="takeSip">\u559D\u4E00\u53E3\uFF01</button>\
+        <button class="btn-sip" ref="btnSip" :class="{ hidden: btnSipHidden }" \
+                @mousedown="onStartSip" @mouseup="onStopSip" @mouseleave="onStopSip"\
+                @touchstart="onStartSip" @touchend="onStopSip" @touchcancel="onStopSip">按住喝！</button>\
       </div>\
-      <button class="btn-primary" ref="btnResult" :class="{ hidden: btnResultHidden }" @click="goToResult">\u67E5\u770B\u7ED3\u679C\u5361</button>\
+      <button class="btn-primary" ref="btnResult" :class="{ hidden: btnResultHidden }" @click="goToResult">查看结果</button>\
       <!-- Emotion bubble -->\
       <emotion-bubble ref="emotionBubble" :show="false" />\
     </div>',

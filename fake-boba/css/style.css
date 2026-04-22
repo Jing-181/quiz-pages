@@ -1631,3 +1631,37 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
   0% { transform: scale(1) translateX(0); }
   100% { transform: scale(1.2) translateX(-30px); }
 }
+
+/* ===== Serving Cup Additions ===== */
+.serving-ice-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.serving-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.tasting-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}

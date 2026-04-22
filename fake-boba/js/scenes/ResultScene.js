@@ -51,7 +51,7 @@ export default {
         var script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
         script.onload = function () { self.doSaveCard(); };
-        script.onerror = function () { alert('\u56FE\u7247\u5E93\u52A0\u8F7D\u5931\u8D25\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u540E\u91CD\u8BD5'); };
+        script.onerror = function () { alert('图片库加载失败，请检查网络后重试'); };
         document.head.appendChild(script);
       } else {
         this.doSaveCard();
@@ -67,11 +67,11 @@ export default {
         useCORS: true,
       }).then(function (canvas) {
         var link = document.createElement('a');
-        link.download = '\u5047\u88C5\u559D\u5976\u8336-' + self.state.recipeName + '.png';
+        link.download = '假装喝奶茶-' + self.state.recipeName + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
       }).catch(function () {
-        alert('\u4FDD\u5B58\u5931\u8D25\uFF0C\u8BF7\u91CD\u8BD5');
+        alert('保存失败，请重试');
       });
     },
 
@@ -88,8 +88,12 @@ export default {
       this.state.recipeCal = 0;
       this.state.liquidColor = '#C4956A';
       this.state.sipCount = 0;
+      this.state.sipProgress = 0;
+      this.state.isSipping = false;
       this.state.shakeProgress = 0;
       this.state.isShaking = false;
+      this.state.savedIcePositions = [];
+      this.state.savedToppingPositions = [];
       if (this.state.shakeInterval) {
         clearInterval(this.state.shakeInterval);
         this.state.shakeInterval = null;
@@ -103,11 +107,11 @@ export default {
     <div id="scene-result" class="scene">\
       <div class="result-card" ref="resultCard">\
         <div class="result-card-header">\
-          <h3 class="brand-title">\u5047\u88C5\u559D\u5976\u8336</h3>\
-          <p>Fake Boba</p>\
+          <h3 class="brand-title">喝完啦！</h3>\
+          <p>太棒了，又假装喝了一杯</p>\
         </div>\
         <div class="result-card-body">\
-          <p class="result-subtitle">\u4ECA\u5929\u6211\u5047\u88C5\u559D\u4E86</p>\
+          <p class="result-subtitle">今天你假装喝了</p>\
           <!-- Mini cup -->\
           <div class="result-cup-mini">\
             <div class="result-cup-mini-straw"></div>\
@@ -125,12 +129,12 @@ export default {
           <p class="result-message">{{ personalMessage }}</p>\
           <div class="result-calories">\
             <span>{{ calories }}</span>\
-            <span class="unit"> kcal \u70ED\u91CF\u5DF2\u8282\u7701</span>\
+            <span class="unit"> kcal 热量已节省</span>\
           </div>\
         </div>\
         <div class="result-actions">\
-          <button class="btn-save" @click="saveCard">\u4FDD\u5B58\u56FE\u7247</button>\
-          <button class="btn-retry" @click="resetAll">\u518D\u6765\u4E00\u676F</button>\
+          <button class="btn-save" @click="saveCard">保存图片</button>\
+          <button class="btn-retry" @click="resetAll">再来一杯</button>\
         </div>\
       </div>\
     </div>',

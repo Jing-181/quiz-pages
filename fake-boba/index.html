@@ -1960,8 +1960,10 @@ var useMaking = function() {
    * ============================================================ */
   function addIce(container, count) {
     var iceClasses = ['ice-cube-1', 'ice-cube-2', 'ice-cube-3'];
+    // 增加冰块数量，确保视觉上明显多于当前版本
+    var actualCount = Math.max(count * 2, 6); // 至少6个冰块
 
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < actualCount; i++) {
       (function(idx) {
         setTimeout(function() {
           var ice = document.createElement('div');
@@ -1969,15 +1971,15 @@ var useMaking = function() {
           ice.className = 'ice-cube ' + cls;
           // Position randomly in upper-middle area of cup
           var left = 10 + Math.random() * 75;
-          var top = 10 + Math.random() * 50;
+          var top = 10 + Math.random() * 60;
           ice.style.left = left + '%';
           ice.style.top = top + '%';
-          ice.style.animationDelay = (idx * 0.5) + 's, ' + (idx * 0.7) + 's';
+          ice.style.animationDelay = (idx * 0.3) + 's, ' + (idx * 0.5) + 's';
           // Drop animation
           ice.style.opacity = '0';
-          ice.style.animation = 'iceDrop 0.5s ease-out forwards, iceFloat 3s ease-in-out ' + (idx * 0.5) + 's infinite';
+          ice.style.animation = 'iceDrop 0.5s ease-out forwards, iceFloat 3s ease-in-out ' + (idx * 0.3) + 's infinite';
           container.appendChild(ice);
-        }, idx * 200);
+        }, idx * 100);
       })(i);
     }
   }
@@ -2001,9 +2003,10 @@ var useMaking = function() {
     var dot = document.createElement('div');
     dot.className = 'making-topping-dot';
 
-    // Position randomly in lower part of cup
-    var left = 15 + Math.random() * 70;
-    var bottom = 5 + Math.random() * 40;
+    // 修正小料添加位置，使其准确落入奶茶杯中
+    // 计算杯子中心区域，确保小料落入杯中
+    var left = 25 + Math.random() * 50; // 杯子中心区域
+    var bottom = 10 + Math.random() * 50; // 杯子下半部分
     dot.style.left = left + '%';
     dot.style.bottom = bottom + '%';
 
@@ -2042,8 +2045,17 @@ var useMaking = function() {
       animName = 'floatIn';
     }
 
-    dot.style.animation = animName + ' 0.6s ease-out forwards';
+    // 添加入场动画，模拟从杯子上方落入
+    dot.style.opacity = '0';
+    dot.style.transform = 'translateY(-50px) scale(0.5)';
+    dot.style.transition = 'opacity 0.3s ease, transform 0.6s ease';
     container.appendChild(dot);
+    
+    // 触发动画
+    setTimeout(function() {
+      dot.style.opacity = '1';
+      dot.style.transform = 'translateY(0) scale(1)';
+    }, 50);
   }
 
   /* ============================================================
@@ -2178,6 +2190,130 @@ var useMaking = function() {
           els.servingLiquid.style.height = '70%';
           els.servingLiquid.style.background = state.liquidColor;
           
+          // 添加冰块到饮用杯
+          var servingIceContainer = els.servingCup.querySelector('.serving-ice-container') || document.createElement('div');
+          if (!servingIceContainer.classList.contains('serving-ice-container')) {
+            servingIceContainer.className = 'serving-ice-container';
+            servingIceContainer.style.position = 'absolute';
+            servingIceContainer.style.top = '0';
+            servingIceContainer.style.left = '0';
+            servingIceContainer.style.right = '0';
+            servingIceContainer.style.bottom = '0';
+            servingIceContainer.style.zIndex = '2';
+            servingIceContainer.style.pointerEvents = 'none';
+            servingIceContainer.style.overflow = 'hidden';
+            els.servingCup.appendChild(servingIceContainer);
+          }
+          servingIceContainer.innerHTML = '';
+          
+          if (state.iceCount > 0) {
+            var iceClasses = ['ice-cube-1', 'ice-cube-2', 'ice-cube-3'];
+            for (var i = 0; i < state.iceCount; i++) {
+              (function(idx) {
+                setTimeout(function() {
+                  var ice = document.createElement('div');
+                  var cls = iceClasses[idx % iceClasses.length];
+                  ice.className = 'ice-cube ' + cls;
+                  var left = 10 + Math.random() * 75;
+                  var top = 10 + Math.random() * 50;
+                  ice.style.left = left + '%';
+                  ice.style.top = top + '%';
+                  ice.style.animationDelay = (idx * 0.5) + 's';
+                  servingIceContainer.appendChild(ice);
+                }, idx * 200);
+              })(i);
+            }
+          }
+          
+          // 添加小料到饮用杯
+          var servingToppingsContainer = els.servingCup.querySelector('.serving-toppings-container') || document.createElement('div');
+          if (!servingToppingsContainer.classList.contains('serving-toppings-container')) {
+            servingToppingsContainer.className = 'serving-toppings-container';
+            servingToppingsContainer.style.position = 'absolute';
+            servingToppingsContainer.style.top = '0';
+            servingToppingsContainer.style.left = '0';
+            servingToppingsContainer.style.right = '0';
+            servingToppingsContainer.style.bottom = '0';
+            servingToppingsContainer.style.zIndex = '1';
+            servingToppingsContainer.style.pointerEvents = 'none';
+            servingToppingsContainer.style.overflow = 'hidden';
+            els.servingCup.appendChild(servingToppingsContainer);
+          }
+          servingToppingsContainer.innerHTML = '';
+          
+          for (var j = 0; j < state.toppings.length; j++) {
+            (function(index) {
+              setTimeout(function() {
+                var toppingName = state.toppings[index];
+                var style = TOPPING_STYLES[toppingName];
+                if (!style) return;
+                
+                // 特殊处理芝士奶盖
+                if (style.shape === 'layer') {
+                  var cream = document.createElement('div');
+                  cream.className = 'cream-layer';
+                  cream.style.position = 'absolute';
+                  cream.style.top = '0';
+                  cream.style.left = '0';
+                  cream.style.height = '12px';
+                  cream.style.background = style.color;
+                  cream.style.borderRadius = '0';
+                  cream.style.zIndex = '2';
+                  cream.style.width = '0';
+                  cream.style.transition = 'width 1s ease-out';
+                  els.servingCup.appendChild(cream);
+                  setTimeout(function() {
+                    cream.classList.add('spread');
+                  }, 50);
+                  return;
+                }
+                
+                var dot = document.createElement('div');
+                dot.className = 'making-topping-dot show';
+                
+                var left = 15 + Math.random() * 70;
+                var bottom = 5 + Math.random() * 40;
+                dot.style.left = left + '%';
+                dot.style.bottom = bottom + '%';
+                
+                var size = style.size;
+                dot.style.width = size + 'px';
+                dot.style.height = size + 'px';
+                
+                if (style.shape === 'circle' || style.shape === 'ellipse') {
+                  dot.style.borderRadius = '50%';
+                } else if (style.shape === 'square') {
+                  dot.style.borderRadius = '2px';
+                } else if (style.shape === 'rect') {
+                  dot.style.borderRadius = '2px';
+                }
+                
+                if (style.extra && style.extra.indexOf('background:') === 0) {
+                  dot.style.cssText += ';' + style.extra;
+                } else if (style.extra && style.extra.indexOf('box-shadow') === 0) {
+                  dot.style.background = style.color;
+                  dot.style.cssText += ';' + style.extra;
+                } else if (style.extra && style.extra.indexOf('transform:') === 0) {
+                  dot.style.background = style.color;
+                  dot.style.cssText += ';' + style.extra;
+                } else {
+                  dot.style.background = style.color;
+                  if (style.extra) dot.style.cssText += ';' + style.extra;
+                }
+                
+                var animName = 'bounceIn';
+                if (toppingName === '椰果' || toppingName === '仙草' || toppingName === '奥利奥碎') {
+                  animName = 'spinIn';
+                } else if (toppingName === '布丁') {
+                  animName = 'floatIn';
+                }
+                
+                dot.style.animation = animName + ' 0.6s ease-out forwards';
+                servingToppingsContainer.appendChild(dot);
+              }, index * 300);
+            })(j);
+          }
+          
           // 饮用杯放大动画
           setTimeout(function() {
             els.servingCup.classList.add('scaling');
@@ -2205,22 +2341,82 @@ var useMaking = function() {
     // Update reference in els
     els.btnShake = newBtn;
 
-    // Long press: mousedown / touchstart
-    newBtn.addEventListener('mousedown', function() {
-      startShaking(els, onComplete);
-    });
-    newBtn.addEventListener('touchstart', function() {
-      startShaking(els, onComplete);
-    }, { passive: true });
-    window.addEventListener('mouseup', function() {
-      stopShaking(els);
-    });
-    window.addEventListener('touchend', function() {
-      stopShaking(els);
-    });
-    window.addEventListener('touchcancel', function() {
-      stopShaking(els);
-    });
+    // 基于鼠标/触摸的交互摇晃机制
+    var isDragging = false;
+    var startX, startY;
+    var shakeProgress = 0;
+    var shakeThreshold = 10; // 摇晃阈值
+    var shakeIncrement = 2; // 每次摇晃增加的进度
+    
+    // 开始拖动
+    function startDrag(e) {
+      isDragging = true;
+      if (e.type === 'mousedown') {
+        startX = e.clientX;
+        startY = e.clientY;
+      } else {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }
+      els.shakerArea.classList.add('shaking');
+      els.shakerLiquid.classList.add('wobbling');
+    }
+    
+    // 拖动中
+    function drag(e) {
+      if (!isDragging) return;
+      
+      var currentX, currentY;
+      if (e.type === 'mousemove') {
+        currentX = e.clientX;
+        currentY = e.clientY;
+      } else {
+        currentX = e.touches[0].clientX;
+        currentY = e.touches[0].clientY;
+      }
+      
+      // 计算拖动距离
+      var deltaX = Math.abs(currentX - startX);
+      var deltaY = Math.abs(currentY - startY);
+      
+      // 如果拖动距离超过阈值，增加摇晃进度
+      if (deltaX > shakeThreshold || deltaY > shakeThreshold) {
+        state.shakeProgress += shakeIncrement;
+        if (state.shakeProgress > 100) state.shakeProgress = 100;
+        updateShakeRing(els.shakeRingFill, els.shakeCountText);
+        
+        // 创建摇晃气泡
+        if (Math.random() > 0.7) {
+          createShakeBubble(els.shakerLiquid);
+        }
+        
+        // 重置起始位置
+        startX = currentX;
+        startY = currentY;
+        
+        // 检查是否摇晃完成
+        if (state.shakeProgress >= 100) {
+          onShakeComplete(els, onComplete);
+          isDragging = false;
+        }
+      }
+    }
+    
+    // 结束拖动
+    function endDrag() {
+      isDragging = false;
+      els.shakerArea.classList.remove('shaking');
+      els.shakerLiquid.classList.remove('wobbling');
+    }
+    
+    // 绑定事件
+    newBtn.addEventListener('mousedown', startDrag);
+    newBtn.addEventListener('touchstart', startDrag, { passive: true });
+    window.addEventListener('mousemove', drag);
+    window.addEventListener('touchmove', drag, { passive: true });
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
+    window.addEventListener('touchcancel', endDrag);
   }
 
   /* ============================================================
@@ -2368,6 +2564,67 @@ var useTasting = function() {
         createConfetti(els.cupArea);
       }, 1600);
     }
+  }
+
+  /* ============================================================
+   *  initDrinkInteraction — 初始化饮用交互
+   * ============================================================ */
+  function initDrinkInteraction(els, onComplete) {
+    var isDrinking = false;
+    var drinkInterval;
+    var drinkProgress = 0;
+    var maxDrinkProgress = 100;
+    var drinkSpeed = 5; // 每秒饮用进度
+    
+    // 开始饮用
+    function startDrinking() {
+      if (state.sipCount >= 5) return;
+      isDrinking = true;
+      els.cupBody.classList.add('tilted');
+      
+      drinkInterval = setInterval(function() {
+        drinkProgress += drinkSpeed;
+        if (drinkProgress >= maxDrinkProgress) {
+          drinkProgress = maxDrinkProgress;
+          stopDrinking();
+          takeSip(els);
+          drinkProgress = 0;
+        }
+      }, 100);
+    }
+    
+    // 停止饮用
+    function stopDrinking() {
+      isDrinking = false;
+      clearInterval(drinkInterval);
+      els.cupBody.classList.remove('tilted');
+      
+      // 根据饮用进度显示相应评价
+      if (drinkProgress > 0 && drinkProgress < maxDrinkProgress) {
+        var message = '';
+        if (drinkProgress < 30) {
+          message = '浅尝一口～';
+        } else if (drinkProgress < 70) {
+          message = '味道不错！';
+        } else {
+          message = '好满足！';
+        }
+        showEmotion(els.emotionBubble, message);
+      }
+      
+      // 检查是否喝完
+      if (state.sipCount >= 5) {
+        if (onComplete) onComplete();
+      }
+    }
+    
+    // 绑定事件到饮用杯
+    var cupArea = els.cupArea;
+    cupArea.addEventListener('mousedown', startDrinking);
+    cupArea.addEventListener('touchstart', startDrinking, { passive: true });
+    window.addEventListener('mouseup', stopDrinking);
+    window.addEventListener('touchend', stopDrinking);
+    window.addEventListener('touchcancel', stopDrinking);
   }
 
   /* ============================================================
@@ -2883,7 +3140,7 @@ var RecipeScene = {
       <p class="step-label">{{ stepLabelText }}</p>\
 \
       <!-- Step 1: Cup type -->\
-      <div class="step-panel" v-show="recipeStep === 0">\
+      <div class="step-panel" :class="{ active: recipeStep === 0 }">\
         <div class="cup-options">\
           <div v-for="cup in cupTypes" :key="cup.value"\
                class="cup-card"\
@@ -2896,7 +3153,7 @@ var RecipeScene = {
       </div>\
 \
       <!-- Step 2: Tea -->\
-      <div class="step-panel" v-show="recipeStep === 1">\
+      <div class="step-panel" :class="{ active: recipeStep === 1 }">\
         <div class="tea-grid">\
           <div v-for="tea in teaOptions" :key="tea.name"\
                class="tea-item"\
@@ -2909,7 +3166,7 @@ var RecipeScene = {
       </div>\
 \
       <!-- Step 3: Toppings -->\
-      <div class="step-panel" v-show="recipeStep === 2">\
+      <div class="step-panel" :class="{ active: recipeStep === 2 }">\
         <div class="topping-pills">\
           <div v-for="name in toppingOptions" :key="name"\
                class="topping-pill"\
@@ -2922,7 +3179,7 @@ var RecipeScene = {
       </div>\
 \
       <!-- Step 4: Sweetness & Ice -->\
-      <div class="step-panel" v-show="recipeStep === 3">\
+      <div class="step-panel" :class="{ active: recipeStep === 3 }">\
         <div class="slider-group">\
           <p class="slider-label">\u751C\u5EA6</p>\
           <div class="segment-control">\
@@ -3017,7 +3274,7 @@ var MakingScene = {
       });
     },
   },
-  template: '
+  template: `
     <div id="scene-making" class="scene">
       <h2 class="making-title brand-title" ref="makingTitle">{{ makingTitle }}</h2>
       
@@ -3067,7 +3324,7 @@ var MakingScene = {
         <button class="btn-shake" ref="btnShake">💪 按住摇一摇！</button>
         <p class="shake-count-text" ref="shakeCountText">0%</p>
       </div>
-    </div>',
+    </div>`,
 };
 
 // ===== js/scenes/TastingScene.js =====
