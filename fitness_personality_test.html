@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FPT · 健身人格测试</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --grad-start: #FF6B35;
+      --grad-mid: #F72585;
+      --grad-end: #7209B7;
+      --accent-green: #06D6A0;
+      --accent-yellow: #FFD166;
+      --accent-cyan: #4CC9F0;
+      --glass-bg: rgba(255, 255, 255, 0.10);
+      --glass-bg-hover: rgba(255, 255, 255, 0.18);
+      --glass-bg-sel: rgba(255, 255, 255, 0.22);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-border-sel: rgba(255, 255, 255, 0.35);
+      --text-primary: #FFFFFF;
+      --text-secondary: rgba(255, 255, 255, 0.72);
+      --text-muted: rgba(255, 255, 255, 0.42);
+      --bg-dark-1: #0f0c29;
+      --bg-dark-2: #1a1a3e;
+      --bg-dark-3: #24243e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      overflow: hidden;
+      height: 100dvh;
+      background: linear-gradient(160deg, var(--bg-dark-1) 0%, var(--bg-dark-2) 50%, var(--bg-dark-3) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: var(--text-primary);
+    }
+
+    .fH { font-family: 'Outfit', 'PingFang SC', sans-serif; }
+
+    #app {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      max-height: 860px;
+      background: linear-gradient(160deg, var(--bg-dark-1) 0%, var(--bg-dark-2) 50%, var(--bg-dark-3) 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    @media(min-height:900px) {
+      #app {
+        border-radius: 28px;
+        height: calc(100dvh - 48px);
+        box-shadow: 0 0 80px rgba(247, 37, 133, 0.15), 0 0 160px rgba(114, 9, 183, 0.08);
+      }
+    }
+
+    /* Background decorative orbs */
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-orb-1 {
+      width: 280px; height: 280px;
+      background: rgba(255, 107, 53, 0.18);
+      top: -80px; right: -60px;
+      animation: drift1 12s ease-in-out infinite;
+    }
+    .bg-orb-2 {
+      width: 240px; height: 240px;
+      background: rgba(247, 37, 133, 0.14);
+      bottom: 10%; left: -70px;
+      animation: drift2 15s ease-in-out infinite;
+    }
+    .bg-orb-3 {
+      width: 200px; height: 200px;
+      background: rgba(114, 9, 183, 0.12);
+      top: 40%; right: -40px;
+      animation: drift3 18s ease-in-out infinite;
+    }
+
+    @keyframes drift1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-30px, 40px) scale(1.1); }
+    }
+    @keyframes drift2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, -30px) scale(1.15); }
+    }
+    @keyframes drift3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-20px, -40px) scale(1.08); }
+    }
+
+    /* Glass card utility */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+    }
+
+    /* Header */
+    #hdr {
+      flex-shrink: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hLogo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.2em;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hTitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+    }
+
+    .hTag {
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      color: white;
+    }
+
+    /* Scene containers */
+    .sc {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .sc.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+    }
+
+    /* ========== START ========== */
+    #sStart {
+      align-items: center;
+      justify-content: center;
+      padding: 24px 24px 32px;
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .logoWrap {
+      width: 120px;
+      height: 120px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(247,37,133,0.2));
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 60px;
+      animation: float 4s ease-in-out infinite;
+      box-shadow: 0 8px 40px rgba(247, 37, 133, 0.15);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-12px) rotate(2deg); }
+    }
+
+    .sTitle {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sSub {
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .infoCard {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 13px;
+      line-height: 2;
+      color: var(--text-secondary);
+      text-align: left;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+
+    .infoCard strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .iTag {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      color: white;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .btnStart {
+      width: 100%;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      padding: 18px 0;
+      border: none;
+      border-radius: 18px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 30px rgba(247, 37, 133, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btnStart::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--grad-mid), var(--grad-end));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btnStart:hover::before { opacity: 1; }
+    .btnStart:active { transform: scale(0.97); }
+
+    .btnStart span {
+      position: relative;
+      z-index: 1;
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.6;
+      margin-top: 4px;
+      letter-spacing: 0.25em;
+    }
+
+    .sDeco {
+      margin-top: 28px;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+    }
+
+    /* ========== QUIZ ========== */
+    #sQuiz { z-index: 8; }
+
+    .qBody {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 18px 18px 12px;
+      overflow: hidden;
+    }
+
+    .pRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .pLbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+    }
+
+    .pLbl em {
+      color: var(--accent-cyan);
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .pMod {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      opacity: 0.6;
+    }
+
+    .pTrack {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .pFill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--grad-start), var(--grad-mid), var(--grad-end));
+      transition: width 0.4s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .qN {
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 0.2em;
+      margin-bottom: 6px;
+    }
+
+    .qT {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+
+    .qJp {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+      font-style: italic;
+    }
+
+    .oWrap {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .oWrap::-webkit-scrollbar { width: 3px; }
+    .oWrap::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+    .opt {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 14px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .opt:hover {
+      background: var(--glass-bg-hover);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .opt.sel {
+      background: var(--glass-bg-sel);
+      border-color: var(--glass-border-sel);
+      box-shadow: 0 0 24px rgba(247, 37, 133, 0.15), inset 0 0 20px rgba(255, 107, 53, 0.05);
+    }
+
+    .oK {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .opt.sel .oK {
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      border-color: transparent;
+      color: white;
+    }
+
+    .oT {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      padding-top: 3px;
+      transition: color 0.2s ease;
+    }
+
+    .opt.sel .oT { color: var(--text-primary); }
+
+    .qFt {
+      flex-shrink: 0;
+      padding-top: 10px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btnP {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btnP:active { transform: scale(0.97); }
+
+    .btnNx {
+      flex: 2;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 13px 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      cursor: not-allowed;
+      transition: all 0.2s ease;
+    }
+
+    .btnNx.on {
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 20px rgba(247, 37, 133, 0.25);
+      cursor: pointer;
+    }
+
+    .btnNx.on:active { transform: scale(0.97); }
+
+    /* ========== LOADING ========== */
+    #sLoad {
+      background: linear-gradient(160deg, var(--bg-dark-1) 0%, var(--bg-dark-2) 50%, var(--bg-dark-3) 100%);
+      z-index: 40;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lFig {
+      width: 110px;
+      height: 110px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,107,53,0.2), rgba(247,37,133,0.15));
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      margin-bottom: 28px;
+      animation: pulse 1.5s ease-in-out infinite;
+      box-shadow: 0 8px 40px rgba(247, 37, 133, 0.2);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .lMsg {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 12px 28px;
+      border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 0.06em;
+      text-align: center;
+      min-width: 240px;
+      transition: opacity 0.3s;
+    }
+
+    .lSub {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+    }
+
+    .dots span {
+      display: inline-block;
+      animation: dF 1.2s ease infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: .2s; }
+    .dots span:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes dF {
+      0%, 80%, 100% { opacity: .25; }
+      40% { opacity: 1; }
+    }
+
+    /* ========== RESULT ========== */
+    #sResult { z-index: 50; }
+
+    .rScr {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .rScr::-webkit-scrollbar { width: 4px; }
+    .rScr::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+
+    .rHero {
+      padding: 28px 22px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rHero::after {
+      content: 'FPT';
+      position: absolute;
+      right: -10px;
+      top: -8px;
+      font-size: 90px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.04);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .rBadge {
+      display: inline-block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .rEmoji {
+      width: 130px;
+      height: 130px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .rEn {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: var(--accent-cyan);
+      margin-bottom: 6px;
+    }
+
+    .rNm {
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      letter-spacing: 0.04em;
+    }
+
+    .rBf {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.7;
+      padding: 10px 18px;
+      border-radius: 14px;
+      max-width: 300px;
+      box-shadow: 0 4px 20px rgba(247, 37, 133, 0.2);
+    }
+
+    .rBody { padding: 18px 18px 28px; }
+
+    .rCard {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .rCT {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .rCT::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.15), transparent);
+    }
+
+    .rDes {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+    }
+
+    .pTags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pTag {
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 10px;
+      letter-spacing: 0.03em;
+      color: white;
+    }
+
+    .dBars { margin-top: 14px; }
+
+    .dRow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .dLbl {
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 64px;
+      flex-shrink: 0;
+      text-align: right;
+      letter-spacing: 0.02em;
+    }
+
+    .dTrk {
+      flex: 1;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .dFil {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.9s cubic-bezier(.34, 1.56, .64, 1) 0.25s;
+    }
+
+    .dVal {
+      font-family: 'Outfit', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      width: 28px;
+      text-align: right;
+    }
+
+    .btnR {
+      width: 100%;
+      margin-top: 6px;
+      background: linear-gradient(135deg, var(--grad-start), var(--grad-mid));
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      padding: 18px;
+      border: none;
+      border-radius: 18px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 30px rgba(247, 37, 133, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btnR::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--grad-mid), var(--grad-end));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btnR:hover::before { opacity: 1; }
+    .btnR:active { transform: scale(0.97); }
+
+    .btnR span {
+      position: relative;
+      z-index: 1;
+      display: block;
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.5;
+      margin-top: 4px;
+      letter-spacing: 0.2em;
+    }
+
+    /* Particle FX */
+    .ptcl {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: ptclAnim 0.6s ease-out forwards;
+    }
+
+    @keyframes ptclAnim {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Background orbs -->
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <header id="hdr">
+      <span class="hLogo">FPT</span>
+      <span class="hTitle">健身人格测试</span>
+      <div class="hTag">TEST</div>
+    </header>
+
+    <div style="flex:1;position:relative;overflow:hidden;">
+      <!-- START -->
+      <div id="sStart" class="sc">
+        <div class="logoWrap">💪</div>
+        <div class="sTitle fH">你是哪种<br>健身人格？</div>
+        <div class="sSub fH">Fitness Personality Test</div>
+        <div class="infoCard">
+          📋 共 <strong>17 题</strong>，约 <strong>3 分钟</strong>完成<br>
+          🔥 揭晓你的健身房隐藏人设<br>
+          🎧 <span class="iTag">开音量</span> 享受运动节拍 BGM ✦
+        </div>
+        <button class="btnStart fH" onclick="startQuiz()">开始测试<span>START YOUR JOURNEY →</span></button>
+        <div class="sDeco">DISCOVER YOUR FITNESS DNA</div>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="sQuiz" class="sc hidden">
+        <div class="qBody">
+          <div>
+            <div class="pRow">
+              <span class="pLbl fH">进度 <em id="qC">01</em> / <span id="qT">17</span></span>
+              <span class="pMod" id="qMod"></span>
+            </div>
+            <div class="pTrack">
+              <div class="pFill" id="pF" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="qN fH" id="qN">Q.01</div>
+          <div class="qT" id="qTx">载入中...</div>
+          <div class="qJp" id="qJp"></div>
+          <div class="oWrap" id="opts"></div>
+          <div class="qFt">
+            <button class="btnP fH" id="btnP" onclick="goBack()" style="display:none">← 上题</button>
+            <button class="btnNx fH" id="btnNx" onclick="goNext()" disabled>下一题 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOADING -->
+      <div id="sLoad" class="sc hidden">
+        <div class="lFig" id="lF">🧬</div>
+        <div class="lMsg fH" id="lM">正在分析你的健身DNA<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+        <div class="lSub fH">ANALYZING YOUR FITNESS PROFILE</div>
+      </div>
+
+      <!-- RESULT -->
+      <div id="sResult" class="sc hidden">
+        <div class="rScr">
+          <div class="rHero" id="rH">
+            <div class="rBadge fH">YOUR FITNESS TYPE · 你的健身人格</div>
+            <div class="rEmoji" id="rEm"></div>
+            <div class="rEn fH" id="rEn"></div>
+            <div class="rNm fH" id="rNm"></div>
+            <div class="rBf" id="rBf"></div>
+          </div>
+          <div class="rBody">
+            <div class="rCard">
+              <div class="rCT fH">深度解析 · CHARACTER ANALYSIS</div>
+              <p class="rDes" id="rDes"></p>
+            </div>
+            <div class="rCard">
+              <div class="rCT fH">巅峰属性 · PEAK STATS</div>
+              <div class="pTags" id="rPk"></div>
+              <div class="dBars" id="rDm"></div>
+            </div>
+            <button class="btnR fH" onclick="resetQuiz()">再来一次<span>TRY AGAIN →</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── DIMENSIONS ──────────────────────────────────────────
+    const DIM_LABELS = ['力量狂热', '有氧达人', '社交健身', '自律指数', '装备党', '饮食管理', '佛系程度'];
+    const DIM_COLORS = ['#FF6B35', '#4CC9F0', '#06D6A0', '#F72585', '#FFD166', '#E040FB', '#7B68EE'];
+
+    // ── 8 PERSONAS ─────────────────────────────────────────
+    const PERSONAS = [
+      {
+        id: 'iron_veteran', enName: 'IRON VETERAN', name: '铁馆老炮', emoji: '🏋️', color: '#FF6B35',
+        brief: '深蹲架就是我的王座，蛋白粉是我的圣水。',
+        desc: '你是健身房的常驻居民，连保洁阿姨都认识你。你的训练日志比日记还厚，对每一个肌群的孤立动作如数家珍。你能精确地说出自己体脂率的小数点后两位，并且对"腿日"有一种近乎宗教般的虔诚。你的衣柜里80%是速干衣，冰箱里常年备着鸡胸肉和西兰花。朋友约饭你永远在"减脂期"或"增肌期"，但你乐在其中——因为每一次突破PR的那一刻，所有的自律都值了。',
+        peaks: ['力量狂热 MAX', '自律指数 MAX', '饮食管理 HIGH'],
+        attributes: [1, -1, 0, 1, 0.5, 1, -1]
+      },
+      {
+        id: 'yoga_fairy', enName: 'YOGA FAIRY', name: '瑜伽仙女', emoji: '🧘‍♀️', color: '#06D6A0',
+        brief: '身体柔软到可以把自己打成蝴蝶结。',
+        desc: '你追求的不是肌肉的膨胀，而是身心的和谐统一。你的朋友圈充满了日落冥想照和完美倒立的照片。你对每一个体式的梵文名称了如指掌，精油和颂钵是你生活的一部分。你相信呼吸的力量可以治愈一切，并且试图让身边每一个焦虑的朋友都来尝试瑜伽。你的柔韧性让物理治疗师都自愧不如，而你内心深处的平静，是健身房里最稀缺的品质。',
+        peaks: ['佛系程度 MAX', '自律指数 HIGH', '有氧达人 HIGH'],
+        attributes: [-1, 0.5, 0, 0.5, -0.5, 0, 1]
+      },
+      {
+        id: 'run_maniac', enName: 'RUN MANIAC', name: '跑步狂人', emoji: '🏃', color: '#4CC9F0',
+        brief: '跑鞋比男朋友还多，马拉松奖牌挂满一面墙。',
+        desc: '你是一个纯粹的跑者。无论刮风下雨、严寒酷暑，你都会准时出现在跑道上。你的手机里装满了跑步APP，对配速、心率、步频的执着堪比工程师对代码的追求。你能在跑步时思考人生、规划工作、甚至构思晚餐菜单。你参加过无数场比赛，从5K到全马，每一块奖牌背后都是一段用汗水书写的故事。对你来说，跑步不是运动，是一种生活方式。',
+        peaks: ['有氧达人 MAX', '自律指数 MAX', '佛系程度 HIGH'],
+        attributes: [-0.5, 1, -0.5, 1, -1, 0, 0.5]
+      },
+      {
+        id: 'crossfit_warrior', enName: 'CF WARRIOR', name: 'CrossFit 战士', emoji: '🔥', color: '#F72585',
+        brief: 'WOD 就是我的信仰，倒地也要完成最后一组。',
+        desc: '你是健身房里最疯狂的存在。当别人在做二头弯举时，你已经在做翻轮胎和绳索攀爬了。你对 WOD（Workout of the Day）有一种近乎偏执的热情，每次训练都把自己推向极限。你的手掌全是老茧，膝盖上的淤青是你的勋章。你热衷于把训练成绩发到群里，并且永远相信"再硬核一点"是解决一切问题的答案。CF box 就你的第二个家。',
+        peaks: ['力量狂热 MAX', '社交健身 HIGH', '自律指数 HIGH'],
+        attributes: [1, 0.5, 1, 0.5, 0, 0, -1]
+      },
+      {
+        id: 'home_chill', enName: 'HOME CHILL', name: '居家佛系', emoji: '🛋️', color: '#FFD166',
+        brief: '瑜伽垫上躺平也是一种锻炼，对吧？',
+        desc: '你对健身的态度可以用两个字概括：随缘。你买过的健身装备比用过的多十倍，瑜伽垫目前的主要功能是午睡。你的运动量完全取决于天气、心情和当天的外卖选择。偶尔心血来潮会跟着视频做一套拉伸，然后发个朋友圈宣告"今天也运动了呢"。但不得不说，你的心态是所有类型中最健康的——毕竟快乐也是一种锻炼，对吧？',
+        peaks: ['佛系程度 MAX', '装备党 HIGH'],
+        attributes: [-1, -0.5, -0.5, -1, 0.5, -1, 1.5]
+      },
+      {
+        id: 'fit_influencer', enName: 'INFLUENCER', name: '健身博主', emoji: '📸', color: '#E040FB',
+        brief: '拍照两小时，训练二十分钟，出片最重要。',
+        desc: '你的健身之旅始于一个念头：这个角度拍出来一定很绝。你的运动包里最重的东西是补光灯和手机支架。你能精准地找到健身房里光线最好的角落，并且对滤镜的调色参数比对自己训练计划还熟悉。你的社交媒体上充满了精心构图的运动照，评论区永远有人在问"求训练计划"。但说实话，你对健身的热爱是真实的——只是表达方式比较"现代"。',
+        peaks: ['社交健身 MAX', '装备党 MAX', '有氧达人 HIGH'],
+        attributes: [-0.5, 0.5, 1, -0.5, 1, -0.5, -1]
+      },
+      {
+        id: 'weekend_warrior', enName: 'WEEKEND WARRIOR', name: '周末勇士', emoji: '⚡', color: '#FF9E00',
+        brief: '周一到周五是沙发土豆，周末化身运动超人。',
+        desc: '你是典型的"间歇性健身爱好者"。工作日的你与运动毫无关系，下班后的主要活动是瘫在沙发上刷手机。但一到周末，你就像被注入了超级血清——登山、骑行、打球、游泳，恨不得把一周的运动量全补回来。你的运动表现呈现出极端的两极分化：有时候状态爆表，有时候周一上班时浑身酸痛到无法下楼。但你从不放弃，因为周末永远在等你。',
+        peaks: ['社交健身 HIGH', '佛系程度 HIGH', '有氧达人 HIGH'],
+        attributes: [0, 0.5, 0.5, -0.5, 0, -0.5, 0.5]
+      },
+      {
+        id: 'gym_newbie', enName: 'GYM NEWBIE', name: '健身小白', emoji: '🐣', color: '#7B68EE',
+        brief: '办卡第一天就迷路了，深以为跑步机上能练胸。',
+        desc: '你是健身世界的新手村居民，对一切都充满好奇但又一无所知。你分不清二头和三头，以为蛋白粉是减肥药，第一次进自由力量区时感觉自己像个误入异世界的勇者。但你有一颗真诚的心——你愿意学习，愿意尝试，虽然经常闹笑话（比如在深蹲架上做卧推）。每个健身大佬都曾是小白，你的潜力无限大，未来可期。',
+        peaks: ['佛系程度 HIGH', '装备党 HIGH'],
+        attributes: [-0.5, -0.5, 0, -1, 0.5, -1, 1]
+      }
+    ];
+
+    // ── 17 QUESTIONS ───────────────────────────────────────
+    const ALL_Q = [
+      {
+        mod: '模块一·运动偏好',
+        text: '你最理想的运动场景是？',
+        jp: 'あなたの理想の運動シーンは？',
+        opts: [
+          { t: '器械齐全的健身房，对着镜子感受泵感', s: [1.5, -0.5, 0, 1, 0, 0.5, -1] },
+          { t: '清晨的公园跑道，听着风声和心跳', s: [0, 1.5, -0.5, 0.5, 0, 0, 0] },
+          { t: '和一群朋友一起参加团课，气氛拉满', s: [-0.5, 0.5, 1.5, -0.5, 0, 0, -0.5] },
+          { t: '家里铺张瑜伽垫，跟着视频慢慢练', s: [-1, 0, -1, -0.5, 0.5, -0.5, 1.5] }
+        ]
+      },
+      {
+        mod: '模块一·运动偏好',
+        text: '如果只能选一种运动坚持一辈子，你选？',
+        jp: '一生続けられる運動を一つ選ぶなら？',
+        opts: [
+          { t: '举重/力量训练，看着重量一点点增加就很有成就感', s: [1.5, -1, -0.5, 1, 0, 0.5, -0.5] },
+          { t: '跑步，简单纯粹，一双鞋就能出发', s: [-0.5, 1.5, -0.5, 1, -0.5, 0, 0] },
+          { t: '瑜伽/普拉提，身心合一的感觉太棒了', s: [-1, 0, -0.5, 0, 0, 0, 1.5] },
+          { t: 'CrossFit/综合训练，每次都不一样才刺激', s: [1, 0.5, 1, 0, 0, 0, -1] }
+        ]
+      },
+      {
+        mod: '模块一·运动偏好',
+        text: '周末早上8点，闹钟响了，你今天的运动计划是？',
+        jp: '週末の朝8時、アラームが鳴った。今日の運動予定は？',
+        opts: [
+          { t: '已经在健身房热身了，闹钟只是走个形式', s: [1, 0.5, 0, 1.5, 0, 0.5, -1] },
+          { t: '穿好跑鞋出门晨跑，呼吸新鲜空气', s: [0, 1.5, -0.5, 1, 0, 0, 0] },
+          { t: '关掉闹钟，翻个身继续睡，运动的事下午再说', s: [-0.5, -0.5, 0, -1.5, 0, -0.5, 1.5] },
+          { t: '发微信约朋友打球/爬山，有人约才有动力', s: [0, 0, 1.5, -0.5, 0, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块一·运动偏好',
+        text: '你对"流汗"这件事的态度是？',
+        jp: '「汗をかく」ことに対するあなたの態度は？',
+        opts: [
+          { t: '不流汗不叫锻炼！大汗淋漓才是真训练', s: [1, 1, 0, 0.5, 0, 0, -0.5] },
+          { t: '出汗说明脂肪在哭泣，越流越爽', s: [0, 1.5, 0, 0.5, 0, 0, 0] },
+          { t: '出汗会弄花妆/弄湿头发，不太喜欢', s: [-0.5, -0.5, 0, -0.5, 0.5, 0, 0.5] },
+          { t: '流汗就流汗吧，只要运动完能拍张好看的照片', s: [0, 0, 0.5, -0.5, 1, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块一·运动偏好',
+        text: '你去健身房/运动时，最常穿的是？',
+        jp: 'ジムや運動の時、よく着ているのは？',
+        opts: [
+          { t: '专业速干衣+训练鞋，功能性第一', s: [0.5, 0, -0.5, 0.5, 0.5, 0.5, -0.5] },
+          { t: '最新款的运动品牌套装，配色要好看', s: [0, 0, 0.5, -0.5, 1.5, 0, 0] },
+          { t: '随便套件T恤短裤，能运动就行', s: [-0.5, 0, -0.5, 0, -1, -0.5, 1] },
+          { t: '带有励志标语的限量版运动服，拍照超有范', s: [0, 0, 1, -0.5, 1.5, 0, -0.5] }
+        ]
+      },
+      {
+        mod: '模块二·训练习惯',
+        text: '你的训练计划通常是？',
+        jp: 'あなたのトレーニング計画はいつもどうなってる？',
+        opts: [
+          { t: '精确到每天的分化训练表，严格执行', s: [1, 0, -1, 1.5, 0, 0.5, -1] },
+          { t: '大概有个方向，但经常随心调整', s: [-0.5, 0.5, 0, -0.5, 0, 0, 1] },
+          { t: '什么计划？我走到哪个器械就用哪个', s: [0, 0, 0, -1.5, -0.5, -0.5, 1.5] },
+          { t: '跟着APP/博主的计划走，省心', s: [0, 0.5, 0, 0, 0.5, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块二·训练习惯',
+        text: '运动时你会听什么？',
+        jp: '運動中に何を聴く？',
+        opts: [
+          { t: '重低音电音/嘻哈，节奏越强越有劲', s: [1, 0.5, -0.5, 0.5, 0, 0, -0.5] },
+          { t: '节奏感强的跑步歌单，BPM要匹配配速', s: [0, 1.5, -0.5, 0.5, 0, 0, 0] },
+          { t: '白噪音/冥想音乐/自然声，享受宁静', s: [-0.5, -0.5, -1, 0, 0, 0, 1.5] },
+          { t: '播客/有声书，运动时也不浪费学习时间', s: [0, 0, -1, 0.5, -0.5, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块二·训练习惯',
+        text: '你运动完之后的第一件事是？',
+        jp: '運動後、最初にすることは？',
+        opts: [
+          { t: '立刻补充蛋白质，摇杯已经准备好了', s: [1, 0, -0.5, 1, 0, 1.5, -0.5] },
+          { t: '拍张对镜自拍/打卡照，滤镜选好了', s: [0, 0, 1.5, -0.5, 1, 0, 0] },
+          { t: '洗个热水澡，然后瘫在沙发上', s: [0, 0, -0.5, -0.5, -0.5, -0.5, 1.5] },
+          { t: '看看运动数据——配速、心率、消耗卡路里', s: [0, 1, -0.5, 0.5, 0.5, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块二·训练习惯',
+        text: '如果连续一周没运动，你会？',
+        jp: '1週間運動しなかったらどうなる？',
+        opts: [
+          { t: '浑身难受，感觉肌肉在萎缩，必须马上补练', s: [1, 0.5, -0.5, 1.5, 0, 0.5, -1] },
+          { t: '有点心虚，但安慰自己"休息也是训练的一部分"', s: [0, 0, 0, -0.5, 0, 0, 1] },
+          { t: '完全没感觉，甚至忘了自己有运动这回事', s: [-0.5, -0.5, -0.5, -1.5, -0.5, -0.5, 1.5] },
+          { t: '发个朋友圈"休息周，下周回归！"先立个flag', s: [0, 0, 1.5, -1, 0.5, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块三·饮食与生活',
+        text: '朋友约你去吃火锅/烧烤，你的反应是？',
+        jp: '友達に火鍋/BBQに誘われたら？',
+        opts: [
+          { t: '"我看看今天是不是欺骗餐日..."掏出计算器算热量', s: [0, 0, 0, 1, 0, 1.5, -0.5] },
+          { t: '"走起！今天跑的步就是为了这顿饭"', s: [0, 0.5, 1, -0.5, 0, -0.5, 0.5] },
+          { t: '"我先点一份沙拉，你们吃吧..."然后默默咽口水', s: [0.5, -0.5, -0.5, 0.5, 0, 1, 0] },
+          { t: '"火锅！拍照！"完全不在意热量', s: [0, 0, 1, -1, 0.5, -1.5, 0.5] }
+        ]
+      },
+      {
+        mod: '模块三·饮食与生活',
+        text: '你的冰箱里最常备的食物是？',
+        jp: '冷蔵庫にいつも入っている食べ物は？',
+        opts: [
+          { t: '鸡胸肉、鸡蛋、西兰花、燕麦——标准健身餐', s: [1, 0, -0.5, 1, 0, 1.5, -0.5] },
+          { t: '各种水果、酸奶、坚果——健康但随性', s: [-0.5, 0, 0, 0, 0, 0.5, 0.5] },
+          { t: '奶茶、零食、外卖剩菜——运动是为了吃得更多', s: [-0.5, 0, 0, -1, 0, -1.5, 1] },
+          { t: '蛋白棒、代餐奶昔、各种补剂——装备党的冰箱', s: [0.5, 0, -0.5, 0, 1.5, 0.5, 0] }
+        ]
+      },
+      {
+        mod: '模块三·饮食与生活',
+        text: '你对"蛋白粉"的看法是？',
+        jp: 'プロテインに対するあなたの考えは？',
+        opts: [
+          { t: '训练后的必需品，已经喝出肌肉记忆了', s: [1, 0, -0.5, 1, 0.5, 1, -0.5] },
+          { t: '偶尔喝喝，味道好的话当饮料也不错', s: [0, 0, 0, 0, 0.5, 0, 0.5] },
+          { t: '那是什么？能好喝吗？', s: [-0.5, -0.5, 0, -1, -0.5, -0.5, 1.5] },
+          { t: '摆在柜子上拍照好看就行，喝不喝另说', s: [0, 0, 0.5, -0.5, 1.5, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块三·饮食与生活',
+        text: '你的睡眠和作息习惯是？',
+        jp: 'あなたの睡眠と生活リズムは？',
+        opts: [
+          { t: '严格早睡早起，睡眠是恢复的第一要务', s: [0.5, 0, -0.5, 1.5, 0, 0.5, -0.5] },
+          { t: '大概规律，但偶尔熬夜追剧/打游戏', s: [0, 0, 0, -0.5, 0, 0, 0.5] },
+          { t: '熬夜冠军，凌晨3点还在刷手机', s: [0, -0.5, 0, -1.5, 0, -1, 1] },
+          { t: '睡前一定要做拉伸/冥想，仪式感很重要', s: [-0.5, 0, -0.5, 0.5, 0, 0, 1] }
+        ]
+      },
+      {
+        mod: '模块四·社交与装备',
+        text: '你更喜欢怎么运动？',
+        jp: 'どんな運動スタイルが好き？',
+        opts: [
+          { t: '一个人默默练，耳机一戴谁都不爱', s: [0.5, 0, -1.5, 0.5, 0, 0, 0] },
+          { t: '必须有搭子！一个人根本不想动', s: [-0.5, 0, 1.5, -0.5, 0, 0, 0.5] },
+          { t: '参加团课/俱乐部，大家一起才有氛围', s: [0, 0.5, 1.5, 0, 0, 0, 0] },
+          { t: '在家跟着视频练，不用出门不用社交', s: [0, 0, -1, -0.5, 0, 0, 1] }
+        ]
+      },
+      {
+        mod: '模块四·社交与装备',
+        text: '你买过最多的运动相关产品是？',
+        jp: '一番多く買ったスポーツ関連商品は？',
+        opts: [
+          { t: '蛋白粉、肌酸、氮泵等补剂', s: [1, 0, -0.5, 0.5, 1, 0.5, -0.5] },
+          { t: '运动鞋/跑鞋，家里已经放不下了', s: [0, 1, 0, 0, 1.5, 0, 0] },
+          { t: '运动服饰/紧身裤/运动内衣，颜色要全', s: [0, 0, 0.5, -0.5, 1.5, 0, 0] },
+          { t: '智能手表/手环/心率带等科技装备', s: [0, 0.5, -0.5, 0.5, 1.5, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块四·社交与装备',
+        text: '运动时如果遇到熟人，你会？',
+        jp: '運動中に知り合いに会ったら？',
+        opts: [
+          { t: '点个头继续练，训练中不闲聊', s: [0.5, 0, -1, 0.5, 0, 0, -0.5] },
+          { t: '热情打招呼，顺便交流一下训练心得', s: [0, 0, 1.5, 0, 0, 0, 0] },
+          { t: '假装没看到，社恐发作只想赶紧结束', s: [0, 0, -1.5, 0, 0, 0, 0.5] },
+          { t: '一起练！顺便拍个合照发朋友圈', s: [0, 0, 1.5, -0.5, 1, 0, 0] }
+        ]
+      },
+      {
+        mod: '模块五·态度与心态',
+        text: '用一句话总结你对健身的态度：',
+        jp: 'フィットネスに対するあなたの態度を一言で：',
+        opts: [
+          { t: '"自律即自由，坚持就是胜利"', s: [1, 0.5, -0.5, 1.5, 0, 0.5, -1.5] },
+          { t: '"运动让我快乐，出汗就是最好的解压"', s: [0, 1, 0, 0, 0, 0, 0.5] },
+          { t: '"佛系运动，开心就好，不强求"', s: [-0.5, -0.5, 0, -1, 0, -0.5, 1.5] },
+          { t: '"运动是为了更好的拍照素材和朋友圈素材"', s: [0, 0, 1.5, -0.5, 1.5, -0.5, 0] }
+        ]
+      }
+    ];
+
+    // ── PARTICLE FX ────────────────────────────────────────
+    const PTCL_COLORS = ['#FF6B35', '#F72585', '#7209B7', '#4CC9F0', '#06D6A0', '#FFD166'];
+    function spawnParticles(el) {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      for (let i = 0; i < 5; i++) {
+        const d = document.createElement('div');
+        d.className = 'ptcl';
+        const angle = (Math.PI * 2 / 5) * i + Math.random() * 0.5;
+        const dist = 30 + Math.random() * 40;
+        d.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        d.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+        d.style.left = cx + 'px';
+        d.style.top = cy + 'px';
+        d.style.background = PTCL_COLORS[Math.floor(Math.random() * PTCL_COLORS.length)];
+        document.body.appendChild(d);
+        setTimeout(() => d.remove(), 650);
+      }
+    }
+
+    // ── AUDIO ──────────────────────────────────────────────
+    const SFX = (() => {
+      let ctx = null, bgT = null;
+      const init = () => {
+        if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+        if (ctx.state === 'suspended') ctx.resume();
+      };
+      const note = (freq, type, dur, vol = 0.12, delay = 0) => {
+        if (!ctx) return;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        const t = ctx.currentTime + delay;
+        o.type = type;
+        o.frequency.setValueAtTime(freq, t);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+        o.connect(g).connect(ctx.destination);
+        o.start(t);
+        o.stop(t + dur);
+      };
+      const click = () => { note(1200, 'sine', 0.04, 0.08); note(1600, 'sine', 0.02, 0.04, 0.02); };
+      const confirm = () => { note(659, 'triangle', 0.1, 0.14, 0); note(880, 'triangle', 0.15, 0.14, 0.08); };
+      const reveal = () => {
+        [392, 523, 659, 784].forEach((f, i) => note(f, 'triangle', 0.6, 0.09, i * 0.05));
+        note(1047, 'sine', 0.4, 0.05, 0.25);
+      };
+      const CF = [1318.51, 1567.98, 1760, 2093, 2349.32, 2637.02];
+      const chime = () => {
+        if (!ctx) return;
+        const f = CF[Math.floor(Math.random() * CF.length)], t = ctx.currentTime;
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.frequency.setValueAtTime(f, t);
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.02, t + 0.008);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 2);
+        o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 2.1);
+      };
+      const startBGM = () => {
+        if (!ctx) return;
+        const sz = ctx.sampleRate * 2, buf = ctx.createBuffer(1, sz, ctx.sampleRate), d = buf.getChannelData(0);
+        for (let i = 0; i < sz; i++) d[i] = Math.random() * 2 - 1;
+        const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+        const flt = ctx.createBiquadFilter(); flt.type = 'lowpass'; flt.frequency.value = 600;
+        const gn = ctx.createGain(); gn.gain.value = 0.005;
+        src.connect(flt).connect(gn).connect(ctx.destination); src.start();
+        const ding = () => { if (Math.random() > 0.4) { chime(); if (Math.random() > 0.6) setTimeout(() => chime(), 350); } bgT = setTimeout(ding, 2200 + Math.random() * 3500); };
+        bgT = setTimeout(ding, 1500);
+      };
+      return { init, click, confirm, reveal, startBGM };
+    })();
+
+    // ── STATE ──────────────────────────────────────────────
+    const LM = ['正在分析你的健身DNA', '正在扫描肌肉纤维类型', '正在计算自律指数', '正在鉴定装备党浓度', '正在评估佛系程度'];
+    const LF = ['🧬', '💪', '📊', '👟', '🧘'];
+    let questions = [], step = 0, history = [], tmpScore = null, canUndo = false, lTmr = null;
+
+    function show(id) { document.querySelectorAll('.sc').forEach(el => el.classList.toggle('hidden', el.id !== id)); }
+
+    function startQuiz() {
+      SFX.init(); SFX.confirm(); SFX.startBGM();
+      questions = [...ALL_Q];
+      for (let i = questions.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [questions[i], questions[j]] = [questions[j], questions[i]]; }
+      step = 0; history = []; tmpScore = null; canUndo = false;
+      document.getElementById('qT').textContent = questions.length;
+      show('sQuiz'); renderQ();
+    }
+
+    function renderQ() {
+      const q = questions[step], n = step + 1, tot = questions.length, isLast = step === tot - 1;
+      document.getElementById('qC').textContent = String(n).padStart(2, '0');
+      document.getElementById('qN').textContent = 'Q.' + String(n).padStart(2, '0');
+      document.getElementById('qTx').textContent = q.text;
+      document.getElementById('qJp').textContent = q.jp;
+      document.getElementById('qMod').textContent = q.mod;
+      document.getElementById('pF').style.width = (n / tot * 100) + '%';
+      tmpScore = null;
+      const nb = document.getElementById('btnNx');
+      nb.disabled = true; nb.className = 'btnNx fH'; nb.textContent = isLast ? '揭晓结果 →' : '下一题 →';
+      const pb = document.getElementById('btnP');
+      pb.style.display = (step > 0 && canUndo) ? '' : 'none';
+      const c = document.getElementById('opts'); c.innerHTML = '';
+      const LBL = ['A', 'B', 'C', 'D'];
+      q.opts.forEach((opt, i) => {
+        const d = document.createElement('div'); d.className = 'opt';
+        d.innerHTML = '<div class="oK fH">' + LBL[i] + '</div><div class="oT">' + opt.t + '</div>';
+        d.onclick = () => {
+          SFX.click(); spawnParticles(d);
+          c.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+          d.classList.add('sel'); tmpScore = opt.s;
+          nb.disabled = false; nb.className = 'btnNx fH on';
+        };
+        c.appendChild(d);
+      });
+      c.scrollTop = 0;
+    }
+
+    function goNext() {
+      if (!tmpScore) return;
+      SFX.confirm(); history.push(tmpScore); canUndo = true;
+      step < questions.length - 1 ? (step++, renderQ()) : runLoad();
+    }
+
+    function goBack() {
+      if (step > 0 && canUndo) {
+        SFX.click(); history.pop(); step--; canUndo = false; renderQ();
+      }
+    }
+
+    function runLoad() {
+      show('sLoad'); let mi = 0;
+      const mE = document.getElementById('lM'), fE = document.getElementById('lF');
+      const bump = () => {
+        mE.style.opacity = '0';
+        setTimeout(() => {
+          mi = (mi + 1) % LM.length;
+          mE.innerHTML = LM[mi] + '<span class="dots"><span>.</span><span>.</span><span>.</span></span>';
+          fE.textContent = LF[mi % LF.length];
+          mE.style.opacity = '1';
+        }, 200);
+      };
+      lTmr = setInterval(bump, 700);
+      setTimeout(() => { clearInterval(lTmr); calcResult(); }, 2800);
+    }
+
+    function calcResult() {
+      const tot = [0, 0, 0, 0, 0, 0, 0];
+      history.forEach(s => s.forEach((v, i) => tot[i] += v));
+      const norm = tot.map(v => Math.max(-1, Math.min(1, v)));
+      let sc = PERSONAS.map(p => {
+        let m = 0;
+        norm.forEach((v, i) => m += Math.abs(v - p.attributes[i]));
+        return { ...p, m };
+      });
+      sc.sort((a, b) => a.m - b.m);
+      const minM = sc[0].m;
+      let cands = sc.filter(p => p.m === minM);
+      if (cands.length > 1) {
+        cands = cands.map(p => {
+          let e = 0;
+          norm.forEach((v, i) => e += Math.pow(v - p.attributes[i], 2));
+          return { ...p, e: Math.sqrt(e) };
+        });
+        cands.sort((a, b) => a.e - b.e);
+      }
+      renderResult(cands[0], norm);
+      SFX.reveal(); show('sResult');
+      document.querySelector('.rScr').scrollTop = 0;
+    }
+
+    function renderResult(r, norm) {
+      document.getElementById('rH').style.background = 'linear-gradient(180deg, ' + r.color + '22 0%, transparent 100%)';
+      document.getElementById('rEm').textContent = r.emoji;
+      document.getElementById('rEn').textContent = r.enName;
+      document.getElementById('rNm').textContent = r.name;
+      document.getElementById('rBf').textContent = r.brief;
+      document.getElementById('rDes').textContent = r.desc;
+
+      // Peak tags with gradient colors
+      const tagColors = [
+        'linear-gradient(135deg, #FF6B35, #F72585)',
+        'linear-gradient(135deg, #4CC9F0, #06D6A0)',
+        'linear-gradient(135deg, #F72585, #7209B7)',
+        'linear-gradient(135deg, #FFD166, #FF6B35)',
+        'linear-gradient(135deg, #06D6A0, #4CC9F0)',
+        'linear-gradient(135deg, #E040FB, #F72585)',
+        'linear-gradient(135deg, #7B68EE, #4CC9F0)'
+      ];
+      document.getElementById('rPk').innerHTML = r.peaks.map((p, i) =>
+        '<span class="pTag" style="background:' + tagColors[i % tagColors.length] + '">' + p + '</span>'
+      ).join('');
+
+      // Dimension bars
+      document.getElementById('rDm').innerHTML = DIM_LABELS.map((lbl, i) => {
+        const pct = Math.round((norm[i] + 1) / 2 * 100);
+        return '<div class="dRow"><span class="dLbl fH">' + lbl + '</span><div class="dTrk"><div class="dFil" style="width:0%;background:' + DIM_COLORS[i] + '" data-p="' + pct + '"></div></div><span class="dVal fH">' + pct + '</span></div>';
+      }).join('');
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        document.querySelectorAll('.dFil[data-p]').forEach(el => {
+          el.style.width = el.getAttribute('data-p') + '%';
+        });
+      }));
+    }
+
+    function resetQuiz() { SFX.confirm(); show('sStart'); }
+  </script>
+</body>
+</html>
