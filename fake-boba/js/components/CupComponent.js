@@ -40,49 +40,49 @@ export default {
       return this.toppings.indexOf('芝士奶盖') >= 0;
     },
   },
-  template: '\
-    <div class="cup-wrapper" :class="[size, { tilted }]">\
-      <div class="cup-straw" v-if="showStraw"></div>\
-      <div class="cup-rim" :class="size"></div>\
-      <div class="cup-body" :class="[cupType, size, { pouring, wobbling }]">\
-        <div class="cup-liquid" :style="{ height: liquidHeight + \'%\', background: liquidColor }">\
-          <div class="liquid-wave"></div>\
-          <!-- Topping dots rendered inside liquid -->\
-          <div v-for="item in toppingItems"\
-               :key="item.name + \'-\' + item.left"\
-               class="cup-topping-dot"\
-               :style="{\
-                 left: item.left + \'%\',\
-                 bottom: item.bottom + \'%\',\
-                 width: item.style.size + \'px\',\
-                 height: item.style.size + \'px\',\
-                 borderRadius: item.style.shape === \'circle\' || item.style.shape === \'ellipse\' ? \'50%\' : (item.style.shape === \'square\' ? \'3px\' : \'2px\'),\
-                 background: getToppingBackground(item.style),\
-                 boxShadow: getToppingBoxShadow(item.style),\
-                 transform: item.style.shape === \'ellipse\' ? \'scaleY(0.65)\' : \'\'\
-               }">\
-          </div>\
-        </div>\
-        <!-- Ice cubes -->\
-        <div class="cup-ice-container" v-if="showIce">\
-          <div v-for="i in iceCount" :key="\'ice-\'+i"\
-               class="ice-cube"\
-               :class="\'ice-cube-\' + ((i % 3) + 1)"\
-               :style="{ left: (10 + (i*17) % 75) + \'%\', top: (10 + (i*23) % 50) + \'%\', animationDelay: (i * 0.5) + \'s\' }">\
-          </div>\
-        </div>\
-        <!-- Cream layer for \u82B7\u58EB\u5976\u76D6 -->\
-        <div v-if="hasCreamLayer" class="cream-layer spread"></div>\
-        <!-- Cup highlight/glass effect -->\
-        <div class="cup-highlight"></div>\
-      </div>\
-      <!-- Steam -->\
-      <div class="steam-container" v-if="showSteam">\
-        <div class="steam-line"></div>\
-        <div class="steam-line"></div>\
-        <div class="steam-line"></div>\
-      </div>\
-    </div>',
+  template: `
+    <div class="cup-wrapper" :class="[size, { tilted }]">
+      <div class="cup-straw" v-if="showStraw"></div>
+      <div class="cup-rim" :class="size"></div>
+      <div class="cup-body" :class="[cupType, size, { pouring, wobbling }]">
+        <div class="cup-liquid" :style="{ height: liquidHeight + '%', background: liquidColor }">
+          <div class="liquid-wave"></div>
+          <!-- Topping dots rendered inside liquid -->
+          <div v-for="item in toppingItems"
+               :key="item.name + '-' + item.left"
+               class="cup-topping-dot"
+               :style="{
+                 left: item.left + '%',
+                 bottom: item.bottom + '%',
+                 width: item.style.size + 'px',
+                 height: item.style.size + 'px',
+                 borderRadius: item.style.shape === 'circle' || item.style.shape === 'ellipse' ? '50%' : (item.style.shape === 'square' ? '3px' : '2px'),
+                 background: getToppingBackground(item.style),
+                 boxShadow: getToppingBoxShadow(item.style),
+                 transform: item.style.shape === 'ellipse' ? 'scaleY(0.65)' : ''
+               }">
+          </div>
+        </div>
+        <!-- Ice cubes -->
+        <div class="cup-ice-container" v-if="showIce">
+          <div v-for="i in iceCount" :key="'ice-'+i"
+               class="ice-cube"
+               :class="'ice-cube-' + ((i % 3) + 1)"
+               :style="{ left: (10 + (i*17) % 75) + '%', top: (10 + (i*23) % 50) + '%', animationDelay: (i * 0.5) + 's' }">
+          </div>
+        </div>
+        <!-- Cream layer for 芝士奶盖 -->
+        <div v-if="hasCreamLayer" class="cream-layer spread"></div>
+        <!-- Cup highlight/glass effect -->
+        <div class="cup-highlight"></div>
+      </div>
+      <!-- Steam -->
+      <div class="steam-container" v-if="showSteam">
+        <div class="steam-line"></div>
+        <div class="steam-line"></div>
+        <div class="steam-line"></div>
+      </div>
+    </div>`,
   methods: {
     getToppingBackground: function (style) {
       if (style.extra && style.extra.indexOf('background:') === 0) {

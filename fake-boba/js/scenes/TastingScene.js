@@ -102,38 +102,38 @@ export default {
       scene.goToScene('result');
     },
   },
-  template: '\
-    <div id="scene-tasting" class="scene">\
-      <div class="warm-overlay" ref="warmOverlay"></div>\
-      <div class="tasting-header">\
-        <h2 class="brand-title">你的奶茶好了！</h2>\
-        <p class="sip-progress" ref="sipProgress">{{ sipProgressText }}</p>\
-      </div>\
-      <div class="tasting-cup-area" ref="tastingCupArea">\
-        <div class="steam-container">\
-          <div class="steam-line"></div>\
-          <div class="steam-line"></div>\
-          <div class="steam-line"></div>\
-        </div>\
-        <div class="tasting-straw-el"></div>\
-        <div class="tasting-cup-rim"></div>\
-        <div class="tasting-cup-body" ref="tastingCupBody">\
-          <div class="tasting-liquid" ref="tastingLiquid"></div>\
-          <div class="tasting-ice-container" ref="tastingIceContainer"></div>\
-          <div class="tasting-toppings-container" ref="tastingToppingsContainer"></div>\
-        </div>\
-      </div>\
-      <div class="sip-dots" ref="sipDots"></div>\
-      <div class="btn-sip-wrap" ref="btnSipWrap" :class="{ hidden: btnSipWrapHidden }">\
-        <div class="sip-pulse-ring"></div>\
-        <div class="sip-pulse-ring"></div>\
-        <div class="sip-pulse-ring"></div>\
-        <button class="btn-sip" ref="btnSip" :class="{ hidden: btnSipHidden }" \
-                @mousedown="onStartSip" @mouseup="onStopSip" @mouseleave="onStopSip"\
-                @touchstart="onStartSip" @touchend="onStopSip" @touchcancel="onStopSip">按住喝！</button>\
-      </div>\
-      <button class="btn-primary" ref="btnResult" :class="{ hidden: btnResultHidden }" @click="goToResult">查看结果</button>\
-      <!-- Emotion bubble -->\
-      <emotion-bubble ref="emotionBubble" :show="false" />\
-    </div>',
+  template: `
+    <div id="scene-tasting" class="scene">
+      <div class="warm-overlay" ref="warmOverlay"></div>
+      <div class="tasting-header">
+        <h2 class="brand-title">你的奶茶好了！</h2>
+        <p class="sip-progress" ref="sipProgress">{{ sipProgressText }}</p>
+      </div>
+      <div class="tasting-cup-area" ref="tastingCupArea">
+        <div class="steam-container">
+          <div class="steam-line"></div>
+          <div class="steam-line"></div>
+          <div class="steam-line"></div>
+        </div>
+        <div class="tasting-straw-el"></div>
+        <div class="tasting-cup-rim"></div>
+        <div class="tasting-cup-body" ref="tastingCupBody">
+          <div class="tasting-liquid" ref="tastingLiquid"></div>
+          <div class="tasting-ice-container" ref="tastingIceContainer"></div>
+          <div class="tasting-toppings-container" ref="tastingToppingsContainer"></div>
+        </div>
+      </div>
+      <div class="sip-dots" ref="sipDots"></div>
+      <div class="btn-sip-wrap" ref="btnSipWrap" :class="{ hidden: btnSipWrapHidden }">
+        <div class="sip-pulse-ring"></div>
+        <div class="sip-pulse-ring"></div>
+        <div class="sip-pulse-ring"></div>
+        <button class="btn-sip" ref="btnSip" :class="{ hidden: btnSipHidden }" 
+                @mousedown="onStartSip" @mouseup="onStopSip" @mouseleave="onStopSip"
+                @touchstart="onStartSip" @touchend="onStopSip" @touchcancel="onStopSip">按住喝！</button>
+      </div>
+      <button class="btn-primary" ref="btnResult" :class="{ hidden: btnResultHidden }" @click="goToResult">查看结果</button>
+      <!-- Emotion bubble -->
+      <emotion-bubble ref="emotionBubble" :show="false" />
+    </div>`,
 };

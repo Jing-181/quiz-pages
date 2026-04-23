@@ -103,39 +103,39 @@ export default {
       scene.goToScene('home');
     },
   },
-  template: '\
-    <div id="scene-result" class="scene">\
-      <div class="result-card" ref="resultCard">\
-        <div class="result-card-header">\
-          <h3 class="brand-title">喝完啦！</h3>\
-          <p>太棒了，又假装喝了一杯</p>\
-        </div>\
-        <div class="result-card-body">\
-          <p class="result-subtitle">今天你假装喝了</p>\
-          <!-- Mini cup -->\
-          <div class="result-cup-mini">\
-            <div class="result-cup-mini-straw"></div>\
-            <div class="result-cup-mini-rim"></div>\
-            <div class="result-cup-mini-body">\
-              <div class="result-cup-mini-liquid" :style="{ background: liquidColor }"></div>\
-            </div>\
-          </div>\
-          <p class="result-recipe-name">{{ recipeName }}</p>\
-          <div class="result-details">\
-            <span v-for="tag in tags" :key="tag" class="result-tag">{{ tag }}</span>\
-          </div>\
-          <!-- Mood tag -->\
-          <div class="result-mood">{{ moodTag }}</div>\
-          <p class="result-message">{{ personalMessage }}</p>\
-          <div class="result-calories">\
-            <span>{{ calories }}</span>\
-            <span class="unit"> kcal 热量已节省</span>\
-          </div>\
-        </div>\
-        <div class="result-actions">\
-          <button class="btn-save" @click="saveCard">保存图片</button>\
-          <button class="btn-retry" @click="resetAll">再来一杯</button>\
-        </div>\
-      </div>\
-    </div>',
+  template: `
+    <div id="scene-result" class="scene">
+      <div class="result-card" ref="resultCard">
+        <div class="result-card-header">
+          <h3 class="brand-title">喝完啦！</h3>
+          <p>太棒了，又假装喝了一杯</p>
+        </div>
+        <div class="result-card-body">
+          <p class="result-subtitle">今天你假装喝了</p>
+          <!-- Mini cup -->
+          <div class="result-cup-mini">
+            <div class="result-cup-mini-straw"></div>
+            <div class="result-cup-mini-rim"></div>
+            <div class="result-cup-mini-body">
+              <div class="result-cup-mini-liquid" :style="{ background: liquidColor }"></div>
+            </div>
+          </div>
+          <p class="result-recipe-name">{{ recipeName }}</p>
+          <div class="result-details">
+            <span v-for="tag in tags" :key="tag" class="result-tag">{{ tag }}</span>
+          </div>
+          <!-- Mood tag -->
+          <div class="result-mood">{{ moodTag }}</div>
+          <p class="result-message">{{ personalMessage }}</p>
+          <div class="result-calories">
+            <span>{{ calories }}</span>
+            <span class="unit"> kcal 热量已节省</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn-save" @click="saveCard">保存图片</button>
+          <button class="btn-retry" @click="resetAll">再来一杯</button>
+        </div>
+      </div>
+    </div>`,
 };

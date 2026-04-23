@@ -4,6 +4,6 @@ export default {
     message: { type: String, default: '' },
     show: { type: Boolean, default: false },
   },
-  template: '\
-    <div class="emotion-bubble" :class="{ show }">{{ message }}</div>',
+  template: `
+    <div class="emotion-bubble" :class="{ show }">{{ message }}</div>`,
 };

@@ -298,7 +298,7 @@ export function useMaking() {
    * ============================================================ */
   function updateShakeRing(ringEl, textEl) {
     if (!ringEl) return;
-    var circumference = 251.2; // 2 * PI * 40
+    var circumference = 314.16; // 2 * PI * 50 (更新了尺寸)
     var offset = circumference - (state.shakeProgress / 100) * circumference;
     ringEl.style.strokeDashoffset = offset;
     if (textEl) {
@@ -489,6 +489,7 @@ export function useMaking() {
     let lastX = 0;
     let lastY = 0;
     let totalDistance = 0;
+    let lastUpdateTime = Date.now();
 
     // 拖拽开始
     const onStart = (e) => {
@@ -500,24 +501,25 @@ export function useMaking() {
       lastX = touch.clientX;
       lastY = touch.clientY;
       totalDistance = 0;
+      lastUpdateTime = Date.now();
       
       // 视觉效果
       els.shakerLiquid.classList.add('wobbling');
       els.shakerArea.classList.add('shaking');
       
-      // 开始进度更新
+      // 开始进度更新 - 更快！
       if (state.shakeInterval) clearInterval(state.shakeInterval);
       state.shakeInterval = setInterval(() => {
         if (!state.isShaking || state.shakeProgress >= 100) return;
         if (totalDistance > 0) {
-          // 基于拖拽距离增加进度
-          const progress = Math.min(2, totalDistance / 150);
+          // 基于拖拽距离增加进度 - 更快的进度增加
+          const progress = Math.min(5, totalDistance / 50); // 大幅增加进度
           state.shakeProgress += progress;
           if (state.shakeProgress > 100) state.shakeProgress = 100;
           updateShakeRing(els.shakeRingFill, els.shakeCountText);
           
-          // 气泡效果
-          if (Math.random() > 0.7) {
+          // 更频繁的气泡效果
+          if (Math.random() > 0.3) {
             createShakeBubble(els.shakerLiquid);
           }
           
@@ -527,7 +529,7 @@ export function useMaking() {
             onShakeComplete(els, onComplete);
           }
         }
-      }, 50);
+      }, 30); // 更频繁的更新
     };
 
     // 拖拽移动
@@ -543,9 +545,13 @@ export function useMaking() {
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
       totalDistance += distance;
       
-      // 应用旋转效果
-      const rotation = Math.max(-15, Math.min(15, deltaX * 0.5));
-      els.shakerCup.style.transform = `rotate(${rotation}deg)`;
+      // 更强的旋转效果和视觉反馈
+      const rotation = Math.max(-20, Math.min(20, deltaX * 0.8)); // 更大的旋转角度
+      const scale = 1 + Math.min(0.05, distance / 500); // 轻微的缩放效果
+      els.shakerCup.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+      
+      // 更新液体摇晃效果的频率
+      els.shakerLiquid.style.animationDuration = `${Math.max(0.1, 0.3 - distance / 1000)}s`;
       
       lastX = touch.clientX;
       lastY = touch.clientY;
@@ -556,6 +562,7 @@ export function useMaking() {
       isDragging = false;
       stopShaking(els);
       els.shakerCup.style.transform = '';
+      els.shakerLiquid.style.animationDuration = '';
     };
 
     // 绑定事件
@@ -567,8 +574,8 @@ export function useMaking() {
     window.addEventListener('touchend', onEnd);
     window.addEventListener('touchcancel', onEnd);
 
-    // 更新按钮文字
-    els.btnShake.textContent = '👆 按住并拖动杯子摇晃！';
+    // 更新按钮文字，更有吸引力
+    els.btnShake.textContent = '🎯 快速拖动摇晃！马上完成！';
   }
 
   /* ============================================================
