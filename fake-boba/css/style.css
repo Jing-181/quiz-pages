@@ -482,8 +482,7 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
 }
 
 /* Step panels */
-.step-panel { display: none; width: 100%; max-width: 400px; padding: 0 20px; flex: 1; }
-.step-panel.active { display: block; }
+.step-panel { width: 100%; max-width: 400px; padding: 0 20px; flex: 1; }
 
 /* Step 1: Cup type */
 .cup-options {
@@ -834,23 +833,45 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
 /* Circular progress ring */
 .shake-progress-ring {
   display: block;
-  margin: 20px auto 0;
+  margin: 20px auto 15px;
   transform: rotate(-90deg);
-  filter: drop-shadow(0 2px 8px rgba(255,107,138,0.3));
+  filter: drop-shadow(0 4px 12px rgba(255,107,138,0.4));
+  width: 120px !important;
+  height: 120px !important;
 }
 .shake-progress-ring-bg {
   fill: none;
   stroke: #F5EDE5;
-  stroke-width: 8;
+  stroke-width: 10;
 }
 .shake-progress-ring-fill {
   fill: none;
   stroke: url(#shakeGradient);
-  stroke-width: 8;
+  stroke-width: 10;
   stroke-linecap: round;
-  stroke-dasharray: 251.2;
-  stroke-dashoffset: 251.2;
-  transition: stroke-dashoffset 0.15s ease;
+  stroke-dasharray: 314.16;
+  stroke-dashoffset: 314.16;
+  transition: stroke-dashoffset 0.1s ease;
+}
+
+.shake-count-text {
+  font-size: 1.2rem !important;
+  font-weight: bold;
+  color: var(--pink);
+  margin-top: 5px !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.btn-shake {
+  font-size: 1.1rem !important;
+  padding: 18px 40px !important;
+  margin-bottom: 10px !important;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 /* Old bar progress (hidden) */
@@ -1310,6 +1331,21 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
 }
 .cup-wrapper.mini .cup-straw { width: 4px; height: 40px; right: 12px; top: 2px; }
 .cup-wrapper.home .cup-straw { width: 7px; height: 80px; right: 25px; top: 5px; }
+.cup-rim {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  background: #E8DDD4;
+  border-radius: 5px 5px 0 0;
+  z-index: 2;
+}
+.cup-rim::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 50%;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+.cup-rim.normal { width: 108px; height: 10px; top: 0; }
+.cup-rim.mini { width: 54px; height: 6px; top: 0; }
+.cup-rim.home { width: 108px; height: 10px; top: 28px; }
 .cup-body {
   position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
   background: rgba(255,255,255,0.85);
@@ -1362,4 +1398,346 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ===== Shaker Cup Styles ===== */
+.shaker-area {
+  position: relative;
+  width: 200px;
+  height: 280px;
+  margin: 0 auto 30px;
+  border: 2px dashed rgba(255, 107, 138, 0.3);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.shaker-area:hover {
+  border-color: rgba(255, 107, 138, 0.6);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.shaker-area:active {
+  cursor: grabbing;
+}
+
+.shaker-area.shaking {
+  border-color: rgba(255, 107, 138, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+  animation: pulse-border 0.5s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(255, 107, 138, 0.5); }
+  50% { border-color: rgba(255, 107, 138, 1); }
+}
+
+.shaker-cup {
+  position: relative;
+  width: 120px;
+  height: 180px;
+  margin: 0 auto;
+  transition: transform 0.05s ease-out;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+.shaker-lid {
+  width: 130px;
+  height: 30px;
+  background: linear-gradient(180deg, #F5EDE5, #E8DDD4);
+  border-radius: 65px 65px 0 0;
+  margin: 0 auto;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1), inset 0 2px 4px rgba(255,255,255,0.5);
+  position: relative;
+  z-index: 2;
+}
+
+.shaker-lid::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 14px;
+  background: linear-gradient(180deg, #D5CCC4, #C4BBB3);
+  border-radius: 10px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.shaker-body {
+  width: 120px;
+  height: 160px;
+  background: linear-gradient(135deg, 
+    rgba(255,255,255,0.95), 
+    rgba(245,240,235,0.9), 
+    rgba(255,255,255,0.9));
+  border: 2px solid rgba(200,190,180,0.5);
+  clip-path: polygon(5% 0%, 95% 0%, 85% 100%, 15% 100%);
+  border-radius: 0 0 20px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1), inset 0 -10px 20px rgba(0,0,0,0.05);
+  z-index: 1;
+}
+
+.shaker-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  transition: height 2s ease;
+  border-radius: 0 0 18px 18px;
+}
+
+.shaker-liquid::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5%;
+  width: 110%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2s ease-in-out infinite;
+}
+
+.shaker-liquid::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.shaker-ice-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.shaker-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ===== Pour Area Styles ===== */
+.pour-area {
+  position: relative;
+  width: 240px;
+  height: 260px;
+  margin: 0 auto 30px;
+}
+
+.pour-shaker {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 100px;
+  height: 150px;
+  z-index: 2;
+}
+
+.pour-shaker .shaker-body {
+  width: 100px;
+  height: 130px;
+}
+
+.pour-shaker .shaker-lid {
+  width: 110px;
+  height: 25px;
+}
+
+.pour-stream {
+  position: absolute;
+  top: 80px;
+  left: 110px;
+  width: 12px;
+  height: 60px;
+  background: linear-gradient(180deg, rgba(196,149,106,0.8), rgba(196,149,106,0.6));
+  border-radius: 6px;
+  z-index: 1;
+  animation: pourStream 1.5s ease-in-out forwards;
+}
+
+@keyframes pourStream {
+  0% { height: 0; opacity: 0; }
+  20% { height: 60px; opacity: 1; }
+  80% { height: 60px; opacity: 1; }
+  100% { height: 0; opacity: 0; }
+}
+
+.serving-cup {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 160px;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 3;
+}
+
+.serving-cup.show {
+  opacity: 1;
+  animation: servingCupShow 0.5s ease-out forwards;
+}
+
+@keyframes servingCupShow {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.serving-cup-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 140px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,240,235,0.9) 50%, rgba(255,255,255,0.85) 100%);
+  border: 2px solid rgba(200,190,180,0.5);
+  border-radius: 10px 10px 24px 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+.serving-liquid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0%;
+  transition: height 1s ease;
+  border-radius: 0 0 22px 22px;
+}
+
+.serving-liquid::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -5%;
+  width: 110%;
+  height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2.5s ease-in-out infinite;
+}
+
+.serving-cup-rim {
+  position: absolute;
+  top: 20px;
+  left: -5px;
+  width: 110px;
+  height: 10px;
+  background: linear-gradient(180deg, #F5EDE5, #E8DDD4);
+  border-radius: 5px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+.serving-cup-rim::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+
+.serving-straw {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  width: 8px;
+  height: 100px;
+  background: linear-gradient(90deg, #FF8FA3, #FFB74D, #FF8FA3);
+  border-radius: 4px 4px 2px 2px;
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+  z-index: 3;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ===== Pour Animation ===== */
+.shaker-cup.pouring {
+  animation: shakerPour 1.5s ease-in-out forwards;
+}
+
+@keyframes shakerPour {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-45deg) translateX(-20px); }
+  100% { transform: rotate(-60deg) translateX(-30px); opacity: 0; }
+}
+
+/* ===== Serving Cup Fill Animation ===== */
+.serving-cup.filling .serving-liquid {
+  animation: servingFill 1s ease-out forwards;
+}
+
+@keyframes servingFill {
+  0% { height: 0%; }
+  100% { height: 70%; }
+}
+
+/* ===== Serving Cup Scale Animation ===== */
+.serving-cup.scaling {
+  animation: servingScale 0.5s ease-out forwards;
+}
+
+@keyframes servingScale {
+  0% { transform: scale(1) translateX(0); }
+  100% { transform: scale(1.2) translateX(-30px); }
+}
+
+/* ===== Serving Cup Additions ===== */
+.serving-ice-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.serving-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.tasting-toppings-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
 }

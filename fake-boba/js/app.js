@@ -4,7 +4,6 @@ import { state } from './store/state.js';
 // Components
 import CupComponent from './components/CupComponent.js';
 import EmotionBubble from './components/EmotionBubble.js';
-import ShakeProgress from './components/ShakeProgress.js';
 
 // Scenes
 import HomeScene from './scenes/HomeScene.js';
@@ -17,7 +16,6 @@ const app = createApp({
   components: {
     CupComponent,
     EmotionBubble,
-    ShakeProgress,
     HomeScene,
     RecipeScene,
     MakingScene,

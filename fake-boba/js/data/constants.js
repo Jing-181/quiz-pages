@@ -63,4 +63,4 @@ export const TOPPING_FUN_TEXT = {
 };
 
 /* ===== ICE COUNT MAP ===== */
-export const ICE_COUNT_MAP = { '去冰':0, '少冰':2, '正常冰':4, '多冰':6, '热饮':0 };
+export const ICE_COUNT_MAP = { '去冰':0, '少冰':4, '正常冰':7, '多冰':10, '热饮':0 };
