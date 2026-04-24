@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>国漫巅峰 · 近五年高评分人气国漫精选</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== CSS Variables ========== */
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a26;
+            --bg-card-hover: #222233;
+            --text-primary: #f0ece4;
+            --text-secondary: #a09b8e;
+            --text-muted: #6b665c;
+            --accent-gold: #d4a853;
+            --accent-red: #c94043;
+            --accent-cyan: #4ecdc4;
+            --border-subtle: rgba(212, 168, 83, 0.15);
+            --border-hover: rgba(212, 168, 83, 0.35);
+            --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+            --shadow-hover: 0 16px 64px rgba(0,0,0,0.6);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --font-display: 'Noto Serif SC', serif;
+            --font-body: 'Noto Sans SC', sans-serif;
+        }
+
+        /* ========== Reset & Base ========== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-gold) var(--bg-primary);
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* ========== Noise Overlay ========== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* ========== Hero Section ========== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(212,168,83,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 50%, rgba(201,64,67,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(78,205,196,0.04) 0%, transparent 50%);
+            animation: heroGlow 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-5%, 3%) rotate(3deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            padding: 2rem;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 24px;
+            border: 1px solid var(--border-subtle);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            background: rgba(212,168,83,0.05);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 7vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-gold) 50%, var(--accent-red) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-weight: 300;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .number {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+        }
+
+        .hero-stat .label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .scroll-indicator span {
+            display: block;
+            width: 24px;
+            height: 24px;
+            border-right: 2px solid var(--accent-gold);
+            border-bottom: 2px solid var(--accent-gold);
+            transform: rotate(45deg);
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(12px); }
+        }
+
+        /* ========== Navigation Dots ========== */
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid var(--text-muted);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-dot:hover, .nav-dot.active {
+            border-color: var(--accent-gold);
+            background: var(--accent-gold);
+            box-shadow: 0 0 12px rgba(212,168,83,0.4);
+        }
+
+        .nav-dot .tooltip {
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            font-size: 0.75rem;
+            color: var(--accent-gold);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            background: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        .nav-dot:hover .tooltip { opacity: 1; }
+
+        /* ========== Main Content ========== */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ========== Anime Section ========== */
+        .anime-section {
+            padding: 6rem 0;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .anime-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .anime-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .anime-rank {
+            font-family: var(--font-display);
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(180deg, var(--accent-gold) 0%, rgba(212,168,83,0.2) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            min-width: 80px;
+        }
+
+        .anime-title-block {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .anime-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .anime-title-en {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .anime-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .anime-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .tag-score {
+            color: var(--accent-gold);
+            border-color: rgba(212,168,83,0.3);
+            background: rgba(212,168,83,0.08);
+        }
+
+        .tag-genre {
+            color: var(--accent-cyan);
+            border-color: rgba(78,205,196,0.3);
+            background: rgba(78,205,196,0.08);
+        }
+
+        .tag-platform {
+            color: var(--accent-red);
+            border-color: rgba(201,64,67,0.3);
+            background: rgba(201,64,67,0.08);
+        }
+
+        .tag-year {
+            color: var(--text-secondary);
+            border-color: rgba(160,155,142,0.3);
+            background: rgba(160,155,142,0.08);
+        }
+
+        .anime-description {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            line-height: 2;
+            margin-bottom: 2.5rem;
+            max-width: 900px;
+            font-weight: 300;
+        }
+
+        .anime-description strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* ========== Image Gallery ========== */
+        .gallery {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .gallery-main {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .gallery-main:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .gallery-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-main:hover img {
+            transform: scale(1.03);
+        }
+
+        .gallery-main::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 40%;
+            background: linear-gradient(to top, rgba(10,10,15,0.6) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .gallery-thumbs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .gallery-thumb {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-thumb:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        .gallery-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-thumb:hover img {
+            transform: scale(1.08);
+        }
+
+        .gallery-thumb::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            transition: border-color 0.3s;
+        }
+
+        .gallery-thumb:hover::after {
+            border-color: var(--accent-gold);
+        }
+
+        /* ========== Divider ========== */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--border-subtle) 20%, var(--border-hover) 50%, var(--border-subtle) 80%, transparent 100%);
+            margin: 2rem 0;
+        }
+
+        /* ========== Lightbox ========== */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 80px rgba(0,0,0,0.6);
+            transform: scale(0.9);
+            transition: transform 0.4s ease;
+        }
+
+        .lightbox.active img {
+            transform: scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .lightbox-close:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: rgba(212,168,83,0.1);
+        }
+
+        /* ========== Footer ========== */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer .footer-line {
+            width: 60px;
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 0 auto 1.5rem;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .nav-dots { display: none; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero-stats { gap: 1.5rem; }
+            .hero-stat .number { font-size: 1.8rem; }
+            .anime-header { gap: 1rem; }
+            .anime-rank { font-size: 3rem; min-width: 50px; }
+            .gallery-thumbs { grid-template-columns: repeat(2, 1fr); }
+            .anime-section { padding: 4rem 0; }
+            main { padding: 0 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-thumbs { grid-template-columns: 1fr; }
+            .anime-meta { gap: 0.5rem; }
+        }
+
+        /* ========== Animations ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-content > * {
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .hero-content > *:nth-child(1) { animation-delay: 0.2s; }
+        .hero-content > *:nth-child(2) { animation-delay: 0.4s; }
+        .hero-content > *:nth-child(3) { animation-delay: 0.6s; }
+        .hero-content > *:nth-child(4) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">2020 — 2025</div>
+            <h1>国漫巅峰</h1>
+            <p>近五年评分与人气双高的国产动画精选，每一部都是中国动画工业水准的巅峰之作</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="number">10</div>
+                    <div class="label">精选作品</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="number">9.0+</div>
+                    <div class="label">平均评分</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="number">200亿+</div>
+                    <div class="label">总播放量</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator"><span></span></div>
+    </section>
+
+    <!-- Navigation Dots -->
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <img src="" alt="" id="lightboxImg">
+    </div>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- 1. 凡人修仙传 -->
+        <section class="anime-section" data-name="凡人修仙传">
+            <div class="anime-header">
+                <div class="anime-rank">01</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">凡人修仙传</h2>
+                    <div class="anime-title-en">A Record of a Mortal's Journey to Immortality</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 9.6</span>
+                        <span class="anime-tag tag-genre">玄幻 · 修仙</span>
+                        <span class="anime-tag tag-platform">B站独播</span>
+                        <span class="anime-tag tag-year">2020年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>2025年播放量26.14亿，登顶国漫年番榜首。</strong>改编自忘语同名小说，讲述普通山村少年韩立踏入修仙世界，凭借谨慎低调的性格和过人智慧，一步步从凡人修炼成仙的故事。被海外观众誉为"中国动画的巅峰之作"和"修仙类动画的入门教科书"。虚幻5引擎打造的渡劫场景与"苟道"哲学完美融合，韩立夺宝逃生的"血色禁地"篇章被封为"国漫打戏天花板"。B站年番播放量63.8亿，单集"结婴名场面"同时在线人数峰值44万，导致服务器崩溃。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/fanren_xiuxian_zhuan.jpg" alt="凡人修仙传 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/fanren_character.jpg" alt="凡人修仙传 韩立角色">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/fanren_xiuxian_zhuan.jpg" alt="凡人修仙传 场景">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 2. 画江湖之不良人 -->
+        <section class="anime-section" data-name="画江湖之不良人">
+            <div class="anime-header">
+                <div class="anime-rank">02</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">画江湖之不良人</h2>
+                    <div class="anime-title-en">Hua Jianghu: Buliangren</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 9.8</span>
+                        <span class="anime-tag tag-genre">武侠 · 悬疑</span>
+                        <span class="anime-tag tag-platform">腾讯视频</span>
+                        <span class="anime-tag tag-year">2014年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>256万人打出9.8分，国漫界唯一追更10年的现象级作品。</strong>若森数字出品，讲述唐朝末年"不良人"组织与各方势力争夺龙泉宝藏的故事。没有任何小说粉丝基数，完全依靠原创剧情和高水平制作质量一步步走到今天的王者之位。剧场版《画江湖之天罡传》上线一天狂揽1900万票房，连破国漫多项历史记录。武侠类型的国漫天花板，在剧情深度、人物塑造和动作设计上几乎无可挑剔。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/hua_jianghu_buliangren.jpg" alt="画江湖之不良人 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/buliangren_fight.jpg" alt="画江湖之不良人 动作场景">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/hua_jianghu_buliangren.jpg" alt="画江湖之不良人 氛围">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 3. 雾山五行 -->
+        <section class="anime-section" data-name="雾山五行">
+            <div class="anime-header">
+                <div class="anime-rank">03</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">雾山五行</h2>
+                    <div class="anime-title-en">Fog Hill of Five Elements</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 9.2</span>
+                        <span class="anime-tag tag-genre">国风 · 动作</span>
+                        <span class="anime-tag tag-platform">B站独播</span>
+                        <span class="anime-tag tag-year">2020年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>国风水墨动画的巅峰之作。</strong>六道无鱼工作室出品，以中国五行元素为核心，讲述五位五行使者守护人间与妖兽战斗的故事。犀川幻紫林篇豆瓣评分高达9.2。每一帧都如同一幅精心绘制的水墨画，将中国传统绘画美学与现代动画技术完美融合。打戏行云流水、酣畅淋漓，被誉为"国漫打斗的天花板"。制作精良程度令人叹为观止，是国漫中最具艺术价值的作品之一。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/wushan_wuxing.jpg" alt="雾山五行 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/wushan_fire.jpg" alt="雾山五行 火行战士">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/wushan_wuxing.jpg" alt="雾山五行 五行集结">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 4. 刺客伍六七 -->
+        <section class="anime-section" data-name="刺客伍六七">
+            <div class="anime-header">
+                <div class="anime-rank">04</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">刺客伍六七</h2>
+                    <div class="anime-title-en">Scissor Seven</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 9.6</span>
+                        <span class="anime-tag tag-genre">热血 · 喜剧</span>
+                        <span class="anime-tag tag-platform">B站 / Netflix</span>
+                        <span class="anime-tag tag-year">2018年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>热血喜剧类型的天花板，76万人打出9.6分。</strong>啊哈娱乐出品，讲述失忆的刺客伍六七在小鸡岛上以理发师身份接取刺杀任务的故事。导演是周星驰的忠实粉丝，片中多次出现致敬星爷的镜头。幽默风趣的叙事风格让其在国漫界独树一帜，一首《阿珍爱上了阿强》更是将观众拉回90年代香港流行乐的时代。作品登陆Netflix全球播出，是国漫出海的成功典范。记忆碎片篇豆瓣7.8分，延续了系列的高水准。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/cike_wuliuqi.jpg" alt="刺客伍六七 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/wuliuqi_action.jpg" alt="刺客伍六七 动作场景">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/cike_wuliuqi.jpg" alt="刺客伍六七 小鸡岛">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 5. 镖人 -->
+        <section class="anime-section" data-name="镖人">
+            <div class="anime-header">
+                <div class="anime-rank">05</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">镖人</h2>
+                    <div class="anime-title-en">The Blademaster</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 9.6</span>
+                        <span class="anime-tag tag-genre">武侠 · 历史</span>
+                        <span class="anime-tag tag-platform">腾讯视频</span>
+                        <span class="anime-tag tag-year">2023年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>74万人打出9.6分，武侠已死时代的国漫之光。</strong>改编自许先哲同名漫画，讲述隋朝末年镖客刀马行走在西域大漠的故事。画风粗犷野性却极具质感，女性角色塑造立体饱满，大漠儿女铮铮铁骨。与传统玄幻打斗不同，传统武侠打斗讲究行云流水、一气呵成，这部国漫简直太行云流水了，仿佛身临其境。原著漫画曾登上日本NHK电视台，是中国漫画走向世界的里程碑。被无数武侠粉称为"国漫之光"。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/biaoren.jpg" alt="镖人 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/biaoren_desert.jpg" alt="镖人 大漠夜景">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/biaoren.jpg" alt="镖人 丝绸之路">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 6. 灵笼 -->
+        <section class="anime-section" data-name="灵笼">
+            <div class="anime-header">
+                <div class="anime-rank">06</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">灵笼</h2>
+                    <div class="anime-title-en">Ling Cage: Incarnation</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 8.9</span>
+                        <span class="anime-tag tag-genre">科幻 · 末日</span>
+                        <span class="anime-tag tag-platform">B站独播</span>
+                        <span class="anime-tag tag-year">2019年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>末日科幻的成人童话，第一季8.3分，第二季8.9分。</strong>艺画开天出品，构建了一个未来的末日世界，人类为了生存不得不躲在名为"灯塔"的浮空城上，与地面上的恐怖怪物"脊蛊"作斗争。世界观设定宏大深邃，充满哲学思辨。在末世背景下探讨人性、阶级、信仰等深刻主题，是国漫中罕见的成人向硬核科幻作品。第二季在制作水准和叙事深度上全面升级，被誉为"中国科幻动画的里程碑"。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/linglong.jpg" alt="灵笼 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/linglong_city.jpg" alt="灵笼 灯塔浮空城">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/linglong.jpg" alt="灵笼 末日世界">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 7. 仙逆 -->
+        <section class="anime-section" data-name="仙逆">
+            <div class="anime-header">
+                <div class="anime-rank">07</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">仙逆</h2>
+                    <div class="anime-title-en">Renegade Immortal</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 8.9</span>
+                        <span class="anime-tag tag-genre">玄幻 · 修仙</span>
+                        <span class="anime-tag tag-platform">腾讯视频</span>
+                        <span class="anime-tag tag-year">2023年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>2025年播放量24.16亿，国漫界公认的节奏无敌。</strong>改编自耳根同名小说，讲述资质平庸的王林踏入修仙界，凭借果决狠辣的性格一步步逆天改命的故事。653万人打出9.3分，导演组大胆跳过冗长的前期铺垫，直接进入精彩剧情，节奏紧凑到几乎没有多余情节。已登陆Crunchyroll全球最大动漫流媒体平台，海外观众对王林"灭门、果断、不废话"的性格大呼过瘾，被誉为"Dark & Ruthless"的冷酷版主角代表。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/xianni.jpg" alt="仙逆 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/xianni_dark.jpg" alt="仙逆 王林暗黑">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/xianni.jpg" alt="仙逆 逆天改命">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 8. 完美世界 -->
+        <section class="anime-section" data-name="完美世界">
+            <div class="anime-header">
+                <div class="anime-rank">08</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">完美世界</h2>
+                    <div class="anime-title-en">Perfect World</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 7.1 / B站 9.4</span>
+                        <span class="anime-tag tag-genre">玄幻 · 热血</span>
+                        <span class="anime-tag tag-platform">腾讯视频</span>
+                        <span class="anime-tag tag-year">2021年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>2025年播放量16.93亿，1219万人打出9.4分，国漫界特效打戏最多的作品。</strong>改编自辰东同名小说，讲述天生拥有至尊骨的石昊在完美世界中逆天成长的故事。几乎每一集都在打，各种眼花缭乱的特效招式，囊括了修仙体系中的所有功法。海外观众评价："虽然看不懂在打什么，但特效真的炸裂"，被称为"Non-stop Action"。在特效打斗的数量上，可以说没有对手。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/wanmei_shijie.jpg" alt="完美世界 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/wanmei_battle.jpg" alt="完美世界 史诗战斗">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/wanmei_shijie.jpg" alt="完美世界 九天十地">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 9. 斗破苍穹 -->
+        <section class="anime-section" data-name="斗破苍穹">
+            <div class="anime-header">
+                <div class="anime-rank">09</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">斗破苍穹</h2>
+                    <div class="anime-title-en">Battle Through the Heavens</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 8.1 (特别篇)</span>
+                        <span class="anime-tag tag-genre">玄幻 · 热血</span>
+                        <span class="anime-tag tag-platform">腾讯视频</span>
+                        <span class="anime-tag tag-year">2018年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>2025年播放量20.18亿，国漫顶流IP的标杆之作。</strong>改编自天蚕土豆同名小说，讲述天才少年萧炎从巅峰跌落后，凭借药老的帮助和不屈意志重新崛起的故事。幻维数码的精美建模与天阶斗技特效撑起国漫顶流地位。虽然年番4评分有所下滑，但凭借之前积累的口碑和粉丝基础，播放量依然稳居前三。三年之约特别篇豆瓣8.6分，被奉为国漫经典名场面，放到海外MyAnimeList平台同样能打。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/doupo_cangqiong.jpg" alt="斗破苍穹 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/doupo_phoenix.jpg" alt="斗破苍穹 佛怒火莲">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/doupo_cangqiong.jpg" alt="斗破苍穹 萧炎">
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider"></div>
+        </section>
+
+        <!-- 10. 沧元图 -->
+        <section class="anime-section" data-name="沧元图">
+            <div class="anime-header">
+                <div class="anime-rank">10</div>
+                <div class="anime-title-block">
+                    <h2 class="anime-title">沧元图</h2>
+                    <div class="anime-title-en">Cang Yuan Tu</div>
+                    <div class="anime-meta">
+                        <span class="anime-tag tag-score">★ 豆瓣 8.3</span>
+                        <span class="anime-tag tag-genre">玄幻 · 斩妖</span>
+                        <span class="anime-tag tag-platform">优酷独播</span>
+                        <span class="anime-tag tag-year">2023年至今</span>
+                    </div>
+                </div>
+            </div>
+            <p class="anime-description">
+                <strong>2025年播放量11.24亿，唯一非年番进入TOP10的黑马。</strong>改编自我吃西红柿同名小说，讲述少年孟川为报家仇踏上修炼之路，斩妖除魔的故事。作为半年番能进播放量前10，本身就是实力的证明。创新的大招分镜和极具张力的艺术表达，被资深漫迷推荐为"必须尝试的新国漫"。其制作团队后续操刀了《斩神之凡尘神域》，同样获得346万人9.6分的高评价，堪称漫改天花板团队。
+            </p>
+            <div class="gallery">
+                <div class="gallery-main" onclick="openLightbox(this)">
+                    <img src="images/cangyuan_tu.jpg" alt="沧元图 主海报">
+                </div>
+                <div class="gallery-thumbs">
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/cangyuan_sword.jpg" alt="沧元图 斩妖剑法">
+                    </div>
+                    <div class="gallery-thumb" onclick="openLightbox(this)">
+                        <img src="images/cangyuan_tu.jpg" alt="沧元图 神魔决战">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-line"></div>
+        <p>国漫巅峰 · 近五年高评分人气国漫精选</p>
+        <p style="margin-top: 0.5rem; opacity: 0.6;">数据来源：灯塔数据 · 豆瓣评分 · B站评分 | 2020-2025</p>
+    </footer>
+
+    <script>
+        // ========== Scroll Reveal ==========
+        const sections = document.querySelectorAll('.anime-section');
+        const navDotsContainer = document.getElementById('navDots');
+
+        // Create nav dots
+        sections.forEach((section, index) => {
+            const dot = document.createElement('button');
+            dot.className = 'nav-dot';
+            dot.innerHTML = `<span class="tooltip">${section.dataset.name}</span>`;
+            dot.addEventListener('click', () => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+            navDotsContainer.appendChild(dot);
+        });
+
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Update active dot
+                    const index = Array.from(sections).indexOf(entry.target);
+                    navDots.forEach((d, i) => d.classList.toggle('active', i === index));
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+        sections.forEach(section => observer.observe(section));
+
+        // ========== Lightbox ==========
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+        const lightboxClose = document.getElementById('lightboxClose');
+
+        function openLightbox(el) {
+            const img = el.querySelector('img');
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // ========== Parallax on Hero ==========
+        window.addEventListener('scroll', () => {
+            const hero = document.querySelector('.hero-content');
+            const scrolled = window.pageYOffset;
+            if (scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+                hero.style.opacity = 1 - (scrolled / window.innerHeight) * 0.8;
+            }
+        });
+    </script>
+
+</body>
+</html>
