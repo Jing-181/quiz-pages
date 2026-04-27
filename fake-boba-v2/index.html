@@ -5,16 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>假装喝奶茶</title>
   <link rel="stylesheet" href="css/style.css">
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
-  <div id="app">
-    <home-scene v-if="state.currentScene === 'home'" />
-    <recipe-scene v-else-if="state.currentScene === 'recipe'" />
-    <making-scene v-else-if="state.currentScene === 'making'" />
-    <tasting-scene v-else-if="state.currentScene === 'tasting'" />
-    <result-scene v-else-if="state.currentScene === 'result'" />
-  </div>
+  <div id="app"></div>
 
   <script type="module" src="js/app.js"></script>
 </body>
