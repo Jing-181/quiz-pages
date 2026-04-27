@@ -102,6 +102,37 @@ export default {
       var scene = useScene();
       scene.goToScene('home');
     },
+
+    shareCard: function () {
+      // 生成分享链接
+      var recipeData = {
+        cup: this.state.cup,
+        tea: this.state.tea,
+        teaColor: this.state.teaColor,
+        toppings: this.state.toppings,
+        sweet: this.state.sweet,
+        ice: this.state.ice,
+        recipeName: this.state.recipeName,
+        recipeCal: this.state.recipeCal
+      };
+      var shareUrl = window.location.origin + window.location.pathname + '?recipe=' + encodeURIComponent(JSON.stringify(recipeData));
+      
+      // 尝试使用系统分享API
+      if (navigator.share) {
+        navigator.share({
+          title: '我假装喝了一杯' + this.state.recipeName,
+          text: '快来和我一起假装喝奶茶吧！',
+          url: shareUrl
+        }).catch(function (error) {
+          console.log('分享失败:', error);
+          // 降级方案
+          prompt('复制链接分享给朋友:', shareUrl);
+        });
+      } else {
+        // 降级方案
+        prompt('复制链接分享给朋友:', shareUrl);
+      }
+    },
   },
   template: `
     <div id="scene-result" class="scene">
@@ -134,6 +165,7 @@ export default {
         </div>
         <div class="result-actions">
           <button class="btn-save" @click="saveCard">保存图片</button>
+          <button class="btn-save" @click="shareCard">分享给朋友</button>
           <button class="btn-retry" @click="resetAll">再来一杯</button>
         </div>
       </div>

@@ -1289,7 +1289,8 @@ button { font-family: inherit; cursor: pointer; border: none; outline: none; }
   font-size: 0.85rem;
 }
 .result-actions {
-  display: flex; gap: 10px;
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center;
 }
 .result-actions button {
   flex: 1;
