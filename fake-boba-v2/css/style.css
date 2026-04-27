@@ -1,0 +1,515 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #FF6B6B;
+  --secondary-color: #4ECDC4;
+  --accent-color: #FFD166;
+  --text-color: #292F36;
+  --light-text: #6C757D;
+  --background-color: #F7FFF7;
+  --card-background: #FFFFFF;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* 通用样式 */
+.scene {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px;
+  margin: 20px 0;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: var(--light-text);
+}
+
+p {
+  margin-bottom: 20px;
+  color: var(--light-text);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin: 10px;
+}
+
+button:hover {
+  background-color: #FF5252;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+button.secondary {
+  background-color: var(--secondary-color);
+}
+
+button.secondary:hover {
+  background-color: #45B7AA;
+  box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+}
+
+button:disabled {
+  background-color: #E9ECEF;
+  color: #6C757D;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 输入和选择样式 */
+input[type="range"] {
+  width: 100%;
+  margin: 15px 0;
+  -webkit-appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: #E9ECEF;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+}
+
+/* 选择器样式 */
+.selector {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.selector-item {
+  padding: 10px 20px;
+  border: 2px solid #E9ECEF;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.selector-item:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.selector-item.selected {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* 步骤指示器 */
+.steps {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px 0;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #E9ECEF;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.step {
+  position: relative;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #E9ECEF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.step.active {
+  background-color: var(--primary-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.step.completed {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+/* 杯子样式 */
+.cup-container {
+  position: relative;
+  width: 200px;
+  height: 250px;
+  margin: 30px auto;
+}
+
+.cup {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 0 0 60px 60px;
+  border: 3px solid var(--text-color);
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cup-lid {
+  position: absolute;
+  top: -10px;
+  left: -5px;
+  right: -5px;
+  height: 30px;
+  background-color: var(--text-color);
+  border-radius: 10px 10px 0 0;
+  z-index: 10;
+}
+
+.cup-straw {
+  position: absolute;
+  top: -40px;
+  right: 30px;
+  width: 15px;
+  height: 100px;
+  background-color: var(--primary-color);
+  border-radius: 10px 10px 0 0;
+  z-index: 5;
+}
+
+.drink {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80%;
+  background-color: var(--secondary-color);
+  transition: height 0.5s ease;
+}
+
+.drink::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: wave 3s ease-in-out infinite;
+}
+
+@keyframes wave {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+.bubble {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1);
+    opacity: 0;
+  }
+}
+
+.steam {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 100px;
+}
+
+.steam p {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  animation: steam 3s ease-in-out infinite;
+}
+
+.steam p:nth-child(1) {
+  top: 0;
+  left: 20px;
+  animation-delay: 0s;
+}
+
+.steam p:nth-child(2) {
+  top: 10px;
+  left: 40px;
+  animation-delay: 0.5s;
+}
+
+.steam p:nth-child(3) {
+  top: 20px;
+  left: 10px;
+  animation-delay: 1s;
+}
+
+@keyframes steam {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50px) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* 摇晃动画 */
+.shaking {
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-10deg);
+  }
+}
+
+/* 进度环 */
+.progress-ring {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 30px auto;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.progress-ring circle {
+  fill: none;
+  stroke-width: 10;
+}
+
+.progress-ring .bg {
+  stroke: #E9ECEF;
+}
+
+.progress-ring .progress {
+  stroke: var(--primary-color);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* 结果卡片 */
+.result-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 30px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.result-card h2 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+}
+
+.result-card .recipe-details {
+  text-align: left;
+  margin: 20px 0;
+  padding: 20px;
+  background-color: #F8F9FA;
+  border-radius: var(--border-radius);
+}
+
+.result-card .recipe-details p {
+  margin: 5px 0;
+}
+
+.result-card .mood-tag {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: var(--accent-color);
+  color: var(--text-color);
+  border-radius: 50px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+/* 分享按钮 */
+.share-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .scene {
+    padding: 20px;
+    margin: 10px 0;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .cup-container {
+    width: 150px;
+    height: 200px;
+  }
+
+  .selector-item {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  #app {
+    padding: 10px;
+  }
+
+  .scene {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .cup-container {
+    width: 120px;
+    height: 160px;
+  }
+
+  .steps {
+    margin: 20px 0;
+  }
+
+  .step {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+  }
+}

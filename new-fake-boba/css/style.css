@@ -1,0 +1,978 @@
+/* ===== CSS Variables ===== */
+:root {
+  --bg: #FFF8F0;
+  --brown: #C4956A;
+  --black: #2D1B0E;
+  --pink: #FF6B8A;
+  --green: #8BC34A;
+  --purple: #B39DDB;
+  --orange: #FFB74D;
+  --radius: 16px;
+}
+
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'ZCOOL KuaiLe', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--black);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+
+/* ===== Scene System ===== */
+.scene { width: 100%; min-height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; }
+
+/* ===== Common Styles ===== */
+.brand-title { font-family: 'ZCOOL KuaiLe', cursive; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  font-family: inherit;
+  box-shadow: 0 4px 20px rgba(255,107,138,0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(255,107,138,0.25); }
+.btn-primary:disabled { opacity: 0.5; pointer-events: none; }
+.btn-outline {
+  background: transparent;
+  color: var(--brown);
+  border: 2px solid var(--brown);
+  border-radius: 50px;
+  padding: 14px 36px;
+  font-size: 1.05rem;
+  font-family: inherit;
+  transition: transform 0.2s, background 0.2s;
+}
+.btn-outline:active { transform: scale(0.96); background: rgba(196,149,106,0.08); }
+.hidden { display: none !important; }
+
+/* ===== Animations ===== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes wave {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+}
+@keyframes shakeAnim {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  20% { transform: translateX(-8px) rotate(-3deg); }
+  40% { transform: translateX(8px) rotate(3deg); }
+  60% { transform: translateX(-6px) rotate(-2deg); }
+  80% { transform: translateX(6px) rotate(2deg); }
+}
+@keyframes steamRise {
+  0% { opacity: 0; transform: translateY(0) scaleX(1); }
+  50% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-40px) scaleX(1.5); }
+}
+@keyframes bubblePop {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  70% { opacity: 1; transform: translateY(-30px) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(0.6); }
+}
+
+/* ===== Background Blobs ===== */
+.bg-blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+}
+.bg-blob-1 {
+  width: 200px; height: 200px;
+  background: var(--pink);
+  top: 10%; left: -30px;
+  animation: blobFloat1 12s ease-in-out infinite;
+}
+.bg-blob-2 {
+  width: 180px; height: 180px;
+  background: var(--orange);
+  top: 50%; right: -40px;
+  animation: blobFloat2 15s ease-in-out infinite;
+}
+.bg-blob-3 {
+  width: 150px; height: 150px;
+  background: var(--purple);
+  bottom: 10%; left: 20%;
+  animation: blobFloat1 18s ease-in-out infinite reverse;
+}
+
+@keyframes blobFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(20px, -15px); }
+  66% { transform: translate(-10px, 10px); }
+}
+@keyframes blobFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(-15px, 20px); }
+  66% { transform: translate(10px, -10px); }
+}
+
+/* ===== Warm overlay for tasting ===== */
+.warm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(255, 200, 150, 0.08);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.warm-overlay.active { opacity: 1; }
+
+/* ================================================  
+   SCENE 1: HOME
+   ================================================ */
+#scene-home {
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFE8D6 50%, #FFF0E6 100%);
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+  z-index: 1;
+}
+.home-content { max-width: 360px; position: relative; z-index: 1; }
+.home-cup {
+  width: 140px; height: 180px; margin: 0 auto 24px;
+  position: relative;
+  animation: fadeInUp 0.8s ease-out both;
+}
+/* CSS Cup */
+.cup-body-css {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100px; height: 150px;
+  background: rgba(255,255,255,0.85);
+  border: 2.5px solid #DDD0C4;
+  border-radius: 8px 8px 20px 20px;
+  overflow: hidden;
+}
+.cup-liquid-home {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 65%;
+  background: linear-gradient(180deg, #D4A574, #C4956A);
+  border-radius: 0 0 18px 18px;
+}
+.cup-liquid-home::before {
+  content: '';
+  position: absolute; top: -6px; left: -10%; width: 120%; height: 12px;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+  animation: wave 2.5s ease-in-out infinite;
+}
+.cup-rim {
+  position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+  width: 108px; height: 10px;
+  background: #E8DDD4;
+  border-radius: 5px;
+}
+.cup-rim::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+.cup-straw-home {
+  position: absolute; top: 5px; right: 30px;
+  width: 8px; height: 90px;
+  background: linear-gradient(180deg, var(--pink), var(--orange));
+  border-radius: 4px;
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+}
+/* Bubbles in cup */
+.cup-bubble {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  animation: bubblePop 3s ease-in-out infinite;
+}
+
+.home-title {
+  font-size: 2.4rem;
+  color: var(--black);
+  margin-bottom: 4px;
+  animation: fadeInUp 0.8s ease-out 0.15s both;
+}
+.home-subtitle {
+  font-size: 1rem;
+  color: var(--brown);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+.emotion-text {
+  font-size: 1.05rem;
+  color: #8B7355;
+  line-height: 1.7;
+  margin-bottom: 32px;
+  animation: fadeInUp 0.8s ease-out 0.45s both;
+}
+.cta-group {
+  display: flex; flex-direction: column; gap: 14px;
+  align-items: center;
+  margin-bottom: 28px;
+  animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+.social-proof {
+  font-size: 0.85rem;
+  color: #B8A090;
+  animation: fadeInUp 0.8s ease-out 0.75s both;
+}
+#drink-count {
+  display: inline-block;
+  font-weight: bold;
+  color: var(--pink);
+}
+
+/* ================================================  
+   SCENE 2: RECIPE
+   ================================================ */
+#scene-recipe {
+  background: var(--bg);
+  padding: 0;
+  min-height: 100vh;
+  z-index: 1;
+}
+.recipe-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 400px;
+}
+.btn-back {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.04);
+  border-radius: 12px;
+  font-size: 1.2rem;
+  color: var(--black);
+  transition: background 0.2s;
+}
+.btn-back:active { background: rgba(0,0,0,0.08); }
+.recipe-header h2 { font-size: 1.3rem; }
+.progress-bar {
+  width: 100%; max-width: 400px;
+  height: 6px; background: #F0E8E0;
+  border-radius: 3px; overflow: hidden;
+  margin: 0 20px 8px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--orange));
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+.step-label {
+  width: 100%; max-width: 400px;
+  padding: 0 20px;
+  font-size: 0.85rem;
+  color: #B8A090;
+  margin-bottom: 16px;
+}
+
+/* Step panels */
+.step-panel { width: 100%; max-width: 400px; padding: 0 20px; flex: 1; }
+
+/* Step 1: Cup type */
+.cup-options {
+  display: flex; gap: 16px; justify-content: center;
+  padding: 20px 0;
+}
+.cup-card {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  padding: 20px 16px;
+  background: #fff;
+  border: 2.5px solid #F0E8E0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  flex: 1; max-width: 110px;
+}
+.cup-card:active { transform: scale(0.96); }
+.cup-card.selected {
+  border-color: var(--pink);
+  box-shadow: 0 2px 12px rgba(255,107,138,0.2);
+}
+.cup-card span { font-size: 0.9rem; color: var(--black); }
+.cup-card-icon {
+  width: 50px; height: 70px;
+  background: rgba(255,255,255,0.9);
+  border: 2px solid #DDD0C4;
+  border-radius: 6px 6px 14px 14px;
+  position: relative;
+}
+.cup-card-icon.fat { width: 60px; height: 60px; border-radius: 8px 8px 16px 16px; }
+.cup-card-icon.tall { width: 40px; height: 80px; border-radius: 5px 5px 12px 12px; }
+.cup-card-icon::before {
+  content: '';
+  position: absolute; top: -4px; left: -4px; right: -4px; height: 8px;
+  background: #E8DDD4; border-radius: 4px;
+}
+
+/* Step 2: Tea */
+.tea-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 10px 0;
+}
+.tea-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 12px;
+  background: #fff;
+  border: 2.5px solid #F0E8E0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.tea-item:active { transform: scale(0.97); }
+.tea-item.selected { border-color: var(--pink); }
+.tea-color {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.tea-item span { font-size: 0.95rem; }
+
+/* Step 3: Toppings */
+.topping-pills {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  padding: 10px 0;
+}
+.topping-pill {
+  padding: 10px 18px;
+  background: #fff;
+  border: 2.5px solid #F0E8E0;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topping-pill:active { transform: scale(0.96); }
+.topping-pill.selected {
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  border-color: transparent;
+}
+.topping-count {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #B8A090;
+  margin-top: 8px;
+}
+
+/* Step 4: Sweetness & Ice */
+.slider-group { padding: 10px 0; }
+.slider-label {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: var(--black);
+}
+.segment-control {
+  display: flex; gap: 0;
+  background: #F0E8E0;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 24px;
+}
+.segment-btn {
+  flex: 1;
+  padding: 12px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #8B7355;
+  font-family: inherit;
+  transition: all 0.25s;
+}
+.segment-btn.active {
+  background: #fff;
+  color: var(--black);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Recipe nav */
+.recipe-nav {
+  display: flex; gap: 12px;
+  padding: 20px;
+  width: 100%; max-width: 400px;
+  margin-top: auto;
+}
+.recipe-nav button {
+  flex: 1;
+  padding: 14px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+.btn-prev {
+  background: #F0E8E0;
+  color: var(--black);
+}
+.btn-next {
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,107,138,0.3);
+}
+
+/* ================================================  
+   SCENE 3: MAKING
+   ================================================ */
+#scene-making {
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFE8D6 50%, #FFF0E6 100%);
+  justify-content: center;
+  padding: 30px 24px;
+  text-align: center;
+  z-index: 1;
+}
+.making-title {
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+  min-height: 2em;
+}
+.making-area {
+  position: relative;
+  width: 180px; height: 260px;
+  margin: 0 auto 30px;
+}
+/* Making cup */
+.making-cup-body {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 140px; height: 230px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,240,235,0.9) 50%, rgba(255,255,255,0.85) 100%);
+  border: 2px solid rgba(200,190,180,0.5);
+  border-radius: 12px 12px 28px 28px;
+  overflow: hidden;
+  box-shadow:
+    inset -8px 0 20px rgba(255,255,255,0.4),
+    inset 4px 0 15px rgba(0,0,0,0.03),
+    0 8px 32px rgba(0,0,0,0.08);
+}
+.making-cup-body.pouring {
+  animation: pourVibrate 0.3s ease-in-out infinite;
+}
+/* Cup body left highlight reflection */
+.making-cup-highlight {
+  position: absolute;
+  top: 10%; left: 8px;
+  width: 6px; height: 60%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.1));
+  border-radius: 3px;
+  z-index: 4;
+  pointer-events: none;
+}
+.making-cup-rim {
+  position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+  width: 150px; height: 12px;
+  background: linear-gradient(180deg, #F5EDE5, #E8DDD4);
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+.making-cup-rim::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+.making-liquid {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 0%;
+  transition: height 2s ease-in-out;
+  border-radius: 0 0 26px 26px;
+}
+.making-liquid::before {
+  content: '';
+  position: absolute; top: -4px; left: -5%; width: 110%; height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2s ease-in-out infinite;
+}
+.making-liquid::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.making-liquid.wobbling {
+  animation: liquidWobble 0.3s ease-in-out infinite;
+}
+.making-straw {
+  position: absolute; top: 8px; right: 38px;
+  width: 9px; height: 130px;
+  background: linear-gradient(90deg, #FF8FA3, #FFB74D, #FF8FA3);
+  border-radius: 4px 4px 2px 2px;
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+  z-index: 3;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Shake UI - circular progress */
+.shake-area {
+  text-align: center;
+}
+.btn-shake {
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 18px 48px;
+  font-size: 1.2rem;
+  font-family: inherit;
+  box-shadow: 0 4px 20px rgba(255,107,138,0.35);
+  transition: transform 0.15s;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+.btn-shake:active { transform: scale(0.95); }
+.shake-count-text {
+  font-size: 0.9rem;
+  color: #B8A090;
+  margin-top: 12px;
+}
+
+/* Circular progress ring */
+.shake-progress-ring {
+  display: block;
+  margin: 20px auto 15px;
+  transform: rotate(-90deg);
+  filter: drop-shadow(0 4px 12px rgba(255,107,138,0.4));
+  width: 120px !important;
+  height: 120px !important;
+}
+.shake-progress-ring-bg {
+  fill: none;
+  stroke: #F5EDE5;
+  stroke-width: 10;
+}
+.shake-progress-ring-fill {
+  fill: none;
+  stroke: url(#shakeGradient);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 314.16;
+  stroke-dashoffset: 314.16;
+  transition: stroke-dashoffset 0.1s ease;
+}
+
+.shake-count-text {
+  font-size: 1.2rem !important;
+  font-weight: bold;
+  color: var(--pink);
+  margin-top: 5px !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.btn-shake {
+  font-size: 1.1rem !important;
+  padding: 18px 40px !important;
+  margin-bottom: 10px !important;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pourVibrate {
+  0% { transform: translateX(-50%) scale(1); }
+  25% { transform: translateX(-50%) scale(1.008); }
+  50% { transform: translateX(-50%) scale(1); }
+  75% { transform: translateX(-50%) scale(1.01); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes liquidWobble {
+  0%, 100% { transform: skewX(0deg); }
+  25% { transform: skewX(5deg); }
+  75% { transform: skewX(-5deg); }
+}
+
+.shaking .making-cup-body {
+  animation: shakeAnim 0.4s ease-in-out;
+}
+.making-area.shaking {
+  animation: makingShake 0.2s ease-in-out infinite;
+}
+
+@keyframes makingShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Ding text */
+.ding-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.3rem;
+  color: var(--pink);
+  font-family: 'ZCOOL KuaiLe', cursive;
+  white-space: nowrap;
+  z-index: 20;
+  animation: dingPop 1.2s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes dingPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+}
+
+/* ================================================  
+   SCENE 4: TASTING
+   ================================================ */
+#scene-tasting {
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFE8D6 100%);
+  justify-content: center;
+  padding: 30px 24px;
+  text-align: center;
+  z-index: 1;
+}
+.tasting-header h2 {
+  font-size: 1.3rem;
+  margin-bottom: 6px;
+}
+.sip-progress {
+  font-size: 0.9rem;
+  color: #B8A090;
+  margin-bottom: 24px;
+}
+.tasting-cup-area {
+  position: relative;
+  width: 160px; height: 230px;
+  margin: 0 auto 30px;
+}
+.tasting-cup-body {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 130px; height: 210px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,240,235,0.9) 50%, rgba(255,255,255,0.85) 100%);
+  border: 2px solid rgba(200,190,180,0.5);
+  border-radius: 12px 12px 26px 26px;
+  overflow: hidden;
+  box-shadow:
+    inset -8px 0 20px rgba(255,255,255,0.4),
+    inset 4px 0 15px rgba(0,0,0,0.03),
+    0 8px 32px rgba(0,0,0,0.08);
+  transition: transform 0.6s ease;
+}
+.tasting-cup-body.tilted {
+  transform: translateX(-50%) rotate(5deg);
+}
+.tasting-cup-rim {
+  position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+  width: 140px; height: 12px;
+  background: linear-gradient(180deg, #F5EDE5, #E8DDD4);
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+.tasting-cup-rim::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 5px;
+  background: #F0E8E0;
+  border-radius: 5px 5px 0 0;
+}
+.tasting-liquid {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 80%;
+  transition: height 0.6s ease;
+  border-radius: 0 0 24px 24px;
+}
+.tasting-liquid::before {
+  content: '';
+  position: absolute; top: -4px; left: -5%; width: 110%; height: 8px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  border-radius: 50%;
+  animation: wave 2.5s ease-in-out infinite;
+}
+.tasting-liquid::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 40%, rgba(0,0,0,0.08) 100%);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.tasting-straw-el {
+  position: absolute; top: 0; right: 35px;
+  width: 9px; height: 120px;
+  background: linear-gradient(90deg, #FF8FA3, #FFB74D, #FF8FA3);
+  border-radius: 4px 4px 2px 2px;
+  transform: rotate(-8deg);
+  transform-origin: bottom center;
+  z-index: 3;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Steam */
+.steam-container {
+  position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+  width: 60px; height: 40px;
+  z-index: 5;
+}
+.steam-line {
+  position: absolute; bottom: 0;
+  width: 8px; height: 20px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 50%;
+  animation: steamRise 2s ease-out infinite;
+}
+.steam-line:nth-child(1) { left: 10px; animation-delay: 0s; }
+.steam-line:nth-child(2) { left: 25px; animation-delay: 0.6s; }
+.steam-line:nth-child(3) { left: 40px; animation-delay: 1.2s; }
+
+/* Sip button */
+.btn-sip-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.sip-pulse-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 90px; height: 90px;
+  margin: -45px 0 0 -45px;
+  border: 2px solid var(--pink);
+  border-radius: 50%;
+  animation: pulse 2s ease-out infinite;
+}
+.sip-pulse-ring:nth-child(2) { animation-delay: 0.6s; }
+.sip-pulse-ring:nth-child(3) { animation-delay: 1.2s; }
+.btn-sip {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  box-shadow: 0 4px 20px rgba(255,107,138,0.4);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.15s;
+}
+.btn-sip:active { transform: scale(0.92); }
+
+/* Sip progress dots */
+.sip-dots {
+  display: flex; gap: 6px; justify-content: center;
+  margin-bottom: 20px;
+}
+.sip-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: #F0E8E0;
+  transition: background 0.3s;
+}
+.sip-dot.filled { background: var(--pink); }
+
+/* Emotion bubble */
+.emotion-bubble {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #FF9A9E, #FECFEF);
+  border-radius: 20px;
+  padding: 16px 24px;
+  box-shadow: 0 8px 30px rgba(255,107,138,0.2);
+  font-size: 1.1rem;
+  color: #fff;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+.emotion-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #FECFEF;
+}
+.emotion-bubble.show {
+  opacity: 1;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+/* ================================================  
+   SCENE 5: RESULT
+   ================================================ */
+#scene-result {
+  background: linear-gradient(180deg, #FFF8F0 0%, #FFE8D6 100%);
+  justify-content: center;
+  padding: 30px 24px;
+  text-align: center;
+  z-index: 1;
+}
+.result-card {
+  width: 345px;
+  max-width: 100%;
+  background: linear-gradient(180deg, #FFF8F0, #FFF0E6);
+  background-image:
+    radial-gradient(circle, rgba(196,149,106,0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+  overflow: hidden;
+  padding: 32px 24px 24px;
+}
+.result-card-header h3 {
+  font-size: 1.5rem;
+  color: var(--black);
+}
+.result-card-header p {
+  font-size: 0.85rem;
+  color: var(--brown);
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+.result-card-body { margin-bottom: 24px; }
+.result-subtitle {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+/* Mini cup in result */
+.result-cup-mini {
+  width: 40px; height: 60px;
+  margin: 0 auto 12px;
+  position: relative;
+}
+.result-cup-mini-body {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 32px; height: 48px;
+  background: rgba(255,255,255,0.85);
+  border: 2px solid #DDD0C4;
+  border-radius: 4px 4px 12px 12px;
+  overflow: hidden;
+}
+.result-cup-mini-liquid {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 65%;
+  border-radius: 0 0 10px 10px;
+}
+.result-cup-mini-rim {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 36px; height: 6px;
+  background: #E8DDD4;
+  border-radius: 3px;
+  z-index: 2;
+}
+.result-cup-mini-straw {
+  position: absolute; top: 2px; right: 8px;
+  width: 5px; height: 30px;
+  background: linear-gradient(180deg, var(--pink), var(--orange));
+  border-radius: 3px;
+  transform: rotate(-6deg);
+  transform-origin: bottom center;
+  z-index: 3;
+}
+
+.result-recipe-name {
+  font-size: 1.3rem;
+  color: var(--black);
+  margin-bottom: 16px;
+}
+.result-details {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.result-tag {
+  padding: 6px 14px;
+  background: #FFF8F0;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  color: var(--brown);
+}
+.result-message {
+  font-size: 1rem;
+  color: #8B7355;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  padding: 0 8px;
+}
+
+/* Mood tag */
+.result-mood {
+  display: inline-block;
+  padding: 6px 16px;
+  background: linear-gradient(135deg, rgba(255,107,138,0.1), rgba(255,183,77,0.1));
+  border-radius: 50px;
+  font-size: 0.85rem;
+  color: var(--pink);
+  margin-bottom: 16px;
+}
+
+.result-calories {
+  font-size: 1.6rem;
+  color: var(--green);
+  margin-bottom: 8px;
+}
+.result-calories .unit {
+  font-size: 0.85rem;
+}
+.result-actions {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  justify-content: center;
+}
+.result-actions button {
+  flex: 1;
+  padding: 14px 8px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: transform 0.15s;
+}
+.result-actions button:active { transform: scale(0.96); }
+.btn-save {
+  background: linear-gradient(135deg, var(--pink), var(--orange));
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,107,138,0.3);
+}
+.btn-retry {
+  background: #F0E8E0;
+  color: var(--black);
+}
+
+/* ===== prefers-reduced-motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
