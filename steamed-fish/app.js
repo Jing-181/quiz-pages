@@ -1,126 +1,113 @@
+const pageContainer = document.querySelector('.page-container');
 const scenes = document.querySelectorAll('.scene');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const sceneCounter = document.getElementById('sceneCounter');
+const navDots = document.querySelectorAll('.nav-dot');
 const sizzleBtn = document.getElementById('sizzleBtn');
 const sizzleText = document.getElementById('sizzleText');
+const restartBtn = document.getElementById('restartBtn');
+const progressBar = document.getElementById('cookingProgress');
+const progressPercent = document.getElementById('progressPercent');
 
-let currentScene = 0;
-let typewriterTimeouts = [];
+let currentSceneIndex = 0;
+let isScrolling = false;
+let cookingProgressInterval = null;
 
-const sceneContent = {
-    1: `> Input Params:
+const progressTexts = [
+    { percent: 15, text: '热传导中...' },
+    { percent: 30, text: '蛋白质变性...' },
+    { percent: 70, text: '鱼肉将熟' },
+    { percent: 100, text: '出锅!' }
+];
 
-  - 主料: 鲈鱼 x 1 条
-
-  - 辅料: 葱 x 2 根 | 姜 x 1 块
-
-  - 调料: 蒸鱼豉油 x 1 勺 | 油 x 5g`,
-    2: `> 预处理...
-
-  鱼身划刀 -> OK
-  塞入姜片 -> OK
-  装盘待蒸 -> OK`,
-    3: `[蒸煮进程]
-
-██░░░░░░░░ 15%  |  热传导中...
-████░░░░░░ 30%  |  蛋白质变性...
-████████░░ 70%  |  鱼肉将熟
-██████████ 100% | 出锅`,
-    5: `> return {
-    蛋白质:   33g,
-    脂肪:      8g,
-    碳水:      0g,
-    耗时:     16min,
-    满足感:   9/10
-  };`
-};
-
-function initScene() {
-    scenes.forEach((scene, index) => {
+function updateScene(index) {
+    if (index < 0 || index >= scenes.length) return;
+    
+    currentSceneIndex = index;
+    
+    scenes.forEach((scene, i) => {
         scene.classList.remove('active');
-        if (index === currentScene) {
+        if (i === currentSceneIndex) {
             scene.classList.add('active');
         }
     });
-    updateButtons();
-    updateCounter();
-    if (currentScene === 1) {
-        typewriter('scene1-text', sceneContent[1]);
-    } else if (currentScene === 2) {
-        typewriter('scene2-text', sceneContent[2]);
-    } else if (currentScene === 3) {
-        showCookingProgress();
-    } else if (currentScene === 5) {
-        typewriter('scene5-text', sceneContent[5]);
-    }
-}
-
-function updateButtons() {
-    prevBtn.disabled = currentScene === 0;
-    nextBtn.disabled = currentScene === scenes.length - 1;
-}
-
-function updateCounter() {
-    sceneCounter.textContent = `${currentScene + 1} / ${scenes.length}`;
-}
-
-function clearTypewriter() {
-    typewriterTimeouts.forEach(timeout => clearTimeout(timeout));
-    typewriterTimeouts = [];
-}
-
-function typewriter(elementId, text) {
-    clearTypewriter();
-    const element = document.getElementById(elementId);
-    element.innerHTML = '';
-    let index = 0;
-
-    function type() {
-        if (index <= text.length) {
-            element.innerHTML = `<pre>${text.slice(0, index)}<span class="cursor"></span></pre>`;
-            index++;
-            typewriterTimeouts.push(setTimeout(type, 50));
-        } else {
-            element.innerHTML = `<pre>${text}</pre>`;
+    
+    navDots.forEach((dot, i) => {
+        dot.classList.remove('active');
+        if (i === currentSceneIndex) {
+            dot.classList.add('active');
         }
+    });
+    
+    if (currentSceneIndex === 3) {
+        startCookingProgress();
+    } else {
+        stopCookingProgress();
     }
-
-    type();
 }
 
-function showCookingProgress() {
-    const element = document.getElementById('scene3-text');
-    const lines = sceneContent[3].split('\n');
-    element.innerHTML = '';
-    let lineIndex = 0;
-
-    function showLine() {
-        if (lineIndex < lines.length) {
-            const currentText = lines.slice(0, lineIndex + 1).join('\n');
-            element.innerHTML = `<pre>${currentText}</pre>`;
-            lineIndex++;
-            typewriterTimeouts.push(setTimeout(showLine, 1000));
+function startCookingProgress() {
+    let currentProgress = 0;
+    let currentTextIndex = 0;
+    progressPercent.textContent = '0%';
+    progressBar.style.width = '0%';
+    
+    if (cookingProgressInterval) {
+        clearInterval(cookingProgressInterval);
+    }
+    
+    cookingProgressInterval = setInterval(() => {
+        currentProgress += 1;
+        progressBar.style.width = `${currentProgress}%`;
+        progressPercent.textContent = `${currentProgress}%`;
+        
+        while (currentTextIndex < progressTexts.length && 
+               currentProgress >= progressTexts[currentTextIndex].percent) {
+            const statusEl = progressPercent.nextElementSibling;
+            if (statusEl && statusEl.classList.contains('progress-status')) {
+                statusEl.textContent = progressTexts[currentTextIndex].text;
+            }
+            currentTextIndex++;
         }
-    }
-
-    showLine();
+        
+        if (currentProgress >= 100) {
+            stopCookingProgress();
+        }
+    }, 80);
 }
 
-prevBtn.addEventListener('click', () => {
-    if (currentScene > 0) {
-        clearTypewriter();
-        currentScene--;
-        initScene();
+function stopCookingProgress() {
+    if (cookingProgressInterval) {
+        clearInterval(cookingProgressInterval);
+        cookingProgressInterval = null;
     }
+}
+
+navDots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+        scenes[index].scrollIntoView({ behavior: 'smooth' });
+    });
 });
 
-nextBtn.addEventListener('click', () => {
-    if (currentScene < scenes.length - 1) {
-        clearTypewriter();
-        currentScene++;
-        initScene();
-    }
+pageContainer.addEventListener('scroll', () => {
+    if (isScrolling) return;
+    
+    isScrolling = true;
+    
+    const scrollPosition = pageContainer.scrollTop + pageContainer.clientHeight / 2;
+    
+    scenes.forEach((scene, index) => {
+        const sceneTop = scene.offsetTop;
+        const sceneBottom = sceneTop + scene.clientHeight;
+        
+        if (scrollPosition >= sceneTop && scrollPosition < sceneBottom) {
+            if (currentSceneIndex !== index) {
+                updateScene(index);
+            }
+        }
+    });
+    
+    setTimeout(() => {
+        isScrolling = false;
+    }, 100);
 });
 
 sizzleBtn.addEventListener('click', () => {
@@ -130,4 +117,41 @@ sizzleBtn.addEventListener('click', () => {
     }, 1000);
 });
 
-initScene();
+restartBtn.addEventListener('click', () => {
+    scenes[0].scrollIntoView({ behavior: 'smooth' });
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        const nextIndex = Math.min(currentSceneIndex + 1, scenes.length - 1);
+        scenes[nextIndex].scrollIntoView({ behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        const prevIndex = Math.max(currentSceneIndex - 1, 0);
+        scenes[prevIndex].scrollIntoView({ behavior: 'smooth' });
+    }
+});
+
+updateScene(0);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cloud1 = document.querySelector('.scene-hero .cloud:first-of-type');
+    const cloud2 = document.querySelector('.scene-hero .cloud:last-of-type');
+    
+    if (cloud1) {
+        cloud1.style.animation = 'drift 30s linear infinite';
+    }
+    if (cloud2) {
+        cloud2.style.animation = 'drift 25s linear infinite reverse';
+    }
+});
+
+const style = document.createElement('style');
+style.textContent = `
+@keyframes drift {
+    0% { transform: translateX(-100px) translateY(80px); }
+    100% { transform: translateX(100px) translateY(80px); }
+}
+`;
+document.head.appendChild(style);
