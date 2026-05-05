@@ -2,6 +2,7 @@ const scenes = document.querySelectorAll('.scene');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const sceneCounter = document.getElementById('sceneCounter');
+const progressBar = document.getElementById('progressBar');
 const sizzleBtn = document.getElementById('sizzleBtn');
 const sizzleText = document.getElementById('sizzleText');
 
@@ -45,6 +46,8 @@ function initScene() {
     });
     updateButtons();
     updateCounter();
+    updateProgressBar();
+    
     if (currentScene === 1) {
         typewriter('scene1-text', sceneContent[1]);
     } else if (currentScene === 2) {
@@ -63,6 +66,11 @@ function updateButtons() {
 
 function updateCounter() {
     sceneCounter.textContent = `${currentScene + 1} / ${scenes.length}`;
+}
+
+function updateProgressBar() {
+    const progress = ((currentScene + 1) / scenes.length) * 100;
+    progressBar.style.width = `${progress}%`;
 }
 
 function clearTypewriter() {
@@ -128,6 +136,34 @@ sizzleBtn.addEventListener('click', () => {
     setTimeout(() => {
         sizzleText.classList.remove('active');
     }, 1000);
+});
+
+const uploadOverlays = document.querySelectorAll('.upload-overlay');
+uploadOverlays.forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const ingredient = overlay.dataset.ingredient;
+        alert(`您可以上传 ${getIngredientName(ingredient)} 的图片到 images/${ingredient}.jpg`);
+    });
+});
+
+function getIngredientName(key) {
+    const names = {
+        'fish': '鲈鱼',
+        'scallion': '葱',
+        'ginger': '姜',
+        'soy-sauce': '蒸鱼豉油',
+        'oil': '食用油'
+    };
+    return names[key] || key;
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        prevBtn.click();
+    } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        nextBtn.click();
+    }
 });
 
 initScene();

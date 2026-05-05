@@ -8,37 +8,186 @@
 </head>
 <body>
     <div class="container">
+        <!-- 开场定帧 -->
         <div class="scene" id="scene0">
-            <div class="code-text">
-                <pre>/* 葱油蒸鲈鱼段.c */
+            <div class="hero-section">
+                <div class="hero-icon">🍳</div>
+                <div class="code-text hero-text">
+                    <pre>/* 葱油蒸鲈鱼段.c */
 // 练后高蛋白补给 | 总耗时: 16min | 蛋白质: ~33g</pre>
+                </div>
+                <div class="hero-decoration"></div>
             </div>
         </div>
 
+        <!-- 第一幕：食材参数 -->
         <div class="scene" id="scene1">
             <div class="ingredients-scene">
-                <div class="food-image">
-                    <div class="placeholder-image">🍱 食材全家福</div>
+                <div class="section-title">
+                    <span class="tag">Input Params</span>
+                    <h2>食材准备</h2>
+                </div>
+                <div class="ingredients-grid">
+                    <div class="ingredient-card">
+                        <div class="ingredient-image">
+                            <svg viewBox="0 0 120 100" class="anime-food">
+                                <ellipse cx="60" cy="65" rx="50" ry="25" fill="#ff6b35"/>
+                                <ellipse cx="60" cy="60" rx="45" ry="22" fill="#ff8c5a"/>
+                                <path d="M10 60 Q30 40 60 50 Q90 40 110 60" stroke="#4a3728" stroke-width="2" fill="none"/>
+                                <path d="M60 35 L60 5" stroke="#4a3728" stroke-width="3" fill="none"/>
+                                <ellipse cx="60" cy="5" rx="8" ry="4" fill="#4a3728"/>
+                                <circle cx="45" cy="55" r="4" fill="#333"/>
+                                <circle cx="75" cy="55" r="4" fill="#333"/>
+                                <path d="M42 58 Q45 62 48 58" stroke="#333" stroke-width="1.5" fill="none"/>
+                                <path d="M72 58 Q75 62 78 58" stroke="#333" stroke-width="1.5" fill="none"/>
+                            </svg>
+                            <div class="upload-overlay" data-ingredient="fish">+ 上传</div>
+                        </div>
+                        <div class="ingredient-info">
+                            <span class="ingredient-name">鲈鱼</span>
+                            <span class="ingredient-quantity">x 1 条</span>
+                        </div>
+                    </div>
+
+                    <div class="ingredient-card">
+                        <div class="ingredient-image">
+                            <svg viewBox="0 0 100 120" class="anime-food">
+                                <rect x="45" y="10" width="10" height="100" rx="3" fill="#228B22"/>
+                                <rect x="47" y="10" width="6" height="100" fill="#32CD32"/>
+                                <ellipse cx="50" cy="15" rx="8" ry="4" fill="#90EE90"/>
+                                <ellipse cx="48" cy="35" rx="6" ry="3" fill="#98FB98"/>
+                                <ellipse cx="52" cy="55" rx="5" ry="3" fill="#98FB98"/>
+                                <ellipse cx="47" cy="75" rx="6" ry="3" fill="#98FB98"/>
+                                <ellipse cx="51" cy="95" rx="5" ry="3" fill="#98FB98"/>
+                            </svg>
+                            <div class="upload-overlay" data-ingredient="scallion">+ 上传</div>
+                        </div>
+                        <div class="ingredient-info">
+                            <span class="ingredient-name">葱</span>
+                            <span class="ingredient-quantity">x 2 根</span>
+                        </div>
+                    </div>
+
+                    <div class="ingredient-card">
+                        <div class="ingredient-image">
+                            <svg viewBox="0 0 100 80" class="anime-food">
+                                <ellipse cx="50" cy="45" rx="40" ry="25" fill="#DAA520"/>
+                                <ellipse cx="50" cy="40" rx="35" ry="22" fill="#F0C878"/>
+                                <path d="M30 35 Q50 25 70 35" stroke="#CD853F" stroke-width="1.5" fill="none"/>
+                                <path d="M35 45 Q50 38 65 45" stroke="#CD853F" stroke-width="1.5" fill="none"/>
+                                <ellipse cx="50" cy="20" rx="15" ry="8" fill="#8B4513"/>
+                                <ellipse cx="50" cy="18" rx="12" ry="6" fill="#A0522D"/>
+                            </svg>
+                            <div class="upload-overlay" data-ingredient="ginger">+ 上传</div>
+                        </div>
+                        <div class="ingredient-info">
+                            <span class="ingredient-name">姜</span>
+                            <span class="ingredient-quantity">x 1 块</span>
+                        </div>
+                    </div>
+
+                    <div class="ingredient-card">
+                        <div class="ingredient-image">
+                            <svg viewBox="0 0 80 120" class="anime-food">
+                                <rect x="20" y="30" width="40" height="70" rx="5" fill="#8B0000"/>
+                                <rect x="25" y="35" width="30" height="60" rx="3" fill="#A52A2A"/>
+                                <rect x="22" y="15" width="36" height="20" rx="3" fill="#2F4F4F"/>
+                                <rect x="25" y="18" width="30" height="14" rx="2" fill="#4A4A4A"/>
+                                <text x="40" y="28" text-anchor="middle" font-size="6" fill="#fff">蒸鱼豉油</text>
+                                <ellipse cx="40" cy="85" rx="15" ry="8" fill="#CD5C5C"/>
+                            </svg>
+                            <div class="upload-overlay" data-ingredient="soy-sauce">+ 上传</div>
+                        </div>
+                        <div class="ingredient-info">
+                            <span class="ingredient-name">蒸鱼豉油</span>
+                            <span class="ingredient-quantity">x 1 勺</span>
+                        </div>
+                    </div>
+
+                    <div class="ingredient-card">
+                        <div class="ingredient-image">
+                            <svg viewBox="0 0 80 100" class="anime-food">
+                                <path d="M20 25 L20 80 Q20 90 30 90 L50 90 Q60 90 60 80 L60 25 Z" fill="#FFD700"/>
+                                <path d="M25 25 L25 75 Q25 85 35 85 L45 85 Q55 85 55 75 L55 25" fill="#FFE44D"/>
+                                <ellipse cx="40" cy="25" rx="18" ry="5" fill="#E6C800"/>
+                                <ellipse cx="40" cy="78" rx="15" ry="8" fill="#E6B800"/>
+                                <rect x="30" y="10" width="20" height="15" rx="3" fill="#8B7355"/>
+                                <rect x="33" y="13" width="14" height="9" rx="2" fill="#A08060"/>
+                            </svg>
+                            <div class="upload-overlay" data-ingredient="oil">+ 上传</div>
+                        </div>
+                        <div class="ingredient-info">
+                            <span class="ingredient-name">食用油</span>
+                            <span class="ingredient-quantity">x 5g</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="code-text typewriter" id="scene1-text"></div>
             </div>
         </div>
 
+        <!-- 第二幕：预处理 -->
         <div class="scene" id="scene2">
             <div class="prep-scene">
-                <div class="code-text typewriter" id="scene2-text"></div>
+                <div class="section-title">
+                    <span class="tag">Processing</span>
+                    <h2>预处理步骤</h2>
+                </div>
+                <div class="prep-card">
+                    <div class="code-text typewriter" id="scene2-text"></div>
+                </div>
+                <div class="prep-visual">
+                    <svg viewBox="0 0 300 150" class="prep-animation">
+                        <rect x="20" y="40" width="260" height="70" rx="10" fill="rgba(30,30,30,0.8)" stroke="#4ade80" stroke-width="2"/>
+                        <circle cx="60" cy="75" r="20" fill="#ff6b35" opacity="0.8"/>
+                        <line x1="50" y1="75" x2="70" y2="75" stroke="#fff" stroke-width="3"/>
+                        <line x1="60" y1="65" x2="60" y2="85" stroke="#fff" stroke-width="3"/>
+                        <circle cx="150" cy="75" r="15" fill="#DAA520"/>
+                        <circle cx="150" cy="75" r="8" fill="#F0C878"/>
+                        <rect x="220" y="50" width="40" height="50" rx="5" fill="#2d2d2d" stroke="#4ade80"/>
+                        <text x="240" y="82" text-anchor="middle" fill="#4ade80" font-size="12">盘</text>
+                    </svg>
+                </div>
             </div>
         </div>
 
+        <!-- 第三幕：蒸煮进度 -->
         <div class="scene" id="scene3">
             <div class="cooking-scene">
+                <div class="section-title">
+                    <span class="tag">Cooking</span>
+                    <h2>蒸煮进程</h2>
+                </div>
+                <div class="cooking-visual">
+                    <svg viewBox="0 0 300 200" class="steamer-animation">
+                        <ellipse cx="150" cy="180" rx="100" ry="10" fill="#333"/>
+                        <path d="M80 60 L70 180 Q70 190 80 190 L220 190 Q230 190 230 180 L220 60 Z" fill="#4a4a4a" stroke="#666" stroke-width="2"/>
+                        <rect x="90" y="50" width="120" height="20" rx="5" fill="#333" stroke="#555"/>
+                        <circle cx="150" cy="40" r="20" fill="#2d2d2d" stroke="#555"/>
+                        <path d="M145 35 Q150 30 155 35" stroke="#ff6b35" stroke-width="2" fill="none" opacity="0.8">
+                            <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
+                        </path>
+                        <path d="M140 30 Q150 22 160 30" stroke="#ff8c5a" stroke-width="2" fill="none" opacity="0.6">
+                            <animate attributeName="opacity" values="0.2;0.8;0.2" dur="1.2s" repeatCount="indefinite"/>
+                        </path>
+                        <rect x="100" y="80" width="100" height="60" rx="5" fill="rgba(255,107,53,0.3)"/>
+                        <ellipse cx="150" cy="110" rx="35" ry="20" fill="#ff6b35" opacity="0.9"/>
+                        <ellipse cx="150" cy="105" rx="30" ry="17" fill="#ff8c5a"/>
+                        <rect x="85" y="100" width="130" height="30" rx="3" fill="rgba(0,0,0,0.5)"/>
+                    </svg>
+                </div>
                 <div class="code-text" id="scene3-text"></div>
             </div>
         </div>
 
+        <!-- 第四幕：淋油操作 -->
         <div class="scene" id="scene4">
             <div class="oil-scene">
-                <div class="code-box">
+                <div class="section-title">
+                    <span class="tag">Action</span>
+                    <h2>淋油操作</h2>
+                </div>
+                <div class="code-box oil-box">
                     <pre>╔══════════════════════╗
 ║  call therm()        ║
 ║   参数: 油 5g        ║
@@ -46,30 +195,84 @@
 ║   淋油 -&gt; 完成        ║
 ╚══════════════════════╝</pre>
                 </div>
-                <button class="sizzle-btn" id="sizzleBtn">滋啦效果</button>
+                <button class="sizzle-btn" id="sizzleBtn">🔥 滋啦效果</button>
                 <div class="sizzle-text" id="sizzleText">「滋啦——」</div>
+                <div class="oil-animation" id="oilAnimation">
+                    <svg viewBox="0 0 200 100">
+                        <ellipse cx="100" cy="90" rx="80" ry="5" fill="#333"/>
+                        <ellipse cx="100" cy="70" rx="60" ry="15" fill="#ff6b35" opacity="0.9"/>
+                        <rect x="80" y="20" width="40" height="50" fill="#FFD700">
+                            <animate attributeName="height" values="50;30;50" dur="2s" repeatCount="indefinite"/>
+                        </rect>
+                        <ellipse cx="100" cy="20" rx="18" ry="4" fill="#E6C800"/>
+                        <ellipse cx="100" cy="70" rx="55" ry="12" fill="#ff8c5a"/>
+                    </svg>
+                </div>
             </div>
         </div>
 
+        <!-- 第五幕：营养成分 -->
         <div class="scene" id="scene5">
             <div class="return-scene">
-                <div class="code-box typewriter" id="scene5-text"></div>
+                <div class="section-title">
+                    <span class="tag">Output</span>
+                    <h2>营养成分</h2>
+                </div>
+                <div class="code-box return-box">
+                    <div class="typewriter" id="scene5-text"></div>
+                </div>
+                <div class="nutrient-chart">
+                    <div class="nutrient-item">
+                        <div class="nutrient-bar" style="width: 80%">
+                            <span class="nutrient-label">蛋白质 33g</span>
+                        </div>
+                    </div>
+                    <div class="nutrient-item">
+                        <div class="nutrient-bar fat" style="width: 25%">
+                            <span class="nutrient-label">脂肪 8g</span>
+                        </div>
+                    </div>
+                    <div class="nutrient-item">
+                        <div class="nutrient-bar carb" style="width: 0%">
+                            <span class="nutrient-label">碳水 0g</span>
+                        </div>
+                    </div>
+                    <div class="nutrient-item">
+                        <div class="nutrient-bar time" style="width: 60%">
+                            <span class="nutrient-label">耗时 16min</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- 结尾定帧 -->
         <div class="scene" id="scene6">
-            <div class="code-text">
-                <pre>&gt; 状态: 补给完成
+            <div class="hero-section">
+                <div class="hero-icon">✨</div>
+                <div class="code-text hero-text">
+                    <pre>> 状态: 补给完成
   下一道菜: 待定
 
   sleep(3h)  // 晚安</pre>
+                </div>
+                <div class="completion-stars">
+                    <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                </div>
+                <div class="hero-decoration"></div>
             </div>
         </div>
 
+        <!-- 导航控制 -->
         <div class="controls">
-            <button class="nav-btn" id="prevBtn">上一步</button>
-            <span class="scene-counter" id="sceneCounter">1 / 7</span>
-            <button class="nav-btn" id="nextBtn">下一步</button>
+            <button class="nav-btn" id="prevBtn">← 上一步</button>
+            <div class="scene-indicator">
+                <span class="scene-counter" id="sceneCounter">1 / 7</span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="progressBar"></div>
+                </div>
+            </div>
+            <button class="nav-btn" id="nextBtn">下一步 →</button>
         </div>
     </div>
 
