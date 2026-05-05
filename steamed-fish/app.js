@@ -6,10 +6,30 @@ const sizzleText = document.getElementById('sizzleText');
 const restartBtn = document.getElementById('restartBtn');
 const progressBar = document.getElementById('cookingProgress');
 const progressPercent = document.getElementById('progressPercent');
+const musicBtn = document.getElementById('musicBtn');
+const musicIcon = musicBtn.querySelector('.music-icon');
 
 let currentSceneIndex = 0;
 let isScrolling = false;
 let cookingProgressInterval = null;
+
+// Audio System
+let audioContext = null;
+let isPlaying = false;
+let isInitialized = false;
+let mainGainNode = null;
+let arpeggioGainNode = null;
+let bassGainNode = null;
+let melodyGainNode = null;
+let nextNoteTime = 0;
+let currentBeat = 0;
+let timerID = null;
+
+const TEMPO = 90;
+const TONE_DURATION = 0.2;
+const ARPEGGIO_NOTES = [523.25, 659.25, 783.99, 659.25]; // C5, E5, G5, E5
+const MELODY_NOTES = [523.25, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25, 659.25];
+const BASS_NOTES = [130.81, 196.00, 130.81, 196.00];
 
 const progressTexts = [
     { percent: 15, text: '热传导中...' },
@@ -81,6 +101,133 @@ function stopCookingProgress() {
     }
 }
 
+// Audio Functions
+function initAudio() {
+    if (isInitialized) return;
+    
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    mainGainNode = audioContext.createGain();
+    mainGainNode.connect(audioContext.destination);
+    mainGainNode.gain.value = 0.15;
+    
+    arpeggioGainNode = audioContext.createGain();
+    arpeggioGainNode.connect(mainGainNode);
+    arpeggioGainNode.gain.value = 0.4;
+    
+    bassGainNode = audioContext.createGain();
+    bassGainNode.connect(mainGainNode);
+    bassGainNode.gain.value = 0.3;
+    
+    melodyGainNode = audioContext.createGain();
+    melodyGainNode.connect(mainGainNode);
+    melodyGainNode.gain.value = 0.3;
+    
+    isInitialized = true;
+}
+
+function createOscillator(frequency, startTime, endTime, gainNode, waveType = 'sine') {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    
+    osc.type = waveType;
+    osc.frequency.value = frequency;
+    
+    gain.gain.value = 0;
+    gain.gain.setTargetAtTime(1, startTime, 0.02);
+    gain.gain.setTargetAtTime(0, endTime, 0.1);
+    
+    osc.connect(gain);
+    gain.connect(gainNode);
+    
+    osc.start(startTime);
+    osc.stop(endTime + 0.1);
+}
+
+function playNote(frequency, time, duration, gainNode, waveType = 'sine') {
+    const endTime = time + duration;
+    createOscillator(frequency, time, endTime, gainNode, waveType);
+}
+
+function scheduleArpeggio(time, beat) {
+    const noteIndex = beat % ARPEGGIO_NOTES.length;
+    playNote(ARPEGGIO_NOTES[noteIndex], time, TONE_DURATION, arpeggioGainNode, 'triangle');
+}
+
+function scheduleBass(time, beat) {
+    const noteIndex = Math.floor(beat / 2) % BASS_NOTES.length;
+    if (beat % 2 === 0) {
+        playNote(BASS_NOTES[noteIndex], time, TONE_DURATION * 2, bassGainNode, 'sine');
+    }
+}
+
+function scheduleMelody(time, beat) {
+    if (beat % 4 === 0) {
+        const noteIndex = Math.floor(beat / 4) % MELODY_NOTES.length;
+        playNote(MELODY_NOTES[noteIndex], time, TONE_DURATION * 3, melodyGainNode, 'triangle');
+    }
+}
+
+function scheduleNextNotes() {
+    const secondsPerBeat = 60.0 / TEMPO;
+    
+    while (nextNoteTime < audioContext.currentTime + 0.1) {
+        scheduleArpeggio(nextNoteTime, currentBeat);
+        scheduleBass(nextNoteTime, currentBeat);
+        scheduleMelody(nextNoteTime, currentBeat);
+        
+        nextNoteTime += secondsPerBeat;
+        currentBeat++;
+    }
+}
+
+function schedulerLoop() {
+    if (!isPlaying) return;
+    scheduleNextNotes();
+    timerID = setTimeout(schedulerLoop, 25);
+}
+
+function startMusic() {
+    if (!isInitialized) {
+        initAudio();
+    }
+    
+    if (audioContext.state === 'suspended') {
+        audioContext.resume();
+    }
+    
+    isPlaying = true;
+    nextNoteTime = audioContext.currentTime + 0.05;
+    currentBeat = 0;
+    schedulerLoop();
+    
+    musicIcon.textContent = '🎵';
+    musicIcon.classList.add('playing');
+}
+
+function stopMusic() {
+    isPlaying = false;
+    if (timerID) {
+        clearTimeout(timerID);
+        timerID = null;
+    }
+    
+    musicIcon.textContent = '🔇';
+    musicIcon.classList.remove('playing');
+}
+
+function toggleMusic() {
+    if (!isInitialized) {
+        startMusic();
+    } else if (isPlaying) {
+        stopMusic();
+    } else {
+        startMusic();
+    }
+}
+
+musicBtn.addEventListener('click', toggleMusic);
+
 navDots.forEach((dot, index) => {
     dot.addEventListener('click', () => {
         scenes[index].scrollIntoView({ behavior: 'smooth' });
@@ -94,13 +241,13 @@ pageContainer.addEventListener('scroll', () => {
     
     const scrollPosition = pageContainer.scrollTop + pageContainer.clientHeight / 2;
     
-    scenes.forEach((scene, index) => {
+    scenes.forEach((scene, i) => {
         const sceneTop = scene.offsetTop;
         const sceneBottom = sceneTop + scene.clientHeight;
         
         if (scrollPosition >= sceneTop && scrollPosition < sceneBottom) {
-            if (currentSceneIndex !== index) {
-                updateScene(index);
+            if (currentSceneIndex !== i) {
+                updateScene(i);
             }
         }
     });
@@ -134,18 +281,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 updateScene(0);
-
-document.addEventListener('DOMContentLoaded', () => {
-    const cloud1 = document.querySelector('.scene-hero .cloud:first-of-type');
-    const cloud2 = document.querySelector('.scene-hero .cloud:last-of-type');
-    
-    if (cloud1) {
-        cloud1.style.animation = 'drift 30s linear infinite';
-    }
-    if (cloud2) {
-        cloud2.style.animation = 'drift 25s linear infinite reverse';
-    }
-});
 
 const style = document.createElement('style');
 style.textContent = `
